@@ -1,0 +1,2687 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touch Grass Series</title>
+    <meta
+      name="description"
+      content="A premium surplus XP exchange concept with a WebGL grass descent, Bonus Reserve Crates, and a Touch Grass Series Marketplace."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=Space+Mono:wght@400;700&family=Syncopate:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #030403;
+        --panel: rgba(13, 17, 14, 0.74);
+        --panel-solid: #090d0a;
+        --border: rgba(239, 234, 218, 0.16);
+        --border-strong: rgba(189, 242, 60, 0.48);
+        --acid: #bdf23c;
+        --acid-2: #7bd315;
+        --teal: #4fc1a8;
+        --silver: #d8ddd2;
+        --warm: #f1ead9;
+        --muted: rgba(241, 234, 217, 0.62);
+        --dim: rgba(241, 234, 217, 0.42);
+        --blue: #7ab7ff;
+        --heat: #ff6847;
+        --font-display: "Syncopate", sans-serif;
+        --font-mono: "Space Mono", monospace;
+        --font-body: "Inter", sans-serif;
+        --ease: cubic-bezier(0.19, 1, 0.22, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        overflow-x: hidden;
+        color: var(--warm);
+        background: var(--bg);
+        font-family: var(--font-body);
+        letter-spacing: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      a {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      #webgl-container {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        background: #030403;
+        pointer-events: none;
+      }
+
+      #webgl-container::before {
+        position: absolute;
+        inset: -8vh -8vw;
+        z-index: 0;
+        content: "";
+        background:
+          linear-gradient(180deg, rgba(3, 4, 3, 0.12), rgba(3, 4, 3, 0.42) 46%, rgba(3, 4, 3, 0.96) 86%),
+          linear-gradient(90deg, rgba(3, 4, 3, 0.76), rgba(3, 4, 3, 0.26) 52%, rgba(3, 4, 3, 0.66)),
+          url("assets/touchgrass-landscape.png") center 16% / cover no-repeat;
+        filter: blur(26px) saturate(0.86) contrast(1.05);
+        opacity: 0.52;
+        transform: scale(1.08);
+      }
+
+      #webgl-container::after {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        content: "";
+        background:
+          radial-gradient(circle at 55% 35%, rgba(189, 242, 60, 0.08), transparent 28rem),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(3, 4, 3, 0.86) 82%);
+      }
+
+      #webgl-container canvas {
+        position: relative;
+        z-index: 2;
+      }
+
+      .cinematic-bar {
+        position: fixed;
+        left: 0;
+        z-index: 90;
+        width: 100%;
+        height: 7vh;
+        border-color: rgba(239, 234, 218, 0.08);
+        background: #000;
+        pointer-events: none;
+      }
+
+      .cinematic-bar.top {
+        top: 0;
+        border-bottom: 1px solid;
+      }
+
+      .cinematic-bar.bottom {
+        bottom: 0;
+        border-top: 1px solid;
+      }
+
+      .hud-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: calc(7vh + 1.15rem) 1.4rem;
+        pointer-events: none;
+      }
+
+      .hud-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        width: 100%;
+      }
+
+      .hud-data {
+        display: grid;
+        gap: 0.22rem;
+        color: var(--acid);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        line-height: 1.25;
+        text-transform: uppercase;
+      }
+
+      .hud-data span {
+        color: var(--dim);
+      }
+
+      .hud-data.right {
+        justify-items: end;
+        text-align: right;
+      }
+
+      .reticle {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 8;
+        width: 42px;
+        height: 42px;
+        border: 1px solid rgba(239, 234, 218, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      .reticle::before,
+      .reticle::after {
+        position: absolute;
+        content: "";
+        background: rgba(239, 234, 218, 0.24);
+      }
+
+      .reticle::before {
+        top: 50%;
+        left: -10px;
+        right: -10px;
+        height: 1px;
+      }
+
+      .reticle::after {
+        top: -10px;
+        bottom: -10px;
+        left: 50%;
+        width: 1px;
+      }
+
+      .center-dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--acid);
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 18px rgba(189, 242, 60, 0.7);
+      }
+
+      #scroll-content {
+        position: relative;
+        z-index: 10;
+      }
+
+      section {
+        position: relative;
+        width: 100%;
+      }
+
+      .hero {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        padding: 9rem 1.25rem 7rem;
+        text-align: center;
+      }
+
+      .hero-title-group {
+        width: min(100%, 920px);
+        margin-top: -8vh;
+      }
+
+      .eyebrow,
+      .meta,
+      .card-badge,
+      .crate-type,
+      .fine {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        line-height: 1.25;
+        text-transform: uppercase;
+      }
+
+      .eyebrow {
+        margin-bottom: 1rem;
+        color: var(--acid);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(2.45rem, 7.6vw, 7.1rem);
+        font-weight: 700;
+        line-height: 1.03;
+        text-shadow: 0 18px 55px rgba(0, 0, 0, 0.76);
+        text-transform: uppercase;
+      }
+
+      .highlight {
+        display: block;
+        color: var(--acid);
+        font-weight: 400;
+      }
+
+      .hero-subtitle {
+        max-width: 680px;
+        margin: 1.2rem auto 0;
+        color: rgba(241, 234, 217, 0.74);
+        font-size: clamp(1rem, 2vw, 1.24rem);
+        font-weight: 300;
+        line-height: 1.55;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 2rem;
+      }
+
+      .id-panel {
+        display: grid;
+        gap: 0.75rem;
+        width: min(100%, 560px);
+        margin: 1.35rem auto 0;
+        padding: 1rem;
+        border: 1px solid rgba(239, 234, 218, 0.16);
+        background: rgba(7, 10, 8, 0.58);
+        backdrop-filter: blur(18px);
+      }
+
+      .id-panel strong {
+        display: block;
+        margin-top: 0.35rem;
+        color: #fff7e8;
+        font-family: var(--font-mono);
+        font-size: 0.92rem;
+        text-transform: uppercase;
+      }
+
+      .id-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1px;
+        border: 1px solid rgba(239, 234, 218, 0.12);
+        background: rgba(239, 234, 218, 0.12);
+      }
+
+      .id-form input {
+        min-width: 0;
+        min-height: 3.1rem;
+        padding: 0 0.9rem;
+        border: 0;
+        color: var(--warm);
+        background: rgba(3, 4, 3, 0.86);
+        font: 700 0.78rem var(--font-mono);
+        text-transform: uppercase;
+        outline: none;
+      }
+
+      .id-form button {
+        min-height: 3.1rem;
+        padding: 0 1rem;
+        border: 0;
+        color: #081006;
+        background: linear-gradient(180deg, var(--acid), var(--acid-2));
+        font: 700 0.72rem var(--font-mono);
+        text-transform: uppercase;
+      }
+
+      .sync-status {
+        color: rgba(241, 234, 217, 0.58);
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        line-height: 1.45;
+        text-transform: uppercase;
+      }
+
+      .primary-link,
+      .secondary-link,
+      .btn-purchase,
+      .reserve-open-button,
+      .confirm-reward-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 3.25rem;
+        padding: 0 1.2rem;
+        border: 1px solid var(--border-strong);
+        color: #081006;
+        background: linear-gradient(180deg, var(--acid), var(--acid-2));
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+        box-shadow: 0 18px 70px rgba(189, 242, 60, 0.18);
+      }
+
+      .secondary-link {
+        color: var(--warm);
+        border-color: var(--border);
+        background: rgba(5, 7, 5, 0.36);
+        box-shadow: none;
+        backdrop-filter: blur(16px);
+      }
+
+      .grass-descent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 330vh;
+        padding: 52vh 1.25rem 18vh;
+      }
+
+      .tactical-card {
+        position: relative;
+        width: min(92vw, 500px);
+        margin-bottom: 44vh;
+        padding: 1.45rem;
+        border: 1px solid var(--border);
+        color: var(--warm);
+        background:
+          linear-gradient(180deg, rgba(241, 234, 217, 0.08), rgba(241, 234, 217, 0.025)),
+          rgba(8, 12, 9, 0.68);
+        backdrop-filter: blur(18px) saturate(1.08);
+        opacity: 0;
+        transform: translateY(36px);
+        transition:
+          opacity 800ms var(--ease),
+          transform 800ms var(--ease);
+      }
+
+      .grass-descent .tactical-card {
+        opacity: 1;
+      }
+
+      .tactical-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .conversion-lock {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        min-height: 175vh;
+        margin-bottom: 16vh;
+      }
+
+      .tactical-card.conversion-card {
+        position: sticky;
+        top: 50vh;
+        z-index: 5;
+        align-self: flex-start;
+        margin-bottom: 0;
+        opacity: 1;
+        transform: translateY(calc(-50% + 36px));
+      }
+
+      .tactical-card.conversion-card.visible {
+        transform: translateY(-50%);
+      }
+
+      .tactical-card.conversion-card.is-complete {
+        border-color: rgba(189, 242, 60, 0.55);
+        box-shadow: 0 0 70px rgba(189, 242, 60, 0.14);
+      }
+
+      .drop-room .reveal-card {
+        opacity: 1;
+        transform: none;
+      }
+
+      .tactical-card::before {
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 28px;
+        height: 28px;
+        border-top: 2px solid var(--acid);
+        border-left: 2px solid var(--acid);
+        content: "";
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(239, 234, 218, 0.08);
+      }
+
+      .card-title {
+        color: var(--warm);
+        font-family: var(--font-display);
+        font-size: 0.92rem;
+        line-height: 1.35;
+        text-transform: uppercase;
+      }
+
+      .card-badge {
+        flex: 0 0 auto;
+        padding: 0.25rem 0.5rem;
+        color: var(--acid);
+        border: 1px solid rgba(189, 242, 60, 0.34);
+        background: rgba(189, 242, 60, 0.1);
+      }
+
+      .card-body p {
+        color: rgba(241, 234, 217, 0.68);
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      .xp-reward {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-top: 1.25rem;
+        color: var(--acid);
+        font-family: var(--font-mono);
+        font-size: 1.05rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .xp-reward svg {
+        width: 22px;
+        height: 22px;
+        fill: currentColor;
+      }
+
+      .conversion-meter {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 0.85rem;
+        align-items: center;
+        margin-top: 1.35rem;
+      }
+
+      .conversion-stat {
+        min-height: 5.2rem;
+        padding: 0.9rem;
+        border: 1px solid rgba(239, 234, 218, 0.12);
+        background: rgba(3, 4, 3, 0.46);
+      }
+
+      .conversion-stat strong {
+        display: block;
+        margin-top: 0.45rem;
+        color: #fff7e8;
+        font-family: var(--font-mono);
+        font-size: 1.35rem;
+        line-height: 1;
+      }
+
+      .conversion-arrow {
+        display: grid;
+        place-items: center;
+        width: 2.4rem;
+        height: 2.4rem;
+        border: 1px solid rgba(189, 242, 60, 0.34);
+        border-radius: 50%;
+        color: var(--acid);
+        font-family: var(--font-mono);
+        font-weight: 700;
+      }
+
+      .conversion-bar {
+        height: 4px;
+        margin-top: 1rem;
+        overflow: hidden;
+        background: rgba(239, 234, 218, 0.12);
+      }
+
+      .conversion-bar span {
+        display: block;
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--acid), var(--teal));
+        box-shadow: 0 0 24px rgba(189, 242, 60, 0.38);
+      }
+
+      .conversion-status {
+        margin-top: 0.75rem;
+        color: rgba(241, 234, 217, 0.48);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        line-height: 1.45;
+        text-transform: uppercase;
+      }
+
+      .conversion-card.is-complete .conversion-status {
+        color: var(--acid);
+      }
+
+      .reserve-stage {
+        --crate-shake-x: 0px;
+        --crate-shake-y: 0px;
+        --crate-tilt-x: 0deg;
+        --crate-tilt-y: 0deg;
+        --crate-tilt-z: 0deg;
+        --crate-scroll-scale: 1;
+        --crate-pressure: 0;
+        --crate-glow: 0px;
+        --crate-inner-glow: 0px;
+        --crate-sweep-opacity: 0.42;
+        min-height: 112vh;
+        padding: 13vh 5vw 12vh;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 28% 20%, rgba(122, 183, 255, 0.14), transparent 26rem),
+          radial-gradient(circle at 78% 30%, rgba(189, 242, 60, 0.18), transparent 28rem),
+          linear-gradient(180deg, rgba(3, 4, 3, 0.05), rgba(3, 4, 3, 0.96) 58%, #030403);
+      }
+
+      .reserve-stage::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          linear-gradient(90deg, rgba(241, 234, 217, 0.045) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(241, 234, 217, 0.035) 1px, transparent 1px);
+        background-size: 84px 84px;
+        mask-image: linear-gradient(180deg, transparent, black 20%, black 74%, transparent);
+        pointer-events: none;
+      }
+
+      .reserve-event {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 0.72fr) minmax(420px, 1fr);
+        gap: clamp(1.4rem, 4vw, 4rem);
+        align-items: center;
+        width: min(100%, 1320px);
+        min-height: 78vh;
+        margin: 0 auto;
+      }
+
+      .reserve-copy h2 {
+        max-width: 720px;
+        margin-top: 0.85rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 4.6vw, 5rem);
+        line-height: 1.02;
+        text-transform: uppercase;
+      }
+
+      .reserve-copy p {
+        max-width: 540px;
+        margin-top: 1.2rem;
+        color: rgba(241, 234, 217, 0.68);
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+
+      .reserve-status {
+        width: min(100%, 520px);
+        margin-top: 1.4rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(189, 242, 60, 0.24);
+        color: var(--acid);
+        background: rgba(189, 242, 60, 0.07);
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        line-height: 1.45;
+        text-transform: uppercase;
+      }
+
+      .reserve-crate-theater {
+        position: relative;
+        display: grid;
+        min-height: 620px;
+        padding: clamp(1rem, 3vw, 2rem);
+        border: 1px solid rgba(241, 234, 217, 0.16);
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 32%, rgba(189, 242, 60, 0.2), transparent 18rem),
+          radial-gradient(circle at 50% 58%, rgba(122, 183, 255, 0.18), transparent 19rem),
+          linear-gradient(180deg, rgba(241, 234, 217, 0.06), rgba(241, 234, 217, 0.018)),
+          rgba(5, 8, 6, 0.9);
+        box-shadow:
+          0 30px 110px rgba(0, 0, 0, 0.45),
+          0 0 var(--crate-glow) rgba(255, 106, 0, 0.18),
+          inset 0 0 var(--crate-inner-glow) rgba(189, 242, 60, 0.11);
+      }
+
+      .reserve-crate-theater::before {
+        position: absolute;
+        inset: -20%;
+        content: "";
+        background:
+          conic-gradient(from 0deg at 50% 50%, transparent, rgba(189, 242, 60, 0.12), transparent 18%),
+          radial-gradient(circle, transparent 42%, rgba(3, 4, 3, 0.74) 73%);
+        opacity: var(--crate-sweep-opacity);
+        animation: crateSweep 8s linear infinite;
+      }
+
+      .reserve-crate-theater::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          linear-gradient(90deg, transparent 49.8%, rgba(241, 234, 217, 0.07) 50%, transparent 50.2%),
+          linear-gradient(0deg, transparent 49.8%, rgba(241, 234, 217, 0.06) 50%, transparent 50.2%);
+        background-size: 68px 68px;
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      .reserve-crate-core {
+        position: absolute;
+        top: 41%;
+        left: 50%;
+        z-index: 2;
+        width: min(68vw, 470px);
+        height: 300px;
+        transform:
+          translate(calc(-50% + var(--crate-shake-x)), calc(-50% + var(--crate-shake-y)))
+          perspective(900px)
+          rotateX(calc(18deg + var(--crate-tilt-x)))
+          rotateY(calc(-20deg + var(--crate-tilt-y)))
+          rotateZ(var(--crate-tilt-z))
+          scale(var(--crate-scroll-scale));
+        transform-style: preserve-3d;
+        transition:
+          opacity 520ms var(--ease),
+          filter 520ms var(--ease),
+          transform 120ms linear;
+      }
+
+      .reserve-stage.is-shaking .reserve-crate-core {
+        animation: reserveShake 2.45s cubic-bezier(0.33, 1, 0.68, 1) both;
+      }
+
+      .reserve-stage.is-open .reserve-crate-core {
+        opacity: 0.2;
+        filter: blur(2px) saturate(1.35);
+        transform: translate(-50%, -38%) perspective(900px) rotateX(10deg) rotateY(-10deg) scale(0.9);
+      }
+
+      .reserve-crate-shadow {
+        position: absolute;
+        left: 9%;
+        right: 9%;
+        bottom: -44px;
+        height: 70px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse, rgba(0, 0, 0, 0.72), transparent 65%);
+        transform: rotateX(72deg);
+      }
+
+      .reserve-crate-body {
+        position: absolute;
+        inset: 88px 34px 28px;
+        border: 2px solid rgba(241, 234, 217, 0.26);
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 18%, rgba(12, 12, 10, 0.18) 58%, transparent),
+          linear-gradient(180deg, #ff7a12, #d54f00 55%, #8e2d00);
+        box-shadow:
+          inset 0 0 0 1px rgba(255, 205, 148, 0.24),
+          inset 0 -18px 40px rgba(0, 0, 0, 0.25),
+          0 30px 80px rgba(0, 0, 0, 0.55);
+      }
+
+      .reserve-crate-body::before,
+      .reserve-crate-body::after {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 32px;
+        content: "";
+        background:
+          linear-gradient(180deg, rgba(255, 194, 96, 0.24), transparent),
+          #11100d;
+      }
+
+      .reserve-crate-body::before {
+        left: 34px;
+      }
+
+      .reserve-crate-body::after {
+        right: 34px;
+      }
+
+      .reserve-crate-lid {
+        position: absolute;
+        top: 36px;
+        left: 20px;
+        right: 20px;
+        height: 98px;
+        border: 2px solid rgba(241, 234, 217, 0.28);
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent 18%),
+          linear-gradient(180deg, #ff8a1e, #e45a00 62%, #9b3300);
+        transform-origin: bottom center;
+        transition:
+          transform 880ms var(--ease),
+          box-shadow 700ms var(--ease),
+          border-color 700ms var(--ease);
+      }
+
+      .reserve-crate-lid::before {
+        position: absolute;
+        inset: 14px 42px;
+        border: 1px solid rgba(23, 15, 10, 0.28);
+        content: "";
+        background:
+          linear-gradient(90deg, transparent 0 18%, rgba(20, 16, 12, 0.24) 18% 21%, transparent 21% 39%, rgba(20, 16, 12, 0.24) 39% 42%, transparent 42% 60%, rgba(20, 16, 12, 0.24) 60% 63%, transparent 63%),
+          rgba(255, 128, 28, 0.38);
+      }
+
+      .reserve-crate-lid::after {
+        position: absolute;
+        left: 11%;
+        right: 11%;
+        bottom: -13px;
+        height: 18px;
+        content: "";
+        background:
+          linear-gradient(90deg, #11100d 0 7%, transparent 7% 24%, #11100d 24% 31%, transparent 31% 49%, #11100d 49% 56%, transparent 56% 76%, #11100d 76% 83%, transparent 83%);
+      }
+
+      .reserve-stage.is-open .reserve-crate-lid {
+        border-color: rgba(189, 242, 60, 0.82);
+        box-shadow: 0 -18px 90px rgba(189, 242, 60, 0.38);
+        transform: rotateX(128deg) translateY(-18px);
+      }
+
+      .reserve-crate-label {
+        position: absolute;
+        left: 50%;
+        top: 52%;
+        z-index: 1;
+        width: min(68%, 270px);
+        padding: 0.75rem 0.7rem;
+        border: 1px solid rgba(189, 242, 60, 0.42);
+        color: var(--acid);
+        background: rgba(4, 7, 4, 0.7);
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-align: center;
+        text-transform: uppercase;
+        transform: translate(-50%, -50%);
+      }
+
+      .reserve-crate-light {
+        position: absolute;
+        left: 50%;
+        top: 44%;
+        width: 180px;
+        height: 8px;
+        border-radius: 999px;
+        background: #bdf23c;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 42px rgba(189, 242, 60, 0.9);
+        transition:
+          width 520ms var(--ease),
+          height 520ms var(--ease),
+          opacity 520ms var(--ease);
+      }
+
+      .reserve-stage.is-open .reserve-crate-light {
+        width: 330px;
+        height: 18px;
+        opacity: 0.95;
+      }
+
+      .reserve-stage.is-bursting .reserve-crate-theater {
+        animation: theaterBurst 860ms var(--ease) both;
+      }
+
+      .reserve-stage.is-bursting .reserve-crate-light {
+        animation: lightBurst 860ms var(--ease) both;
+      }
+
+      .burst-shards {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      .burst-shards span {
+        position: absolute;
+        top: 42%;
+        left: 50%;
+        width: var(--w, 34px);
+        height: 4px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #ff7a12, #bdf23c);
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--r, 0deg));
+        box-shadow: 0 0 22px rgba(189, 242, 60, 0.48);
+      }
+
+      .reserve-stage.is-bursting .burst-shards span {
+        animation: shardBurst 920ms var(--ease) both;
+      }
+
+      .reserve-open-button {
+        position: absolute;
+        left: 50%;
+        bottom: clamp(1rem, 3vw, 2rem);
+        z-index: 5;
+        width: min(100% - 2rem, 430px);
+        transform: translateX(-50%);
+        transition:
+          opacity 240ms var(--ease),
+          transform 240ms var(--ease);
+      }
+
+      .reserve-stage.is-open .reserve-open-button {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-50%) translateY(16px);
+      }
+
+      .reserve-open-button:disabled,
+      .confirm-reward-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .reward-reveal {
+        position: relative;
+        z-index: 4;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(270px, 0.82fr);
+        gap: 1.25rem;
+        align-items: center;
+        width: 100%;
+        min-height: 520px;
+        padding-bottom: 4.8rem;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(26px) scale(0.96);
+        transition:
+          opacity 520ms var(--ease),
+          transform 720ms var(--ease);
+      }
+
+      .reserve-stage.is-open .reward-reveal {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+
+      .reward-visual {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 410px;
+        overflow: hidden;
+      }
+
+      .reward-visual::before {
+        position: absolute;
+        inset: 8%;
+        border-radius: 50%;
+        content: "";
+        background:
+          radial-gradient(circle, rgba(189, 242, 60, 0.32), transparent 48%),
+          radial-gradient(circle, rgba(122, 183, 255, 0.18), transparent 66%);
+        filter: blur(8px);
+      }
+
+      .reward-art {
+        position: relative;
+        z-index: 1;
+        display: none;
+        width: min(100%, 520px);
+      }
+
+      .reward-visual[data-reward="mp5"] .weapon-reward,
+      .reward-visual[data-reward="operator"] .operator-reward {
+        display: block;
+      }
+
+      .weapon-reward svg,
+      .operator-reward svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+      }
+
+      .weapon-reward {
+        animation: rewardFloat 2.8s ease-in-out infinite;
+        filter: drop-shadow(0 28px 42px rgba(0, 0, 0, 0.52));
+      }
+
+      .operator-reward {
+        max-width: 310px;
+        animation: rewardFloat 3.1s ease-in-out infinite;
+        filter: drop-shadow(0 28px 42px rgba(0, 0, 0, 0.48));
+      }
+
+      .operator-leg-left {
+        transform-origin: 190px 330px;
+        animation: walkLeg 720ms ease-in-out infinite alternate;
+      }
+
+      .operator-leg-right {
+        transform-origin: 222px 330px;
+        animation: walkLeg 720ms ease-in-out infinite alternate-reverse;
+      }
+
+      .operator-arm {
+        transform-origin: 170px 178px;
+        animation: walkArm 720ms ease-in-out infinite alternate-reverse;
+      }
+
+      .reward-copy {
+        padding: 1.2rem;
+        border: 1px solid rgba(241, 234, 217, 0.16);
+        background: rgba(5, 8, 6, 0.7);
+        backdrop-filter: blur(18px);
+      }
+
+      .reward-copy h3 {
+        margin-top: 0.75rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(1.45rem, 3.2vw, 3rem);
+        line-height: 1.04;
+        text-transform: uppercase;
+      }
+
+      .reward-copy p {
+        margin-top: 1rem;
+        color: rgba(241, 234, 217, 0.68);
+        font-size: 0.98rem;
+        line-height: 1.6;
+      }
+
+      .confirm-reward-button {
+        width: 100%;
+        margin-top: 1.25rem;
+      }
+
+      @keyframes reserveShake {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) perspective(900px) rotateX(18deg) rotateY(-20deg);
+        }
+        8% {
+          transform: translate(calc(-50% - 26px), calc(-50% + 8px)) perspective(900px) rotateX(15deg) rotateY(-29deg) rotateZ(-2deg);
+        }
+        16% {
+          transform: translate(calc(-50% + 31px), calc(-50% - 9px)) perspective(900px) rotateX(23deg) rotateY(-10deg) rotateZ(2.2deg) scale(1.03);
+        }
+        27% {
+          transform: translate(calc(-50% - 20px), calc(-50% + 11px)) perspective(900px) rotateX(14deg) rotateY(-32deg) rotateZ(-2.4deg) scale(1.05);
+        }
+        39% {
+          transform: translate(calc(-50% + 24px), calc(-50% - 12px)) perspective(900px) rotateX(24deg) rotateY(-14deg) rotateZ(2deg) scale(1.06);
+        }
+        52% {
+          transform: translate(calc(-50% - 13px), calc(-50% + 7px)) perspective(900px) rotateX(18deg) rotateY(-25deg) rotateZ(-1.2deg) scale(1.04);
+        }
+        66% {
+          transform: translate(calc(-50% + 12px), calc(-50% - 6px)) perspective(900px) rotateX(21deg) rotateY(-17deg) rotateZ(1deg) scale(1.03);
+        }
+        80% {
+          transform: translate(calc(-50% - 7px), calc(-50% + 4px)) perspective(900px) rotateX(19deg) rotateY(-22deg) scale(1.02);
+        }
+        91% {
+          transform: translate(calc(-50% + 5px), calc(-50% - 3px)) perspective(900px) rotateX(20deg) rotateY(-18deg);
+        }
+      }
+
+      @keyframes theaterBurst {
+        0% {
+          filter: brightness(1);
+        }
+        32% {
+          filter: brightness(1.55) saturate(1.4);
+        }
+        62% {
+          filter: brightness(2.15) saturate(1.85);
+        }
+        100% {
+          filter: brightness(1) saturate(1);
+        }
+      }
+
+      @keyframes lightBurst {
+        0% {
+          opacity: 0.95;
+          transform: translate(-50%, -50%) scaleX(1);
+        }
+        52% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scaleX(1.8);
+          box-shadow:
+            0 0 120px rgba(189, 242, 60, 0.95),
+            0 0 180px rgba(255, 106, 0, 0.55);
+        }
+        100% {
+          opacity: 0.95;
+          transform: translate(-50%, -50%) scaleX(1);
+        }
+      }
+
+      @keyframes shardBurst {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scaleX(0.2);
+        }
+        18% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform:
+            translate(calc(-50% + var(--tx, 0px)), calc(-50% + var(--ty, 0px)))
+            rotate(var(--r, 0deg))
+            scaleX(1);
+        }
+      }
+
+      @keyframes crateSweep {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes rewardFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-1deg);
+        }
+        50% {
+          transform: translateY(-12px) rotate(1deg);
+        }
+      }
+
+      @keyframes walkLeg {
+        to {
+          transform: rotate(10deg);
+        }
+      }
+
+      @keyframes walkArm {
+        to {
+          transform: rotate(-8deg);
+        }
+      }
+
+      .drop-room {
+        min-height: 100vh;
+        padding: 14vh 5vw 12vh;
+        background:
+          radial-gradient(circle at 80% 16%, rgba(189, 242, 60, 0.16), transparent 24rem),
+          linear-gradient(to bottom, transparent, rgba(3, 4, 3, 0.95) 11rem, #030403 100%);
+      }
+
+      .stencil-bg {
+        position: absolute;
+        top: 43%;
+        left: 50%;
+        z-index: 0;
+        color: rgba(241, 234, 217, 0.022);
+        font-family: var(--font-mono);
+        font-size: clamp(5rem, 15vw, 16rem);
+        font-weight: 700;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      .drop-inner {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 1440px);
+        margin: 0 auto;
+      }
+
+      .drop-header {
+        display: grid;
+        grid-template-columns: minmax(0, 0.82fr) minmax(300px, 0.45fr);
+        gap: 2rem;
+        align-items: end;
+        margin-bottom: 3rem;
+      }
+
+      .drop-header h2 {
+        max-width: 860px;
+        margin-top: 0.9rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 5.2rem);
+        line-height: 1.03;
+        text-transform: uppercase;
+      }
+
+      .drop-header p {
+        max-width: 430px;
+        color: rgba(241, 234, 217, 0.68);
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .exchange-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        margin-bottom: 1.35rem;
+        border: 1px solid var(--border);
+        background: rgba(241, 234, 217, 0.11);
+      }
+
+      .summary-cell {
+        min-height: 5.5rem;
+        padding: 1rem;
+        background: rgba(7, 10, 8, 0.76);
+      }
+
+      .summary-cell strong {
+        display: block;
+        margin-top: 0.55rem;
+        font-size: 1.75rem;
+        line-height: 1;
+      }
+
+      .path-switch {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-bottom: 1.35rem;
+        border: 1px solid var(--border);
+        background: rgba(241, 234, 217, 0.12);
+      }
+
+      .path-tab {
+        --path-accent-rgb: 189, 242, 60;
+        --path-accent: rgb(var(--path-accent-rgb));
+        --path-secondary-rgb: 255, 122, 18;
+        --path-secondary: rgb(var(--path-secondary-rgb));
+        position: relative;
+        min-height: 7.2rem;
+        padding: 1.15rem 1.15rem 1rem;
+        border: 0;
+        color: var(--warm);
+        text-align: left;
+        background:
+          linear-gradient(135deg, rgba(var(--path-accent-rgb), 0.08), rgba(var(--path-secondary-rgb), 0.035) 46%, rgba(8, 12, 9, 0.88)),
+          rgba(8, 12, 9, 0.86);
+        transition:
+          background 240ms var(--ease),
+          box-shadow 240ms var(--ease),
+          transform 240ms var(--ease);
+      }
+
+      .path-tab[data-mode="box"] {
+        --path-accent-rgb: 189, 242, 60;
+        --path-secondary-rgb: 255, 122, 18;
+      }
+
+      .path-tab[data-mode="item"] {
+        --path-accent-rgb: 122, 183, 255;
+        --path-secondary-rgb: 255, 47, 147;
+      }
+
+      .path-tab[aria-pressed="true"] {
+        background:
+          radial-gradient(circle at 88% 12%, rgba(var(--path-secondary-rgb), 0.18), transparent 8rem),
+          radial-gradient(circle at 10% 100%, rgba(var(--path-accent-rgb), 0.22), transparent 10rem),
+          linear-gradient(180deg, rgba(var(--path-accent-rgb), 0.18), rgba(var(--path-accent-rgb), 0.055)),
+          rgba(15, 22, 13, 0.92);
+        box-shadow:
+          inset 0 -3px 0 var(--path-accent),
+          inset 0 0 0 1px rgba(var(--path-accent-rgb), 0.42),
+          0 18px 70px rgba(var(--path-accent-rgb), 0.1);
+      }
+
+      .path-tab::before {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        color: rgba(var(--path-accent-rgb), 0.34);
+        content: attr(data-choice);
+        font-family: var(--font-display);
+        font-size: 2.2rem;
+      }
+
+      .path-tab::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        content: "";
+        background: linear-gradient(90deg, var(--path-accent), var(--path-secondary));
+        opacity: 0.72;
+      }
+
+      .path-tab[aria-pressed="false"]::after {
+        opacity: 0.34;
+      }
+
+      .path-tab strong {
+        display: block;
+        margin-top: 1.1rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        text-transform: uppercase;
+      }
+
+      .path-tab .fine {
+        color: var(--path-accent);
+      }
+
+      .path-tab span:last-child {
+        display: block;
+        max-width: 34rem;
+        margin-top: 0.45rem;
+        color: rgba(241, 234, 217, 0.6);
+        font-size: 0.86rem;
+        line-height: 1.4;
+      }
+
+      .crate-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        border: 1px solid rgba(241, 234, 217, 0.14);
+        background: rgba(241, 234, 217, 0.14);
+      }
+
+      .crate-item {
+        position: relative;
+        display: grid;
+        min-height: 530px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 74% 20%, var(--accent), transparent 13rem),
+          linear-gradient(180deg, rgba(241, 234, 217, 0.06), rgba(241, 234, 217, 0.018)),
+          #080c09;
+        transition:
+          transform 300ms var(--ease),
+          border-color 300ms var(--ease);
+      }
+
+      .crate-item:nth-child(1) {
+        --accent: rgba(226, 232, 224, 0.18);
+      }
+
+      .crate-item:nth-child(2) {
+        --accent: rgba(122, 183, 255, 0.18);
+      }
+
+      .crate-item:nth-child(3) {
+        --accent: rgba(255, 104, 71, 0.16);
+      }
+
+      .crate-item:hover {
+        z-index: 2;
+        transform: translateY(-6px);
+      }
+
+      .crate-image-container {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 250px;
+        border-bottom: 1px solid rgba(241, 234, 217, 0.09);
+        overflow: hidden;
+        cursor: pointer;
+        background:
+          linear-gradient(135deg, rgba(241, 234, 217, 0.04), transparent 50%),
+          rgba(255, 255, 255, 0.015);
+      }
+
+      .crate-image-container::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          linear-gradient(90deg, transparent 49%, rgba(241, 234, 217, 0.05) 50%, transparent 51%),
+          linear-gradient(0deg, transparent 49%, rgba(241, 234, 217, 0.04) 50%, transparent 51%);
+        background-size: 52px 52px;
+        opacity: 0.45;
+        mask-image: radial-gradient(circle, black, transparent 72%);
+      }
+
+      .crate-image-container::after {
+        position: absolute;
+        inset: 12%;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(189, 242, 60, 0.34), transparent 42%),
+          radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 18%);
+        content: "";
+        opacity: 0;
+        transform: scale(0.72);
+        transition:
+          opacity 520ms var(--ease),
+          transform 720ms var(--ease);
+      }
+
+      .css-crate {
+        position: relative;
+        z-index: 1;
+        width: 136px;
+        height: 88px;
+        border: 2px solid rgba(241, 234, 217, 0.28);
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 24%),
+          #151a16;
+        transform: perspective(700px) rotateX(20deg) rotateY(-24deg);
+        transform-style: preserve-3d;
+        transition: transform 500ms var(--ease);
+      }
+
+      .crate-item:hover .css-crate {
+        transform: perspective(700px) rotateX(12deg) rotateY(12deg) scale(1.08);
+      }
+
+      .css-crate::before,
+      .css-crate::after {
+        position: absolute;
+        border: 2px solid rgba(241, 234, 217, 0.2);
+        content: "";
+      }
+
+      .css-crate::before {
+        top: -42px;
+        left: -2px;
+        right: -2px;
+        height: 42px;
+        background: #242a25;
+        transform: rotateX(72deg);
+        transform-origin: bottom;
+      }
+
+      .css-crate::after {
+        top: -2px;
+        right: -42px;
+        bottom: -2px;
+        width: 42px;
+        background: #0d100e;
+        transform: rotateY(72deg);
+        transform-origin: left;
+      }
+
+      .css-crate::before {
+        transition:
+          transform 760ms var(--ease),
+          box-shadow 520ms var(--ease),
+          border-color 520ms var(--ease);
+      }
+
+      .crate-item.is-opening .css-crate {
+        transform: perspective(700px) rotateX(8deg) rotateY(18deg) scale(1.12);
+      }
+
+      .crate-item.is-opening .css-crate::before {
+        border-color: rgba(189, 242, 60, 0.72);
+        box-shadow: 0 -18px 56px rgba(189, 242, 60, 0.18);
+        transform: rotateX(142deg) translateY(-7px);
+      }
+
+      .crate-item.is-opening .crate-image-container::after {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+
+      .crate-light {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 72px;
+        height: 5px;
+        background: var(--accent-color);
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 34px var(--accent-color);
+        transition:
+          height 420ms var(--ease),
+          width 420ms var(--ease),
+          box-shadow 420ms var(--ease);
+      }
+
+      .crate-item.is-opening .crate-light {
+        width: 112px;
+        height: 12px;
+        box-shadow: 0 0 70px var(--accent-color);
+      }
+
+      .crate-item[data-theme="platinum"] .crate-light {
+        --accent-color: rgba(226, 232, 224, 0.95);
+      }
+
+      .crate-item[data-theme="sky"] .crate-light {
+        --accent-color: rgba(122, 183, 255, 0.95);
+      }
+
+      .crate-item[data-theme="apache"] .crate-light {
+        --accent-color: rgba(255, 104, 71, 0.95);
+      }
+
+      .crate-details {
+        display: grid;
+        align-content: end;
+        padding: 1.25rem;
+      }
+
+      .crate-type {
+        color: var(--dim);
+      }
+
+      .crate-name {
+        margin-top: 0.7rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(1.2rem, 2vw, 1.75rem);
+        line-height: 1.1;
+        text-transform: uppercase;
+      }
+
+      .crate-copy {
+        margin-top: 1rem;
+        color: rgba(241, 234, 217, 0.62);
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+
+      .crate-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.8rem;
+        margin: 1.4rem 0 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(241, 234, 217, 0.09);
+      }
+
+      .crate-meta strong {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--warm);
+        font-family: var(--font-mono);
+        font-size: 0.92rem;
+        text-transform: uppercase;
+      }
+
+      .btn-purchase {
+        width: 100%;
+        min-height: 3.1rem;
+        border-radius: 0;
+      }
+
+      .btn-purchase:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      .reveal-receipt {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1.35rem;
+        padding: 1rem;
+        border: 1px solid rgba(241, 234, 217, 0.14);
+        background: rgba(7, 10, 8, 0.74);
+      }
+
+      .reveal-receipt strong {
+        display: block;
+        margin-top: 0.35rem;
+        color: #fff7e8;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .drop-header,
+        .reserve-event,
+        .reward-reveal,
+        .crate-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .reserve-event {
+          min-height: auto;
+        }
+
+        .reserve-copy {
+          order: 2;
+        }
+
+        .reserve-crate-theater {
+          order: 1;
+          min-height: 620px;
+        }
+
+        .reserve-open-button {
+          bottom: 5rem;
+        }
+
+        .reward-reveal {
+          gap: 0.6rem;
+          padding-bottom: 4.4rem;
+        }
+
+        .crate-item {
+          min-height: 440px;
+        }
+
+        .cinematic-bar {
+          height: 5.5vh;
+        }
+
+        .hud-overlay {
+          padding: calc(5.5vh + 0.85rem) 0.85rem;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .reticle {
+          opacity: 0.35;
+        }
+
+        .hud-data {
+          font-size: 0.55rem;
+        }
+
+        .hero {
+          padding-inline: 0.85rem;
+        }
+
+        .hero-title-group {
+          margin-top: -2vh;
+        }
+
+        .exchange-summary,
+        .path-switch {
+          grid-template-columns: 1fr;
+        }
+
+        .conversion-meter {
+          grid-template-columns: 1fr;
+        }
+
+        .conversion-arrow {
+          margin: 0 auto;
+          transform: rotate(90deg);
+        }
+
+        .id-form {
+          grid-template-columns: 1fr;
+        }
+
+        .drop-room {
+          padding-inline: 0.85rem;
+        }
+
+        .reserve-stage {
+          padding: 9vh 0.85rem 10vh;
+        }
+
+        .reserve-crate-theater {
+          min-height: 590px;
+        }
+
+        .reserve-crate-core {
+          width: min(88vw, 340px);
+          height: 240px;
+        }
+
+        .reserve-crate-body {
+          inset: 78px 24px 28px;
+        }
+
+        .reserve-crate-lid {
+          left: 12px;
+          right: 12px;
+        }
+
+        .reward-visual {
+          min-height: 330px;
+        }
+
+        .operator-reward {
+          max-width: 245px;
+        }
+
+        .tactical-card {
+          margin-bottom: 36vh;
+        }
+
+        .reveal-receipt {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="webgl-container" aria-hidden="true"></div>
+    <div class="cinematic-bar top" aria-hidden="true"></div>
+    <div class="cinematic-bar bottom" aria-hidden="true"></div>
+
+    <div class="hud-overlay" aria-hidden="true">
+      <div class="reticle"><div class="center-dot"></div></div>
+      <div class="hud-row">
+        <div class="hud-data">
+          <span>Season Wallet</span>
+          Overcap detected
+        </div>
+        <div class="hud-data right">
+          <span>Exchange Window</span>
+          2D 18H remaining
+        </div>
+      </div>
+      <div class="hud-row">
+        <div class="hud-data">
+          <span>Depth</span>
+          <div id="hud-depth">-0.00 M</div>
+        </div>
+        <div class="hud-data right">
+          <span>Exchange Paths</span>
+          Reserve Crates / Marketplace ready
+        </div>
+      </div>
+    </div>
+
+    <div id="scroll-content">
+      <section class="hero">
+        <div class="hero-title-group">
+          <div class="eyebrow">Surplus XP Rewards Exchange</div>
+          <h1>Touch Grass <span class="highlight">Series</span></h1>
+          <p class="hero-subtitle">
+            Log your Activision ID and convert surplus season XP into Touch Grass
+            Credits. Start with a free Reserve Crate, keep rolling crates, or
+            claim the Operator Skin and Gun Skin directly in the Marketplace.
+          </p>
+          <form class="id-panel" id="idForm" aria-label="Activision ID sync">
+            <div>
+              <span class="fine">Activision ID</span>
+              <strong id="operatorId">JACKGRINDS#7341</strong>
+            </div>
+            <div class="id-form">
+              <input id="activisionId" value="JACKGRINDS#7341" aria-label="Activision ID" />
+              <button type="submit">Sync season XP</button>
+            </div>
+            <p class="sync-status" id="syncStatus">
+              ID ready. Sync to load surplus XP, exchange credits, and Payoff Space access.
+            </p>
+          </form>
+          <div class="hero-actions">
+            <a class="primary-link" href="#reserve-crate">Open free crate</a>
+            <a class="secondary-link" href="#descent">See the conversion</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="grass-descent" id="descent">
+        <article class="tactical-card reveal-card">
+          <div class="card-header">
+            <span class="card-title">Activision ID linked</span>
+            <span class="card-badge">Verified</span>
+          </div>
+          <div class="card-body">
+            <p>
+              The player enters their Activision ID and the exchange pulls the season record:
+              rank progress, match XP, challenge XP, and every point earned past the cap.
+            </p>
+            <div class="xp-reward">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+              </svg>
+              JACKGRINDS#7341 synced
+            </div>
+          </div>
+        </article>
+
+        <div class="conversion-lock" id="conversionLock">
+          <article class="tactical-card reveal-card conversion-card" id="conversionCard">
+            <div class="card-header">
+              <span class="card-title">Conversion to credits</span>
+              <span class="card-badge" id="conversionBadge">Live burn</span>
+            </div>
+            <div class="card-body">
+              <p>
+                The cap is not the end of the season. Extra XP from the final push converts
+                into a limited exchange wallet for the Touch Grass Series reward pool.
+              </p>
+              <div class="conversion-meter" aria-label="Surplus XP conversion animation">
+                <div class="conversion-stat">
+                  <span class="fine">Surplus XP</span>
+                  <strong id="conversionXp">428,650</strong>
+                </div>
+                <div class="conversion-arrow" aria-hidden="true">></div>
+                <div class="conversion-stat">
+                  <span class="fine">Credits</span>
+                  <strong id="conversionCredits">0</strong>
+                </div>
+              </div>
+              <div class="conversion-bar" aria-hidden="true"><span id="conversionBar"></span></div>
+              <div class="conversion-status" id="conversionStatus">
+                Scroll hold active. Converting surplus XP into exchange credits.
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="tactical-card reveal-card">
+          <div class="card-header">
+            <span class="card-title">Exchange objective unlocked</span>
+            <span class="card-badge">Two paths</span>
+          </div>
+          <div class="card-body">
+            <p>
+              The first stop is the free Touch Grass Reserve Crate. Confirm the pull,
+              then enter the Payoff Space for Bonus Reserve Crates or Marketplace claims.
+            </p>
+            <div class="xp-reward">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+              </svg>
+              Free Reserve Crate first
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="reserve-stage" id="reserve-crate" aria-label="Touch Grass Reserve Crate reveal">
+        <div class="reserve-event">
+          <div class="reserve-copy reveal-card">
+            <div class="eyebrow">Free first pull</div>
+            <h2>Touch Grass Reserve Crate</h2>
+            <p>
+              The starter crate gets the full ritual: scan, shake, pop, reveal.
+              Confirm the reward and the player drops into the Payoff Space with
+              credits ready for crates or direct Marketplace claims.
+            </p>
+            <div class="reserve-status" id="reserveStatus">
+              Crate armed. One free opening available for this Activision ID.
+            </div>
+          </div>
+
+          <div class="reserve-crate-theater reveal-card" aria-live="polite">
+            <div class="burst-shards" aria-hidden="true">
+              <span style="--tx: -250px; --ty: -128px; --r: -28deg; --w: 54px"></span>
+              <span style="--tx: 232px; --ty: -118px; --r: 24deg; --w: 48px"></span>
+              <span style="--tx: -204px; --ty: 24px; --r: 14deg; --w: 42px"></span>
+              <span style="--tx: 210px; --ty: 26px; --r: -16deg; --w: 46px"></span>
+              <span style="--tx: -132px; --ty: -186px; --r: -58deg; --w: 34px"></span>
+              <span style="--tx: 140px; --ty: -178px; --r: 55deg; --w: 36px"></span>
+              <span style="--tx: -58px; --ty: 132px; --r: 82deg; --w: 30px"></span>
+              <span style="--tx: 78px; --ty: 140px; --r: -78deg; --w: 32px"></span>
+            </div>
+            <div class="reserve-crate-core" id="featuredCrate" aria-hidden="true">
+              <div class="reserve-crate-shadow"></div>
+              <div class="reserve-crate-lid"></div>
+              <div class="reserve-crate-body">
+                <div class="reserve-crate-light"></div>
+                <div class="reserve-crate-label">Touch Grass Reserve</div>
+              </div>
+            </div>
+
+            <div class="reward-reveal" id="rewardReveal" aria-hidden="true">
+              <div class="reward-visual" id="rewardVisual" data-reward="mp5">
+                <div class="reward-art weapon-reward" aria-hidden="true">
+                  <svg viewBox="0 0 620 320" role="img" aria-label="Touch Grass MP5-style blueprint mockup">
+                    <defs>
+                      <linearGradient id="weaponBody" x1="0" x2="1">
+                        <stop offset="0" stop-color="#00d8ff" />
+                        <stop offset="0.36" stop-color="#ff2f93" />
+                        <stop offset="0.72" stop-color="#0ad2ff" />
+                        <stop offset="1" stop-color="#bdf23c" />
+                      </linearGradient>
+                      <linearGradient id="weaponDark" x1="0" x2="1">
+                        <stop offset="0" stop-color="#080c09" />
+                        <stop offset="1" stop-color="#283223" />
+                      </linearGradient>
+                      <pattern id="weaponSpeckles" width="34" height="22" patternUnits="userSpaceOnUse">
+                        <circle cx="7" cy="7" r="4" fill="#bdf23c" opacity="0.46" />
+                        <circle cx="23" cy="12" r="6" fill="#06110d" opacity="0.32" />
+                        <circle cx="31" cy="5" r="3" fill="#ff7a12" opacity="0.55" />
+                      </pattern>
+                    </defs>
+                    <g fill="none" stroke="#f1ead9" stroke-opacity="0.18" stroke-width="2">
+                      <path d="M42 248 H570" />
+                      <path d="M82 72 H544" />
+                    </g>
+                    <g transform="translate(46 78)">
+                      <path d="M68 92 H358 L390 66 H494 V98 H414 L390 126 H258 L238 158 H118 L104 126 H68 Z" fill="url(#weaponBody)" stroke="#f1ead9" stroke-opacity="0.45" stroke-width="3" />
+                      <path d="M68 92 H358 L390 66 H494 V98 H414 L390 126 H258 L238 158 H118 L104 126 H68 Z" fill="url(#weaponSpeckles)" opacity="0.72" />
+                      <path d="M408 72 H556 V91 H408 Z" fill="#11170f" stroke="#bdf23c" stroke-opacity="0.45" stroke-width="3" />
+                      <path d="M84 118 L116 174 H192 L210 126 Z" fill="url(#weaponDark)" stroke="#f1ead9" stroke-opacity="0.28" stroke-width="3" />
+                      <path d="M220 126 L250 212 H302 L276 126 Z" fill="#0d130f" stroke="#f1ead9" stroke-opacity="0.28" stroke-width="3" />
+                      <path d="M156 76 H310 V96 H156 Z" fill="#070a08" stroke="#bdf23c" stroke-opacity="0.36" stroke-width="3" />
+                      <path d="M214 44 H302 L326 76 H192 Z" fill="#121812" stroke="#f1ead9" stroke-opacity="0.24" stroke-width="3" />
+                      <path d="M352 94 C384 95 393 118 377 139 C362 158 327 154 315 129" fill="none" stroke="#0a0f0b" stroke-width="16" stroke-linecap="round" />
+                      <path d="M352 94 C384 95 393 118 377 139 C362 158 327 154 315 129" fill="none" stroke="#bdf23c" stroke-opacity="0.55" stroke-width="4" stroke-linecap="round" />
+                      <path d="M118 84 C136 68 148 66 165 85" fill="none" stroke="#bdf23c" stroke-width="5" stroke-linecap="round" />
+                      <path d="M132 76 C144 54 153 47 170 42" fill="none" stroke="#bdf23c" stroke-width="4" stroke-linecap="round" />
+                      <circle cx="428" cy="82" r="8" fill="#bdf23c" />
+                      <circle cx="452" cy="82" r="8" fill="#7ab7ff" />
+                      <path d="M92 138 C118 130 142 132 164 146 C128 150 109 154 92 138 Z" fill="#bdf23c" opacity="0.65" />
+                      <path d="M198 106 C240 96 282 100 334 114" fill="none" stroke="#0b110b" stroke-width="8" stroke-linecap="round" opacity="0.52" />
+                    </g>
+                    <text x="62" y="285" fill="#bdf23c" font-family="Space Mono, monospace" font-size="18" font-weight="700">TOUCH GRASS MP5 BLUEPRINT / LAWNLINE</text>
+                  </svg>
+                </div>
+
+                <div class="reward-art operator-reward" aria-hidden="true">
+                  <svg viewBox="0 0 360 430" role="img" aria-label="Touch Grass Operator mockup">
+                    <defs>
+                      <linearGradient id="denim" x1="0" x2="1">
+                        <stop offset="0" stop-color="#26425c" />
+                        <stop offset="1" stop-color="#7ab7ff" />
+                      </linearGradient>
+                    </defs>
+                    <ellipse cx="185" cy="396" rx="118" ry="24" fill="#000" opacity="0.34" />
+                    <g class="operator-leg-left">
+                      <path d="M154 246 L134 348" stroke="url(#denim)" stroke-width="34" stroke-linecap="round" />
+                      <path d="M122 366 H168" stroke="#f1ead9" stroke-width="13" stroke-linecap="round" />
+                      <path d="M122 366 H168" stroke="#bdf23c" stroke-width="4" stroke-linecap="round" />
+                    </g>
+                    <g class="operator-leg-right">
+                      <path d="M210 246 L232 348" stroke="url(#denim)" stroke-width="34" stroke-linecap="round" />
+                      <path d="M214 366 H262" stroke="#f1ead9" stroke-width="13" stroke-linecap="round" />
+                      <path d="M214 366 H262" stroke="#bdf23c" stroke-width="4" stroke-linecap="round" />
+                    </g>
+                    <path d="M129 142 C148 108 213 106 235 142 L250 246 C222 262 158 262 118 246 Z" fill="#f6f1e5" stroke="#f1ead9" stroke-opacity="0.36" stroke-width="3" />
+                    <path d="M138 162 C174 184 205 184 238 162" fill="none" stroke="#bdf23c" stroke-width="5" stroke-linecap="round" />
+                    <g class="operator-arm">
+                      <path d="M132 165 L68 208" stroke="#d9b68f" stroke-width="24" stroke-linecap="round" />
+                      <path d="M70 208 L150 232" stroke="#161d16" stroke-width="15" stroke-linecap="round" />
+                      <path d="M130 226 H230" stroke="#0a0f0b" stroke-width="18" stroke-linecap="round" />
+                      <path d="M204 220 H286" stroke="#0a0f0b" stroke-width="12" stroke-linecap="round" />
+                      <path d="M154 226 H250" stroke="#bdf23c" stroke-opacity="0.78" stroke-width="4" stroke-linecap="round" />
+                    </g>
+                    <path d="M229 164 L282 222" stroke="#d9b68f" stroke-width="24" stroke-linecap="round" />
+                    <circle cx="184" cy="90" r="52" fill="#d9b68f" stroke="#f1ead9" stroke-opacity="0.24" stroke-width="3" />
+                    <path d="M137 86 C150 42 212 34 240 70 C218 64 188 66 166 74 C155 78 146 84 137 86 Z" fill="#292117" />
+                    <path d="M146 91 H211" stroke="#050607" stroke-width="18" stroke-linecap="round" />
+                    <path d="M151 91 H206" stroke="#bdf23c" stroke-width="5" stroke-linecap="round" opacity="0.78" />
+                    <path d="M166 116 C178 124 194 124 206 116" fill="none" stroke="#5d372d" stroke-width="5" stroke-linecap="round" />
+                    <text x="48" y="32" fill="#bdf23c" font-family="Space Mono, monospace" font-size="15" font-weight="700">OPERATOR / WEEKEND KIT</text>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="reward-copy">
+                <span class="fine" id="featuredRewardType">Blueprint pull</span>
+                <h3 id="featuredRewardName">Touch Grass MP5: Lawnline</h3>
+                <p id="featuredRewardCopy">
+                  Fresh-cut receiver, dew-bright sight line, and a ridiculous turf charm
+                  that turns the free crate into a real screenshot moment.
+                </p>
+                <button class="confirm-reward-button" type="button" id="confirmRewardButton">
+                  Confirm reward
+                </button>
+              </div>
+            </div>
+
+            <button class="reserve-open-button" type="button" id="featuredCrateButton">
+              Open free reserve crate
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="drop-room" id="drop-room" aria-label="Payoff Space">
+        <div class="stencil-bg">PAYOFF SPACE</div>
+        <div class="drop-inner">
+          <div class="drop-header reveal-card">
+            <div>
+              <div class="eyebrow">Payoff Space</div>
+              <h2>Welcome to the Payoff Space.</h2>
+            </div>
+            <p>
+              Your confirmed reward lands here. Keep chasing the roll in Bonus
+              Reserve Crates, or spend bigger for the exact piece in Marketplace.
+            </p>
+          </div>
+
+          <div class="exchange-summary reveal-card" aria-label="Player exchange wallet">
+            <div class="summary-cell">
+              <span class="fine">Activision ID</span>
+              <strong id="summaryOperatorId">JACKGRINDS#7341</strong>
+            </div>
+            <div class="summary-cell">
+              <span class="fine">Surplus XP</span>
+              <strong>428,650</strong>
+            </div>
+            <div class="summary-cell">
+              <span class="fine">Credits</span>
+              <strong id="creditBalance">429</strong>
+            </div>
+          </div>
+
+          <div class="path-switch reveal-card" role="group" aria-label="Choose exchange path">
+            <button class="path-tab" type="button" data-mode="box" data-choice="01" aria-pressed="true">
+              <span class="fine">Cheaper / chance pull</span>
+              <strong>Bonus Reserve Crates</strong>
+              <span>Open the free Touch Grass Reserve Crate, then roll credits into themed drops.</span>
+            </button>
+            <button class="path-tab" type="button" data-mode="item" data-choice="02" aria-pressed="false">
+              <span class="fine">Pricier / exact item</span>
+              <strong>Marketplace</strong>
+              <span>Spend more credits to pick the Operator Skin, Gun Skin, or finishing piece.</span>
+            </button>
+          </div>
+
+          <div class="crate-grid" id="crateGrid">
+            <article class="crate-item reveal-card" data-theme="platinum" data-key="starter">
+              <div class="crate-image-container" role="button" tabindex="0" aria-label="Open Touch Grass Reserve Crate">
+                <div class="css-crate"><div class="crate-light"></div></div>
+              </div>
+              <div class="crate-details">
+                <div class="crate-type" data-field="type">Free Reserve Crate / starter drop</div>
+                <h3 class="crate-name" data-field="name">Touch Grass Reserve Crate</h3>
+                <p class="crate-copy" data-field="copy">
+                  Free first pull. Cards, charms, stickers, reticles, and a small
+                  shot at a premium Touch Grass Series item.
+                </p>
+                <div class="crate-meta">
+                  <div>
+                    <span class="fine">Cost</span>
+                    <strong data-field="cost">Free</strong>
+                  </div>
+                  <div>
+                    <span class="fine">Path</span>
+                    <strong data-field="path">Reserve Crate</strong>
+                  </div>
+                </div>
+                <button class="btn-purchase" type="button" data-action="claim">Open reserve crate</button>
+              </div>
+            </article>
+
+            <article class="crate-item reveal-card" data-theme="sky" data-key="fresh">
+              <div class="crate-image-container" role="button" tabindex="0" aria-label="Open Fresh Cut Reserve Crate">
+                <div class="css-crate"><div class="crate-light"></div></div>
+              </div>
+              <div class="crate-details">
+                <div class="crate-type" data-field="type">Reserve Crate / fresh cut</div>
+                <h3 class="crate-name" data-field="name">Fresh Cut Reserve Crate</h3>
+                <p class="crate-copy" data-field="copy">
+                  The everyday roll: grass-bright cosmetics, clean sight pieces,
+                  weapon stickers, charms, and blueprint accents.
+                </p>
+                <div class="crate-meta">
+                  <div>
+                    <span class="fine">Cost</span>
+                    <strong data-field="cost">95 credits</strong>
+                  </div>
+                  <div>
+                    <span class="fine">Path</span>
+                    <strong data-field="path">Reserve Crate</strong>
+                  </div>
+                </div>
+                <button class="btn-purchase" type="button" data-action="claim">Open reserve crate</button>
+              </div>
+            </article>
+
+            <article class="crate-item reveal-card" data-theme="apache" data-key="dew">
+              <div class="crate-image-container" role="button" tabindex="0" aria-label="Open Dew Drop Reserve Crate">
+                <div class="css-crate"><div class="crate-light"></div></div>
+              </div>
+              <div class="crate-details">
+                <div class="crate-type" data-field="type">Reserve Crate / dew drop</div>
+                <h3 class="crate-name" data-field="name">Dew Drop Reserve Crate</h3>
+                <p class="crate-copy" data-field="copy">
+                  The higher-stakes roll: gloss finishes, animated cards, crisp
+                  sight packages, and rarer Touch Grass variants.
+                </p>
+                <div class="crate-meta">
+                  <div>
+                    <span class="fine">Cost</span>
+                    <strong data-field="cost">150 credits</strong>
+                  </div>
+                  <div>
+                    <span class="fine">Path</span>
+                    <strong data-field="path">Reserve Crate</strong>
+                  </div>
+                </div>
+                <button class="btn-purchase" type="button" data-action="claim">Open reserve crate</button>
+              </div>
+            </article>
+          </div>
+
+          <div class="reveal-receipt reveal-card">
+            <div>
+              <span class="fine">Last exchange</span>
+              <strong id="lastResult">Awaiting first open</strong>
+            </div>
+            <div>
+              <span class="fine">Remaining credits</span>
+              <strong id="remainingCredits">429</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const featuredRewards = [
+        {
+          id: "mp5",
+          type: "Blueprint pull",
+          name: "Touch Grass MP5: Lawnline",
+          copy:
+            "Fresh-cut receiver, dew-bright sight line, and a ridiculous turf charm that turns the free crate into a real screenshot moment.",
+        },
+        {
+          id: "operator",
+          type: "Operator pull",
+          name: "Touch Grass Operator: Weekend Kit",
+          copy:
+            "White tee, denim, flip-flops, mirrored shades, and an idle walk that makes the lobby feel like summer break with a loadout.",
+        },
+      ];
+
+      const claimModes = {
+        box: {
+          cta: "Open reserve crate",
+          items: {
+            starter: {
+              type: "Free Reserve Crate / starter drop",
+              name: "Touch Grass Reserve Crate",
+              copy:
+                "Free first pull. Cards, charms, stickers, reticles, and a small shot at a premium Touch Grass Series item.",
+              cost: 0,
+              path: "Reserve Crate",
+              results: ["Touch Grass MP5: Lawnline", "Touch Grass Operator: Weekend Kit"],
+            },
+            fresh: {
+              type: "Reserve Crate / fresh cut",
+              name: "Fresh Cut Reserve Crate",
+              copy:
+                "The everyday roll: grass-bright cosmetics, clean sight pieces, weapon stickers, charms, and blueprint accents.",
+              cost: 95,
+              path: "Reserve Crate",
+              results: ["Fresh Cut Reserve Crate", "Lawnline Reticle", "Clean Sweep Weapon Sticker"],
+            },
+            dew: {
+              type: "Reserve Crate / dew drop",
+              name: "Dew Drop Reserve Crate",
+              copy:
+                "The higher-stakes roll: gloss finishes, animated cards, crisp sight packages, and rarer Touch Grass variants.",
+              cost: 150,
+              path: "Reserve Crate",
+              results: ["Dew Drop Reserve Crate", "Dewpoint Weapon Charm", "Gloss Grass Calling Card"],
+            },
+          },
+        },
+        item: {
+          cta: "Claim in marketplace",
+          items: {
+            starter: {
+              type: "Marketplace / operator skin",
+              name: "Touch Grass Operator Skin",
+              copy:
+                "The headline fit: clean outdoor kit, bright grass hits, and a series mark that reads earned.",
+              cost: 300,
+              path: "Direct claim",
+              results: ["Touch Grass Operator Skin", "Touch Grass Operator Variant", "Grass Ops Finisher"],
+            },
+            fresh: {
+              type: "Marketplace / gun skin",
+              name: "Touch Grass Gun Skin",
+              copy:
+                "Fresh-cut finish for the primary. Dew highlights, clean sight picture, and a visible Touch Grass mark.",
+              cost: 250,
+              path: "Direct claim",
+              results: ["Touch Grass Gun Skin", "Fresh Cut Blueprint", "Dewline Weapon Finish"],
+            },
+            dew: {
+              type: "Marketplace / accessory pack",
+              name: "Touch Grass Finishing Pack",
+              copy:
+                "Reticle, charm, emblem, and calling card bundled for players who want to finish the look.",
+              cost: 180,
+              path: "Direct claim",
+              results: ["Touch Grass Finishing Pack", "Dewpoint Reticle", "Fresh Air Calling Card"],
+            },
+          },
+        },
+      };
+
+      const state = {
+        mode: "box",
+        operatorId: "JACKGRINDS#7341",
+        credits: 429,
+        freeReserveOpened: false,
+        currentReward: null,
+        openingFeaturedCrate: false,
+        reservePressure: 0,
+      };
+
+      const totalSurplusXp = 428650;
+      const totalExchangeCredits = 429;
+      const money = new Intl.NumberFormat("en-US");
+      const select = (query, root = document) => root.querySelector(query);
+      const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+      const reserveStageElement = select("#reserve-crate");
+
+      function setReserveCrateMotion({ pressure = 0, x = 0, y = 0, tiltX = 0, tiltY = 0, tiltZ = 0, scale = 1 }) {
+        reserveStageElement.style.setProperty("--crate-pressure", pressure.toFixed(3));
+        reserveStageElement.style.setProperty("--crate-shake-x", `${x.toFixed(2)}px`);
+        reserveStageElement.style.setProperty("--crate-shake-y", `${y.toFixed(2)}px`);
+        reserveStageElement.style.setProperty("--crate-tilt-x", `${tiltX.toFixed(2)}deg`);
+        reserveStageElement.style.setProperty("--crate-tilt-y", `${tiltY.toFixed(2)}deg`);
+        reserveStageElement.style.setProperty("--crate-tilt-z", `${tiltZ.toFixed(2)}deg`);
+        reserveStageElement.style.setProperty("--crate-scroll-scale", scale.toFixed(3));
+        reserveStageElement.style.setProperty("--crate-glow", `${(pressure * 78).toFixed(1)}px`);
+        reserveStageElement.style.setProperty("--crate-inner-glow", `${(pressure * 54).toFixed(1)}px`);
+        reserveStageElement.style.setProperty("--crate-sweep-opacity", (0.42 + pressure * 0.34).toFixed(3));
+      }
+
+      function updateReservePressure(scrollY) {
+        if (state.currentReward || state.freeReserveOpened || state.openingFeaturedCrate) {
+          state.reservePressure = 0;
+          setReserveCrateMotion({});
+          return;
+        }
+
+        const start = reserveStageElement.offsetTop - window.innerHeight * 0.95;
+        const end = reserveStageElement.offsetTop + reserveStageElement.offsetHeight * 0.22;
+        const progress = clamp((scrollY - start) / Math.max(end - start, 1));
+        state.reservePressure = Math.pow(progress, 1.28);
+
+        if (state.reservePressure > 0.78) {
+          select("#reserveStatus").textContent = "Crate pressure high. Reward signal unstable.";
+        } else if (state.reservePressure > 0.42) {
+          select("#reserveStatus").textContent = "Crate pressure building. Keep moving into the opening zone.";
+        } else {
+          select("#reserveStatus").textContent = "Crate armed. One free opening available for this Activision ID.";
+        }
+      }
+
+      function renderFeaturedReward(reward) {
+        select("#rewardVisual").dataset.reward = reward.id;
+        select("#featuredRewardType").textContent = reward.type;
+        select("#featuredRewardName").textContent = reward.name;
+        select("#featuredRewardCopy").textContent = reward.copy;
+        select("#lastResult").textContent = reward.name;
+      }
+
+      function openFeaturedCrate() {
+        const reserveStage = select("#reserve-crate");
+        const rewardReveal = select("#rewardReveal");
+        const openButton = select("#featuredCrateButton");
+
+        reserveStage.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        if (state.freeReserveOpened) {
+          select("#reserveStatus").textContent = "Free reward already confirmed. Entering Payoff Space.";
+          window.setTimeout(() => select("#drop-room").scrollIntoView({ behavior: "smooth", block: "start" }), 420);
+          return;
+        }
+
+        if (state.currentReward && !state.freeReserveOpened) {
+          reserveStage.classList.add("is-open");
+          rewardReveal.setAttribute("aria-hidden", "false");
+          select("#reserveStatus").textContent = "Reward waiting. Confirm it to enter the Payoff Space.";
+          return;
+        }
+
+        if (state.openingFeaturedCrate) return;
+
+        state.openingFeaturedCrate = true;
+        state.reservePressure = 0;
+        state.currentReward = featuredRewards[0];
+        renderFeaturedReward(state.currentReward);
+        setReserveCrateMotion({});
+
+        rewardReveal.setAttribute("aria-hidden", "true");
+        reserveStage.classList.remove("is-open", "is-bursting");
+        reserveStage.classList.add("is-shaking");
+        openButton.disabled = true;
+        openButton.textContent = "Crate pressurizing...";
+        select("#reserveStatus").textContent = "Reserve crate shaking. Burst sequence armed.";
+        pulseDew();
+
+        window.setTimeout(() => {
+          reserveStage.classList.remove("is-shaking");
+          reserveStage.classList.add("is-open", "is-bursting");
+          rewardReveal.setAttribute("aria-hidden", "false");
+          openButton.textContent = "Reward revealed";
+          select("#reserveStatus").textContent = "Reward revealed. Confirm to lock it and enter Payoff Space.";
+          state.openingFeaturedCrate = false;
+          renderClaimMode();
+          window.setTimeout(() => reserveStage.classList.remove("is-bursting"), 940);
+        }, 2450);
+      }
+
+      function confirmFeaturedReward() {
+        if (state.openingFeaturedCrate) return;
+        if (!state.currentReward) {
+          openFeaturedCrate();
+          return;
+        }
+
+        state.freeReserveOpened = true;
+        select("#lastResult").textContent = state.currentReward.name;
+        select("#creditBalance").textContent = money.format(state.credits);
+        select("#remainingCredits").textContent = money.format(state.credits);
+        select("#reserveStatus").textContent = `${state.currentReward.name} confirmed. Entering Payoff Space.`;
+        select("#featuredCrateButton").textContent = "Reward confirmed";
+        select("#featuredCrateButton").disabled = true;
+        select("#confirmRewardButton").textContent = "Reward confirmed";
+        select("#confirmRewardButton").disabled = true;
+        renderClaimMode();
+        pulseDew();
+
+        window.setTimeout(() => {
+          select("#drop-room").scrollIntoView({ behavior: "smooth", block: "start" });
+          history.replaceState(null, "", "#drop-room");
+        }, 650);
+      }
+
+      function renderClaimMode() {
+        const mode = claimModes[state.mode];
+
+        document.querySelectorAll(".path-tab").forEach((tab) => {
+          tab.setAttribute("aria-pressed", String(tab.dataset.mode === state.mode));
+        });
+
+        document.querySelectorAll(".crate-item").forEach((card) => {
+          const item = mode.items[card.dataset.key];
+          const isStarterReserve = state.mode === "box" && card.dataset.key === "starter";
+          const freeReserveAlreadyOpened = isStarterReserve && state.freeReserveOpened;
+          const freeReservePending = isStarterReserve && state.currentReward && !state.freeReserveOpened;
+          select('[data-field="type"]', card).textContent = item.type;
+          select('[data-field="name"]', card).textContent = item.name;
+          select('[data-field="copy"]', card).textContent = item.copy;
+          select('[data-field="cost"]', card).textContent =
+            item.cost === 0 ? "Free" : `${item.cost} credits`;
+          select('[data-field="path"]', card).textContent = item.path;
+          select('[data-action="claim"]', card).textContent =
+            freeReserveAlreadyOpened ? "Reward confirmed" : freeReservePending ? "Confirm reward first" : mode.cta;
+          select('[data-action="claim"]', card).disabled =
+            freeReserveAlreadyOpened || freeReservePending || state.credits < item.cost;
+        });
+      }
+
+      function claimCard(card) {
+        const item = claimModes[state.mode].items[card.dataset.key];
+        const isStarterReserve = state.mode === "box" && card.dataset.key === "starter";
+
+        if (isStarterReserve) {
+          if (state.freeReserveOpened) {
+            select("#lastResult").textContent = "Free reward already confirmed";
+            return;
+          }
+          openFeaturedCrate();
+          return;
+        }
+
+        if (state.credits < item.cost) {
+          select("#lastResult").textContent = "Not enough credits";
+          return;
+        }
+
+        state.credits -= item.cost;
+
+        const result = item.results[Math.floor(Math.random() * item.results.length)];
+        select("#creditBalance").textContent = money.format(state.credits);
+        select("#remainingCredits").textContent = money.format(state.credits);
+        select("#lastResult").textContent = result;
+        card.classList.remove("is-opening");
+        void card.offsetWidth;
+        card.classList.add("is-opening");
+        window.setTimeout(() => card.classList.remove("is-opening"), 1250);
+        pulseDew();
+        renderClaimMode();
+      }
+
+      document.querySelectorAll(".path-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          state.mode = tab.dataset.mode;
+          renderClaimMode();
+          pulseDew();
+        });
+      });
+
+      select("#featuredCrateButton").addEventListener("click", openFeaturedCrate);
+      select("#confirmRewardButton").addEventListener("click", confirmFeaturedReward);
+
+      document.querySelectorAll('[data-action="claim"]').forEach((button) => {
+        button.addEventListener("click", () => claimCard(button.closest(".crate-item")));
+      });
+
+      document.querySelectorAll(".crate-image-container").forEach((crateSurface) => {
+        crateSurface.addEventListener("click", () => claimCard(crateSurface.closest(".crate-item")));
+        crateSurface.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            claimCard(crateSurface.closest(".crate-item"));
+          }
+        });
+      });
+
+      select("#idForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const value = select("#activisionId").value.trim() || "UNKNOWN#0000";
+        state.operatorId = value.toUpperCase();
+        select("#operatorId").textContent = state.operatorId;
+        select("#summaryOperatorId").textContent = state.operatorId;
+        select("#syncStatus").textContent =
+          "ID synced. Surplus XP verified. Free Reserve Crate and Payoff Space access unlocked.";
+        select("#lastResult").textContent = `${state.operatorId} synced`;
+        pulseDew();
+      });
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("visible");
+          });
+        },
+        { threshold: 0.18, rootMargin: "0px 0px -40px 0px" }
+      );
+
+      document.querySelectorAll(".reveal-card").forEach((element) => {
+        revealObserver.observe(element);
+      });
+
+      function renderConversion(progress) {
+        const xpRemaining = Math.round(totalSurplusXp * (1 - progress));
+        const creditsReady = Math.round(totalExchangeCredits * progress);
+        select("#conversionXp").textContent = money.format(xpRemaining);
+        select("#conversionCredits").textContent = money.format(creditsReady);
+        select("#conversionBar").style.width = `${progress * 100}%`;
+        select("#conversionBadge").textContent = progress >= 1 ? "Wallet ready" : "Live burn";
+        select("#conversionStatus").textContent =
+          progress >= 1
+            ? "Conversion fulfilled. Credits unlocked for Bonus Reserve Crates and Marketplace."
+            : "Scroll hold active. Converting surplus XP into exchange credits.";
+        select("#conversionCard").classList.toggle("is-complete", progress >= 1);
+      }
+
+      renderClaimMode();
+
+      const container = document.getElementById("webgl-container");
+      const scene = new THREE.Scene();
+      const fogColor = new THREE.Color(0x0a0f0b);
+      scene.fog = new THREE.FogExp2(fogColor, 0.043);
+
+      const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 5.2, 20);
+      camera.lookAt(0, 0, -10);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+
+      const composer = new THREE.EffectComposer(renderer);
+      const renderScene = new THREE.RenderPass(scene, camera);
+      const bloomPass = new THREE.UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        1.15,
+        0.55,
+        0.28
+      );
+      composer.addPass(renderScene);
+      composer.addPass(bloomPass);
+
+      const ambientLight = new THREE.AmbientLight(0x223626, 0.55);
+      const dirLight = new THREE.DirectionalLight(0xfff1d5, 2.1);
+      const rimLight = new THREE.PointLight(0xbdf23c, 4.2, 44);
+      const dewLight = new THREE.PointLight(0xbdf23c, 3.1, 16);
+      dirLight.position.set(10, 20, 10);
+      rimLight.position.set(-5, 2.8, 4);
+      dewLight.position.set(1.45, 2.35, -6.1);
+      scene.add(ambientLight, dirLight, rimLight, dewLight);
+
+      const bladeWidth = 0.1;
+      const bladeHeight = 2.0;
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.lineTo(bladeWidth, 0);
+      shape.quadraticCurveTo(bladeWidth * 0.5, bladeHeight * 0.5, bladeWidth * 0.12, bladeHeight);
+      shape.lineTo(-bladeWidth * 0.1, bladeHeight);
+      shape.quadraticCurveTo(-bladeWidth * 0.5, bladeHeight * 0.5, 0, 0);
+
+      const bladeGeometry = new THREE.ExtrudeGeometry(shape, {
+        depth: 0.018,
+        bevelEnabled: false,
+        steps: 1,
+      });
+
+      const grassMaterial = new THREE.MeshStandardMaterial({
+        color: 0x23301e,
+        roughness: 0.64,
+        metalness: 0.08,
+        side: THREE.DoubleSide,
+      });
+
+      const instanceCount = window.innerWidth < 700 ? 9000 : 18000;
+      const instancedGrass = new THREE.InstancedMesh(bladeGeometry, grassMaterial, instanceCount);
+      const dummy = new THREE.Object3D();
+      const areaSize = 42;
+
+      for (let i = 0; i < instanceCount; i += 1) {
+        const x = (Math.random() - 0.5) * areaSize;
+        const z = (Math.random() - 0.5) * areaSize;
+        const scale = 0.42 + Math.random() * 0.9;
+        dummy.position.set(x, 0, z);
+        dummy.rotation.set((Math.random() - 0.5) * 0.3, Math.random() * Math.PI * 2, (Math.random() - 0.5) * 0.34);
+        dummy.scale.set(scale, scale, scale);
+        dummy.updateMatrix();
+        instancedGrass.setMatrixAt(i, dummy.matrix);
+      }
+      scene.add(instancedGrass);
+
+      const heroBlade = new THREE.Mesh(
+        bladeGeometry,
+        new THREE.MeshStandardMaterial({
+          color: 0x5b742b,
+          roughness: 0.42,
+          metalness: 0.2,
+          emissive: 0x172507,
+          emissiveIntensity: 0.2,
+          side: THREE.DoubleSide,
+        })
+      );
+      heroBlade.position.set(0.95, -0.45, -6.5);
+      heroBlade.rotation.set(0.08, -0.48, -0.32);
+      heroBlade.scale.set(3.8, 4.9, 3.8);
+      scene.add(heroBlade);
+
+      const dewDrop = new THREE.Mesh(
+        new THREE.SphereGeometry(0.52, 64, 32),
+        new THREE.MeshPhysicalMaterial({
+          color: 0xd9ff8a,
+          transparent: true,
+          opacity: 0.52,
+          roughness: 0.03,
+          metalness: 0,
+          clearcoat: 1,
+          clearcoatRoughness: 0,
+          reflectivity: 0.95,
+        })
+      );
+      dewDrop.position.set(1.62, 2.18, -6.2);
+      scene.add(dewDrop);
+
+      const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(areaSize, areaSize),
+        new THREE.MeshStandardMaterial({ color: 0x070a07, roughness: 1 })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      scene.add(ground);
+
+      const particleCount = 260;
+      const particlePositions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount; i += 1) {
+        const radius = 2 + Math.random() * 8;
+        const angle = Math.random() * Math.PI * 2;
+        particlePositions[i * 3] = Math.cos(angle) * radius * 0.45;
+        particlePositions[i * 3 + 1] = 0.7 + Math.random() * 4.2;
+        particlePositions[i * 3 + 2] = -8 + Math.sin(angle) * radius;
+      }
+      const particleGeometry = new THREE.BufferGeometry();
+      particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+      const xpParticles = new THREE.Points(
+        particleGeometry,
+        new THREE.PointsMaterial({
+          color: 0xbdf23c,
+          size: 0.034,
+          transparent: true,
+          opacity: 0.78,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        })
+      );
+      scene.add(xpParticles);
+
+      const hudDepth = document.getElementById("hud-depth");
+      const mouse = { x: 0, y: 0 };
+      const targets = {
+        cameraY: 5.2,
+        cameraZ: 20,
+        fog: 0.043,
+        bloom: 1.15,
+      };
+      let dewPulse = 0;
+
+      function pulseDew() {
+        dewPulse = 1;
+      }
+
+      window.addEventListener("mousemove", (event) => {
+        mouse.x = (event.clientX / window.innerWidth - 0.5) * 2;
+        mouse.y = (event.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      function handleScroll() {
+        const scrollable = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+        const scrollY = window.scrollY;
+        const scrollRatio = scrollY / scrollable;
+        const descentRatio = Math.min(scrollRatio / 0.68, 1);
+        const roomRatio = Math.max((scrollRatio - 0.68) / 0.32, 0);
+        const conversionLock = select("#conversionLock");
+        const conversionStart = conversionLock.offsetTop + window.innerHeight * 0.62;
+        const conversionEnd = conversionLock.offsetTop + conversionLock.offsetHeight - window.innerHeight * 0.15;
+        const conversionProgress = clamp((scrollY - conversionStart) / Math.max(conversionEnd - conversionStart, 1));
+
+        hudDepth.textContent = `-${(scrollY * 0.02).toFixed(2)} M`;
+        renderConversion(conversionProgress);
+        updateReservePressure(scrollY);
+
+        targets.cameraY = 5.2 - descentRatio * 4.55 + roomRatio * 0.7;
+        targets.cameraZ = 20 - descentRatio * 15.2 - roomRatio * 2.2;
+        targets.fog = 0.043 + descentRatio * 0.12 + roomRatio * 0.28;
+        targets.bloom = 1.15 + descentRatio * 0.58 - roomRatio * 0.5;
+
+        fogColor.lerp(new THREE.Color(roomRatio > 0.2 ? 0x020202 : 0x0a0f0b), 0.08);
+      }
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll();
+
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const time = clock.getElapsedTime();
+
+        camera.position.y += (targets.cameraY - camera.position.y) * 0.055;
+        camera.position.z += (targets.cameraZ - camera.position.z) * 0.055;
+        camera.position.x += (mouse.x * 0.28 - camera.position.x) * 0.035;
+        camera.lookAt(mouse.x * 0.45, Math.max(0, 5 - camera.position.y * 1.7) + mouse.y * 0.22, -10);
+
+        scene.fog.density += (targets.fog - scene.fog.density) * 0.05;
+        scene.fog.color.lerp(fogColor, 0.05);
+        bloomPass.strength += (targets.bloom - bloomPass.strength) * 0.05;
+
+        dirLight.position.x = 10 + Math.sin(time * 0.42) * 2;
+        rimLight.intensity = 4.2 + Math.sin(time * 0.7) * 0.45;
+
+        heroBlade.rotation.z = -0.32 + Math.sin(time * 0.85) * 0.035;
+        heroBlade.rotation.y = -0.48 + Math.sin(time * 0.5) * 0.02;
+        dewDrop.position.y = 2.18 + Math.sin(time * 1.15) * 0.035;
+        dewDrop.rotation.y += 0.008;
+        xpParticles.rotation.y += 0.0008;
+
+        if (state.reservePressure > 0 && !state.currentReward && !state.freeReserveOpened && !state.openingFeaturedCrate) {
+          const pressure = state.reservePressure;
+          const tremor = pressure * pressure;
+          setReserveCrateMotion({
+            pressure,
+            x: (Math.sin(time * 20) * 9 + Math.sin(time * 47) * 3.5) * tremor,
+            y: (Math.cos(time * 24) * 5 + Math.sin(time * 35) * 2.5) * tremor,
+            tiltX: Math.sin(time * 16) * 2.4 * tremor,
+            tiltY: Math.cos(time * 19) * 3.2 * tremor,
+            tiltZ: Math.sin(time * 31) * 1.8 * tremor,
+            scale: 1 + pressure * 0.045,
+          });
+        }
+
+        if (dewPulse > 0.001) {
+          dewPulse *= 0.9;
+          const pulseScale = 1 + dewPulse * 0.38;
+          dewDrop.scale.setScalar(pulseScale);
+          dewLight.intensity = 3.1 + dewPulse * 8;
+          bloomPass.strength += dewPulse * 0.08;
+        } else {
+          dewDrop.scale.setScalar(1);
+          dewLight.intensity += (3.1 - dewLight.intensity) * 0.08;
+        }
+
+        composer.render();
+      }
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      animate();
+    </script>
+  </body>
+</html>
