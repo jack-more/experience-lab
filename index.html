@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=Space+Mono:wght@400;700&family=Syncopate:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;700&display=swap"
       rel="stylesheet"
     />
 
@@ -41,9 +41,10 @@
         --dim: rgba(241, 234, 217, 0.42);
         --blue: #7ab7ff;
         --heat: #ff6847;
-        --font-display: "Syncopate", sans-serif;
-        --font-mono: "Space Mono", monospace;
-        --font-body: "Inter", sans-serif;
+        --font-display: "Barlow Condensed", "DIN Condensed", "DIN Alternate", "Arial Narrow", sans-serif;
+        --font-label: "Barlow Condensed", "DIN Condensed", "Arial Narrow", sans-serif;
+        --font-mono: "IBM Plex Mono", "Roboto Mono", monospace;
+        --font-body: "Barlow", "Helvetica Neue", "Arial", sans-serif;
         --ease: cubic-bezier(0.19, 1, 0.22, 1);
       }
 
@@ -245,10 +246,10 @@
       .card-badge,
       .crate-type,
       .fine {
-        font-family: var(--font-mono);
-        font-size: 0.68rem;
+        font-family: var(--font-label);
+        font-size: 0.78rem;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0;
         line-height: 1.25;
         text-transform: uppercase;
       }
@@ -313,7 +314,7 @@
         display: block;
         margin-top: 0.35rem;
         color: #fff7e8;
-        font-family: var(--font-mono);
+        font-family: var(--font-label);
         font-size: 0.92rem;
         text-transform: uppercase;
       }
@@ -344,7 +345,7 @@
         border: 0;
         color: #081006;
         background: linear-gradient(180deg, var(--acid), var(--acid-2));
-        font: 700 0.72rem var(--font-mono);
+        font: 700 0.88rem var(--font-label);
         text-transform: uppercase;
       }
 
@@ -369,8 +370,8 @@
         border: 1px solid var(--border-strong);
         color: #081006;
         background: linear-gradient(180deg, var(--acid), var(--acid-2));
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
+        font-family: var(--font-label);
+        font-size: 0.9rem;
         font-weight: 700;
         text-decoration: none;
         text-transform: uppercase;
@@ -501,7 +502,7 @@
         gap: 0.8rem;
         margin-top: 1.25rem;
         color: var(--acid);
-        font-family: var(--font-mono);
+        font-family: var(--font-label);
         font-size: 1.05rem;
         font-weight: 700;
         text-transform: uppercase;
@@ -822,10 +823,10 @@
         border: 1px solid rgba(189, 242, 60, 0.42);
         color: var(--acid);
         background: rgba(4, 7, 4, 0.7);
-        font-family: var(--font-mono);
+        font-family: var(--font-label);
         font-size: 0.68rem;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0;
         text-align: center;
         text-transform: uppercase;
         transform: translate(-50%, -50%);
@@ -1136,6 +1137,8 @@
       }
 
       .drop-room {
+        position: relative;
+        overflow: hidden;
         min-height: 100vh;
         padding: 14vh 5vw 12vh;
         background:
@@ -1149,7 +1152,7 @@
         left: 50%;
         z-index: 0;
         color: rgba(241, 234, 217, 0.022);
-        font-family: var(--font-mono);
+        font-family: var(--font-display);
         font-size: clamp(5rem, 15vw, 16rem);
         font-weight: 700;
         white-space: nowrap;
@@ -1904,7 +1907,7 @@
                       <path d="M92 138 C118 130 142 132 164 146 C128 150 109 154 92 138 Z" fill="#bdf23c" opacity="0.65" />
                       <path d="M198 106 C240 96 282 100 334 114" fill="none" stroke="#0b110b" stroke-width="8" stroke-linecap="round" opacity="0.52" />
                     </g>
-                    <text x="62" y="285" fill="#bdf23c" font-family="Space Mono, monospace" font-size="18" font-weight="700">TOUCH GRASS MP5 BLUEPRINT / LAWNLINE</text>
+                    <text x="62" y="285" fill="#bdf23c" font-family="IBM Plex Mono, monospace" font-size="18" font-weight="700">TOUCH GRASS MP5 BLUEPRINT / LAWNLINE</text>
                   </svg>
                 </div>
 
@@ -1942,7 +1945,7 @@
                     <path d="M146 91 H211" stroke="#050607" stroke-width="18" stroke-linecap="round" />
                     <path d="M151 91 H206" stroke="#bdf23c" stroke-width="5" stroke-linecap="round" opacity="0.78" />
                     <path d="M166 116 C178 124 194 124 206 116" fill="none" stroke="#5d372d" stroke-width="5" stroke-linecap="round" />
-                    <text x="48" y="32" fill="#bdf23c" font-family="Space Mono, monospace" font-size="15" font-weight="700">OPERATOR / WEEKEND KIT</text>
+                    <text x="48" y="32" fill="#bdf23c" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="700">OPERATOR / WEEKEND KIT</text>
                   </svg>
                 </div>
               </div>
