@@ -2344,6 +2344,7 @@
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
       const reserveStageElement = select("#reserve-crate");
       const assetViewers = [];
+      let isDocumentVisible = !document.hidden;
 
       function createTouchGrassTexture(kind) {
         const canvas = document.createElement("canvas");
@@ -2542,7 +2543,7 @@
           alpha: true,
           powerPreference: "high-performance",
         });
-        modelRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        modelRenderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 700 ? 1.25 : 1.6));
         modelRenderer.setClearColor(0x000000, 0);
         modelRenderer.outputEncoding = THREE.sRGBEncoding;
         mount.appendChild(modelRenderer.domElement);
@@ -2558,6 +2559,7 @@
         modelScene.add(fillLight, keyLight, rim);
 
         let loadedModel = null;
+        let isLoading = false;
         let width = 1;
         let height = 1;
 
@@ -2576,37 +2578,48 @@
         new ResizeObserver(resizeModel).observe(mount);
         resizeModel();
 
-        const loader = new THREE.GLTFLoader();
-        loader.load(
-          path,
-          (gltf) => {
-            loadedModel = gltf.scene;
-            applyTouchGrassSkin(loadedModel, kind);
-            fitModelToFrame(loadedModel, targetSize);
-
-            if (kind === "crate") {
-              loadedModel.rotation.set(0.04, 0.18, 0.01);
-              select("#featuredCrate").classList.add("model-ready");
-            } else {
-              loadedModel.rotation.set(0.08, -0.84, 0.1);
-              document.body.classList.add("has-mp5-model");
-            }
-
-            modelGroup.add(loadedModel);
-            mount.classList.add("is-loaded");
-            resizeModel();
+        const viewer = {
+          active: false,
+          needsRender: true,
+          setActive(active) {
+            this.active = active;
+            this.needsRender = true;
           },
-          undefined,
-          () => {
-            mount.classList.remove("is-loaded");
-          }
-        );
+          load() {
+            if (isLoading || loadedModel) return;
+            isLoading = true;
+            loader.load(
+              path,
+              (gltf) => {
+                loadedModel = gltf.scene;
+                applyTouchGrassSkin(loadedModel, kind);
+                fitModelToFrame(loadedModel, targetSize);
 
-        assetViewers.push({
-          kind,
+                if (kind === "crate") {
+                  loadedModel.rotation.set(0.04, 0.18, 0.01);
+                  select("#featuredCrate").classList.add("model-ready");
+                } else {
+                  loadedModel.rotation.set(0.08, -0.84, 0.1);
+                  document.body.classList.add("has-mp5-model");
+                }
+
+                modelGroup.add(loadedModel);
+                mount.classList.add("is-loaded");
+                resizeModel();
+                this.needsRender = true;
+              },
+              undefined,
+              (error) => {
+                isLoading = false;
+                mount.classList.remove("is-loaded");
+                console.warn("3D reward asset unavailable:", path, error);
+              }
+            );
+          },
           update(time) {
+            if (!this.active && !this.needsRender) return;
             resizeModel();
-            if (loadedModel) {
+            if (loadedModel && this.active) {
               if (kind === "crate") {
                 const pressure = state.reservePressure || 0;
                 modelGroup.rotation.y = Math.sin(time * 0.55) * 0.035 + pressure * Math.sin(time * 12) * 0.035;
@@ -2620,8 +2633,12 @@
               }
             }
             modelRenderer.render(modelScene, modelCamera);
+            this.needsRender = false;
           },
-        });
+        };
+        assetViewers.push(viewer);
+
+        const loader = new THREE.GLTFLoader();
       }
 
       function setReserveCrateMotion({ pressure = 0, x = 0, y = 0, tiltX = 0, tiltY = 0, tiltZ = 0, scale = 1 }) {
@@ -2671,6 +2688,7 @@
         const rewardReveal = select("#rewardReveal");
         const openButton = select("#featuredCrateButton");
 
+        assetViewers.forEach((viewer) => viewer.load());
         reserveStage.scrollIntoView({ behavior: "smooth", block: "start" });
 
         if (state.freeReserveOpened) {
@@ -2903,6 +2921,26 @@
         targetSize: 4.4,
         cameraZ: 5.7,
       });
+      const rewardRenderObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            assetViewers.forEach((viewer) => {
+              viewer.setActive(entry.isIntersecting);
+              if (entry.isIntersecting) viewer.load();
+            });
+          });
+        },
+        { rootMargin: "65% 0px 65% 0px", threshold: 0 }
+      );
+      rewardRenderObserver.observe(reserveStageElement);
+      document.addEventListener("visibilitychange", () => {
+        isDocumentVisible = !document.hidden;
+        if (isDocumentVisible) {
+          assetViewers.forEach((viewer) => {
+            viewer.needsRender = true;
+          });
+        }
+      });
 
       const container = document.getElementById("webgl-container");
       const scene = new THREE.Scene();
@@ -3090,6 +3128,7 @@
 
       function animate() {
         requestAnimationFrame(animate);
+        if (!isDocumentVisible) return;
         const time = clock.getElapsedTime();
 
         camera.position.y += (targets.cameraY - camera.position.y) * 0.055;
