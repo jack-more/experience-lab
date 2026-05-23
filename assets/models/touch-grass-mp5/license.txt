@@ -1,0 +1,11 @@
+Model Information:
+* title:	Mp5 Psx
+* source:	https://sketchfab.com/3d-models/mp5-psx-df8406a42996405d8f968912f373e572
+* author:	Dmitry Narkevich (https://sketchfab.com/dmitrynar)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mp5 Psx" (https://sketchfab.com/3d-models/mp5-psx-df8406a42996405d8f968912f373e572) by Dmitry Narkevich (https://sketchfab.com/dmitrynar) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

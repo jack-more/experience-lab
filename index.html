@@ -23,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <style>
       :root {
@@ -715,6 +716,42 @@
           transform 120ms linear;
       }
 
+      .reserve-crate-model {
+        position: absolute;
+        inset: -42px -52px -38px;
+        z-index: 1;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 420ms var(--ease),
+          filter 520ms var(--ease);
+      }
+
+      .reserve-crate-model canvas,
+      .mp5-model-reward canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .reserve-crate-model.is-loaded {
+        opacity: 1;
+      }
+
+      .reserve-crate-core.model-ready .reserve-crate-body,
+      .reserve-crate-core.model-ready .reserve-crate-lid {
+        opacity: 0.08;
+        mix-blend-mode: screen;
+      }
+
+      .reserve-crate-core.model-ready .reserve-crate-label {
+        opacity: 0;
+      }
+
+      .reserve-crate-core.model-ready .reserve-crate-model {
+        filter: saturate(1.32) contrast(1.16);
+      }
+
       .reserve-stage.is-shaking .reserve-crate-core {
         animation: reserveShake 2.45s cubic-bezier(0.33, 1, 0.68, 1) both;
       }
@@ -730,6 +767,7 @@
         left: 9%;
         right: 9%;
         bottom: -44px;
+        z-index: 0;
         height: 70px;
         border-radius: 50%;
         background: radial-gradient(ellipse, rgba(0, 0, 0, 0.72), transparent 65%);
@@ -739,6 +777,7 @@
       .reserve-crate-body {
         position: absolute;
         inset: 88px 34px 28px;
+        z-index: 2;
         border: 2px solid rgba(241, 234, 217, 0.26);
         background:
           linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 18%, rgba(12, 12, 10, 0.18) 58%, transparent),
@@ -774,6 +813,7 @@
         top: 36px;
         left: 20px;
         right: 20px;
+        z-index: 3;
         height: 98px;
         border: 2px solid rgba(241, 234, 217, 0.28);
         background:
@@ -817,7 +857,7 @@
         position: absolute;
         left: 50%;
         top: 52%;
-        z-index: 1;
+        z-index: 4;
         width: min(68%, 270px);
         padding: 0.75rem 0.7rem;
         border: 1px solid rgba(189, 242, 60, 0.42);
@@ -832,10 +872,60 @@
         transform: translate(-50%, -50%);
       }
 
+      .reserve-crate-decal {
+        position: absolute;
+        left: 50%;
+        top: 52%;
+        z-index: 6;
+        display: grid;
+        place-items: center;
+        width: min(72%, 320px);
+        min-height: 76px;
+        padding: 0.7rem 0.9rem;
+        border: 2px solid rgba(189, 242, 60, 0.92);
+        color: #071009;
+        background:
+          linear-gradient(135deg, rgba(189, 242, 60, 0.96), rgba(111, 220, 35, 0.92)),
+          rgba(189, 242, 60, 0.94);
+        box-shadow:
+          0 14px 38px rgba(0, 0, 0, 0.38),
+          0 0 30px rgba(189, 242, 60, 0.24);
+        opacity: 0;
+        transform: translate(-50%, -50%) rotateZ(-2deg);
+        transition: opacity 340ms var(--ease);
+        pointer-events: none;
+      }
+
+      .reserve-crate-decal strong,
+      .reserve-crate-decal span {
+        display: block;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .reserve-crate-decal strong {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        line-height: 0.9;
+        white-space: nowrap;
+      }
+
+      .reserve-crate-decal span {
+        margin-top: 0.25rem;
+        font-family: var(--font-mono);
+        font-size: 0.58rem;
+        line-height: 1.2;
+      }
+
+      .reserve-crate-core.model-ready .reserve-crate-decal {
+        opacity: 1;
+      }
+
       .reserve-crate-light {
         position: absolute;
         left: 50%;
         top: 44%;
+        z-index: 5;
         width: 180px;
         height: 8px;
         border-radius: 999px;
@@ -960,9 +1050,34 @@
         width: min(100%, 520px);
       }
 
+      .model-reward {
+        width: min(100%, 620px);
+        min-height: 360px;
+        animation: rewardFloat 2.9s ease-in-out infinite;
+        filter: drop-shadow(0 30px 46px rgba(0, 0, 0, 0.58));
+      }
+
+      .mp5-model-reward {
+        opacity: 0;
+        transition: opacity 420ms var(--ease);
+      }
+
+      .mp5-model-reward.is-loaded {
+        opacity: 1;
+      }
+
       .reward-visual[data-reward="mp5"] .weapon-reward,
+      .reward-visual[data-reward="mp5"] .mp5-model-reward,
       .reward-visual[data-reward="operator"] .operator-reward {
         display: block;
+      }
+
+      body.has-mp5-model .reward-visual[data-reward="mp5"] .weapon-reward {
+        display: none;
+      }
+
+      body:not(.has-mp5-model) .reward-visual[data-reward="mp5"] .mp5-model-reward {
+        display: none;
       }
 
       .weapon-reward svg,
@@ -1025,6 +1140,17 @@
       .confirm-reward-button {
         width: 100%;
         margin-top: 1.25rem;
+      }
+
+      .asset-attribution {
+        max-width: 760px;
+        margin: 2rem auto 0;
+        color: rgba(241, 234, 217, 0.36);
+        font-family: var(--font-mono);
+        font-size: 0.58rem;
+        line-height: 1.5;
+        text-align: center;
+        text-transform: uppercase;
       }
 
       @keyframes reserveShake {
@@ -1686,6 +1812,10 @@
           min-height: 330px;
         }
 
+        .model-reward {
+          min-height: 300px;
+        }
+
         .operator-reward {
           max-width: 245px;
         }
@@ -1858,15 +1988,21 @@
             </div>
             <div class="reserve-crate-core" id="featuredCrate" aria-hidden="true">
               <div class="reserve-crate-shadow"></div>
+              <div class="reserve-crate-model" id="reserveCrateModel"></div>
               <div class="reserve-crate-lid"></div>
               <div class="reserve-crate-body">
                 <div class="reserve-crate-light"></div>
                 <div class="reserve-crate-label">Touch Grass Reserve</div>
               </div>
+              <div class="reserve-crate-decal">
+                <strong>Touch Grass</strong>
+                <span>Reserve Crate / Season 4</span>
+              </div>
             </div>
 
             <div class="reward-reveal" id="rewardReveal" aria-hidden="true">
               <div class="reward-visual" id="rewardVisual" data-reward="mp5">
+                <div class="reward-art model-reward mp5-model-reward" id="mp5ModelMount" aria-hidden="true"></div>
                 <div class="reward-art weapon-reward" aria-hidden="true">
                   <svg viewBox="0 0 620 320" role="img" aria-label="Touch Grass MP5-style blueprint mockup">
                     <defs>
@@ -1968,6 +2104,9 @@
             </button>
           </div>
         </div>
+        <p class="asset-attribution">
+          3D assets adapted under CC-BY-4.0: Weapons Crate by Sousinho and Mp5 Psx by Dmitry Narkevich.
+        </p>
       </section>
 
       <section class="drop-room" id="drop-room" aria-label="Payoff Space">
@@ -2204,6 +2343,286 @@
       const select = (query, root = document) => root.querySelector(query);
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
       const reserveStageElement = select("#reserve-crate");
+      const assetViewers = [];
+
+      function createTouchGrassTexture(kind) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext("2d");
+
+        const drawGrassBlade = (x, y, height, angle, color, alpha = 1) => {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(angle);
+          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = Math.max(3, height * 0.035);
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.quadraticCurveTo(height * 0.12, -height * 0.46, height * 0.04, -height);
+          ctx.stroke();
+          ctx.restore();
+        };
+
+        if (kind === "crate") {
+          const crateGradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+          crateGradient.addColorStop(0, "#ff8b18");
+          crateGradient.addColorStop(0.48, "#ef5e05");
+          crateGradient.addColorStop(1, "#7c2700");
+          ctx.fillStyle = crateGradient;
+          ctx.fillRect(0, 0, 1024, 1024);
+
+          ctx.fillStyle = "rgba(8, 9, 6, 0.82)";
+          for (let x = -220; x < 1250; x += 128) {
+            ctx.save();
+            ctx.translate(x, 0);
+            ctx.rotate(-0.32);
+            ctx.fillRect(0, -160, 44, 1360);
+            ctx.restore();
+          }
+
+          ctx.strokeStyle = "rgba(255, 222, 178, 0.32)";
+          ctx.lineWidth = 10;
+          for (let y = 96; y < 1024; y += 206) {
+            ctx.strokeRect(72, y, 880, 124);
+          }
+
+          ctx.fillStyle = "#0a1009";
+          ctx.fillRect(120, 330, 784, 248);
+          ctx.strokeStyle = "#bdf23c";
+          ctx.lineWidth = 9;
+          ctx.strokeRect(120, 330, 784, 248);
+
+          ctx.fillStyle = "#bdf23c";
+          ctx.fillRect(154, 368, 716, 82);
+          ctx.fillStyle = "#071009";
+          ctx.font = '800 80px "Barlow Condensed", "Arial Narrow", sans-serif';
+          ctx.textAlign = "center";
+          ctx.fillText("TOUCH GRASS", 512, 432);
+
+          ctx.fillStyle = "#f6f1e5";
+          ctx.font = '800 58px "Barlow Condensed", "Arial Narrow", sans-serif';
+          ctx.fillText("RESERVE CRATE", 512, 528);
+
+          ctx.fillStyle = "rgba(189, 242, 60, 0.86)";
+          ctx.font = '700 34px "IBM Plex Mono", monospace';
+          ctx.fillText("SURPLUS XP / SEASON 4", 512, 628);
+          ctx.fillText("AUTH: ACTIVISION ID", 512, 688);
+
+          ctx.strokeStyle = "rgba(189, 242, 60, 0.54)";
+          ctx.lineWidth = 5;
+          for (let i = 0; i < 16; i += 1) {
+            ctx.beginPath();
+            ctx.moveTo(90 + i * 56, 796);
+            ctx.lineTo(124 + i * 56, 868);
+            ctx.stroke();
+          }
+
+          for (let i = 0; i < 56; i += 1) {
+            drawGrassBlade(Math.random() * 1024, 1010, 70 + Math.random() * 120, -0.42 + Math.random() * 0.84, "#bdf23c", 0.26 + Math.random() * 0.44);
+          }
+
+          ctx.fillStyle = "rgba(255, 255, 255, 0.24)";
+          for (let i = 0; i < 90; i += 1) {
+            ctx.beginPath();
+            ctx.arc(Math.random() * 1024, Math.random() * 1024, 2 + Math.random() * 6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else {
+          const weaponGradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+          weaponGradient.addColorStop(0, "#050807");
+          weaponGradient.addColorStop(0.42, "#102319");
+          weaponGradient.addColorStop(1, "#06110c");
+          ctx.fillStyle = weaponGradient;
+          ctx.fillRect(0, 0, 1024, 1024);
+
+          ctx.strokeStyle = "rgba(189, 242, 60, 0.42)";
+          ctx.lineWidth = 6;
+          for (let y = 90; y < 980; y += 86) {
+            ctx.beginPath();
+            ctx.moveTo(-80, y);
+            for (let x = 0; x < 1120; x += 96) {
+              ctx.quadraticCurveTo(x + 32, y - 42, x + 96, y);
+            }
+            ctx.stroke();
+          }
+
+          const acidGradient = ctx.createLinearGradient(0, 0, 1024, 0);
+          acidGradient.addColorStop(0, "#bdf23c");
+          acidGradient.addColorStop(0.38, "#4fc1a8");
+          acidGradient.addColorStop(0.72, "#7ab7ff");
+          acidGradient.addColorStop(1, "#ff6847");
+          ctx.fillStyle = acidGradient;
+          for (let x = -200; x < 1120; x += 210) {
+            ctx.save();
+            ctx.translate(x, 0);
+            ctx.rotate(-0.18);
+            ctx.fillRect(0, -120, 70, 1280);
+            ctx.restore();
+          }
+
+          ctx.fillStyle = "rgba(246, 241, 229, 0.92)";
+          ctx.font = '800 104px "Barlow Condensed", "Arial Narrow", sans-serif';
+          ctx.textAlign = "center";
+          ctx.fillText("TOUCH", 512, 420);
+          ctx.fillStyle = "#bdf23c";
+          ctx.fillText("GRASS", 512, 518);
+
+          ctx.fillStyle = "rgba(7, 16, 9, 0.94)";
+          ctx.fillRect(230, 558, 564, 72);
+          ctx.fillStyle = "#f6f1e5";
+          ctx.font = '700 42px "IBM Plex Mono", monospace';
+          ctx.fillText("MP5 / LAWNLINE", 512, 607);
+
+          ctx.fillStyle = "rgba(189, 242, 60, 0.92)";
+          for (let i = 0; i < 34; i += 1) {
+            drawGrassBlade(70 + Math.random() * 884, 920 + Math.random() * 84, 60 + Math.random() * 180, -0.2 + Math.random() * 0.4, "#bdf23c", 0.34 + Math.random() * 0.36);
+          }
+
+          ctx.fillStyle = "rgba(255, 255, 255, 0.26)";
+          for (let i = 0; i < 110; i += 1) {
+            ctx.beginPath();
+            ctx.arc(Math.random() * 1024, Math.random() * 1024, 1 + Math.random() * 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.flipY = false;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.anisotropy = 8;
+        texture.encoding = THREE.sRGBEncoding;
+        return texture;
+      }
+
+      function fitModelToFrame(root, targetSize) {
+        root.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(root);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const scale = targetSize / Math.max(size.x, size.y, size.z, 1);
+        root.scale.setScalar(scale);
+        root.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+      }
+
+      function applyTouchGrassSkin(root, kind) {
+        const skinTexture = createTouchGrassTexture(kind);
+        root.traverse((child) => {
+          if (!child.isMesh) return;
+          const originalMaterial = Array.isArray(child.material) ? child.material[0] : child.material;
+          child.castShadow = true;
+          child.receiveShadow = true;
+          child.material = new THREE.MeshStandardMaterial({
+            map: skinTexture,
+            normalMap: originalMaterial?.normalMap || null,
+            metalnessMap: originalMaterial?.metalnessMap || null,
+            roughnessMap: originalMaterial?.roughnessMap || null,
+            color: 0xffffff,
+            emissive: kind === "crate" ? 0x1d3307 : 0x0b2208,
+            emissiveIntensity: kind === "crate" ? 0.22 : 0.12,
+            metalness: kind === "crate" ? 0.28 : 0.14,
+            roughness: kind === "crate" ? 0.5 : 0.42,
+          });
+        });
+      }
+
+      function setupTouchGrassModel({ mountSelector, path, kind, targetSize, cameraZ }) {
+        const mount = select(mountSelector);
+        if (!mount || !THREE.GLTFLoader) return;
+
+        const modelScene = new THREE.Scene();
+        const modelCamera = new THREE.PerspectiveCamera(kind === "crate" ? 34 : 30, 1, 0.01, 100);
+        modelCamera.position.set(0, kind === "crate" ? 0.28 : 0.08, cameraZ);
+
+        const modelRenderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        });
+        modelRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        modelRenderer.setClearColor(0x000000, 0);
+        modelRenderer.outputEncoding = THREE.sRGBEncoding;
+        mount.appendChild(modelRenderer.domElement);
+
+        const modelGroup = new THREE.Group();
+        modelScene.add(modelGroup);
+
+        const fillLight = new THREE.HemisphereLight(0xf5ffe0, 0x071009, kind === "crate" ? 1.25 : 1.1);
+        const keyLight = new THREE.DirectionalLight(0xfff3dd, kind === "crate" ? 2.1 : 1.8);
+        const rim = new THREE.PointLight(0xbdf23c, kind === "crate" ? 3.6 : 2.8, 12);
+        keyLight.position.set(3.4, 4.2, 4.8);
+        rim.position.set(-2.8, 1.3, 2.2);
+        modelScene.add(fillLight, keyLight, rim);
+
+        let loadedModel = null;
+        let width = 1;
+        let height = 1;
+
+        const resizeModel = () => {
+          const rect = mount.getBoundingClientRect();
+          const nextWidth = Math.max(1, Math.floor(rect.width));
+          const nextHeight = Math.max(1, Math.floor(rect.height));
+          if (nextWidth === width && nextHeight === height) return;
+          width = nextWidth;
+          height = nextHeight;
+          modelRenderer.setSize(width, height, false);
+          modelCamera.aspect = width / height;
+          modelCamera.updateProjectionMatrix();
+        };
+
+        new ResizeObserver(resizeModel).observe(mount);
+        resizeModel();
+
+        const loader = new THREE.GLTFLoader();
+        loader.load(
+          path,
+          (gltf) => {
+            loadedModel = gltf.scene;
+            applyTouchGrassSkin(loadedModel, kind);
+            fitModelToFrame(loadedModel, targetSize);
+
+            if (kind === "crate") {
+              loadedModel.rotation.set(0.04, 0.18, 0.01);
+              select("#featuredCrate").classList.add("model-ready");
+            } else {
+              loadedModel.rotation.set(0.08, -0.84, 0.1);
+              document.body.classList.add("has-mp5-model");
+            }
+
+            modelGroup.add(loadedModel);
+            mount.classList.add("is-loaded");
+            resizeModel();
+          },
+          undefined,
+          () => {
+            mount.classList.remove("is-loaded");
+          }
+        );
+
+        assetViewers.push({
+          kind,
+          update(time) {
+            resizeModel();
+            if (loadedModel) {
+              if (kind === "crate") {
+                const pressure = state.reservePressure || 0;
+                modelGroup.rotation.y = Math.sin(time * 0.55) * 0.035 + pressure * Math.sin(time * 12) * 0.035;
+                modelGroup.rotation.z = pressure * Math.sin(time * 18) * 0.026;
+                modelGroup.position.y = Math.sin(time * 0.9) * 0.025 + pressure * Math.sin(time * 24) * 0.035;
+                rim.intensity = 3.6 + pressure * 4.2 + Math.sin(time * 1.4) * 0.3;
+              } else {
+                modelGroup.rotation.y = Math.sin(time * 0.55) * 0.08;
+                modelGroup.position.y = Math.sin(time * 1.15) * 0.045;
+                rim.intensity = 2.8 + Math.sin(time * 1.2) * 0.36;
+              }
+            }
+            modelRenderer.render(modelScene, modelCamera);
+          },
+        });
+      }
 
       function setReserveCrateMotion({ pressure = 0, x = 0, y = 0, tiltX = 0, tiltY = 0, tiltZ = 0, scale = 1 }) {
         reserveStageElement.style.setProperty("--crate-pressure", pressure.toFixed(3));
@@ -2414,6 +2833,33 @@
         pulseDew();
       });
 
+      function hydrateCrateFlowFromUrl() {
+        const flow = new URLSearchParams(window.location.search).get("crate-flow");
+        if (!flow) return;
+
+        const flowStep = Number(flow);
+        if (flow === "open" || flowStep >= 2) {
+          state.currentReward = featuredRewards[0];
+          state.openingFeaturedCrate = false;
+          renderFeaturedReward(state.currentReward);
+          select("#reserve-crate").classList.add("is-open");
+          select("#rewardReveal").setAttribute("aria-hidden", "false");
+          select("#featuredCrateButton").textContent = "Reward revealed";
+          select("#featuredCrateButton").disabled = true;
+          select("#reserveStatus").textContent = "Reward revealed. Confirm to lock it and enter Payoff Space.";
+        }
+
+        if (flow === "confirmed" || flowStep >= 3) {
+          state.freeReserveOpened = true;
+          select("#featuredCrateButton").textContent = "Reward confirmed";
+          select("#confirmRewardButton").textContent = "Reward confirmed";
+          select("#confirmRewardButton").disabled = true;
+          select("#reserveStatus").textContent = `${state.currentReward?.name || featuredRewards[0].name} confirmed. Entering Payoff Space.`;
+        }
+
+        renderClaimMode();
+      }
+
       const revealObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -2442,6 +2888,21 @@
       }
 
       renderClaimMode();
+      hydrateCrateFlowFromUrl();
+      setupTouchGrassModel({
+        mountSelector: "#reserveCrateModel",
+        path: "assets/models/touch-grass-crate/scene.gltf",
+        kind: "crate",
+        targetSize: 3.35,
+        cameraZ: 5.4,
+      });
+      setupTouchGrassModel({
+        mountSelector: "#mp5ModelMount",
+        path: "assets/models/touch-grass-mp5/scene.gltf",
+        kind: "mp5",
+        targetSize: 4.4,
+        cameraZ: 5.7,
+      });
 
       const container = document.getElementById("webgl-container");
       const scene = new THREE.Scene();
@@ -2648,6 +3109,7 @@
         dewDrop.position.y = 2.18 + Math.sin(time * 1.15) * 0.035;
         dewDrop.rotation.y += 0.008;
         xpParticles.rotation.y += 0.0008;
+        assetViewers.forEach((viewer) => viewer.update(time));
 
         if (state.reservePressure > 0 && !state.currentReward && !state.freeReserveOpened && !state.openingFeaturedCrate) {
           const pressure = state.reservePressure;
