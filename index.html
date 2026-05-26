@@ -47,6 +47,7 @@
         --font-mono: "IBM Plex Mono", "Roboto Mono", monospace;
         --font-body: "Barlow", "Helvetica Neue", "Arial", sans-serif;
         --ease: cubic-bezier(0.19, 1, 0.22, 1);
+        --top-bar: clamp(58px, 7vh, 78px);
       }
 
       * {
@@ -120,7 +121,7 @@
         left: 0;
         z-index: 90;
         width: 100%;
-        height: 7vh;
+        height: var(--top-bar);
         border-color: rgba(239, 234, 218, 0.08);
         background: #000;
         pointer-events: none;
@@ -143,8 +144,89 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: calc(7vh + 1.15rem) 1.4rem;
+        padding: calc(var(--top-bar) + 1.15rem) 1.4rem;
         pointer-events: none;
+      }
+
+      .experience-shell {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 110;
+        display: grid;
+        grid-template-columns: minmax(7rem, 1fr) auto minmax(7rem, 1fr);
+        align-items: center;
+        gap: 1rem;
+        height: var(--top-bar);
+        padding: 0 1.4rem;
+        border-bottom: 1px solid rgba(241, 234, 217, 0.24);
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.96), rgba(0, 0, 0, 0.82)),
+          rgba(0, 0, 0, 0.92);
+        backdrop-filter: blur(18px);
+      }
+
+      .experience-brand,
+      .experience-status {
+        color: rgba(241, 234, 217, 0.64);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .experience-status {
+        justify-self: end;
+        color: var(--acid);
+      }
+
+      .experience-tabs {
+        display: flex;
+        align-items: stretch;
+        max-width: min(58vw, 760px);
+        border: 1px solid rgba(241, 234, 217, 0.14);
+        background: rgba(241, 234, 217, 0.035);
+        overflow: hidden;
+      }
+
+      .experience-tab {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.45rem;
+        padding: 0 0.95rem;
+        border-right: 1px solid rgba(241, 234, 217, 0.1);
+        color: rgba(241, 234, 217, 0.58);
+        font-family: var(--font-label);
+        font-size: 0.78rem;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .experience-tab:last-child {
+        border-right: 0;
+      }
+
+      .experience-tab.is-active {
+        color: #081006;
+        background: linear-gradient(180deg, var(--acid), var(--acid-2));
+      }
+
+      .experience-tab.is-next {
+        cursor: default;
+      }
+
+      .experience-tab.is-next::after {
+        content: "Next";
+        margin-left: 0.48rem;
+        color: rgba(189, 242, 60, 0.82);
+        font-family: var(--font-mono);
+        font-size: 0.5rem;
       }
 
       .hud-row {
@@ -284,12 +366,42 @@
       }
 
       .hero-subtitle {
-        max-width: 680px;
-        margin: 1.2rem auto 0;
-        color: rgba(241, 234, 217, 0.74);
-        font-size: clamp(1rem, 2vw, 1.24rem);
-        font-weight: 300;
-        line-height: 1.55;
+        position: relative;
+        max-width: 780px;
+        margin: 1.28rem auto 0;
+        padding: 1rem 1.18rem;
+        color: #fff8e9;
+        background:
+          linear-gradient(
+            90deg,
+            rgba(3, 4, 3, 0),
+            rgba(3, 4, 3, 0.78) 13%,
+            rgba(3, 4, 3, 0.86) 50%,
+            rgba(3, 4, 3, 0.78) 87%,
+            rgba(3, 4, 3, 0)
+          );
+        font-size: clamp(1.06rem, 2vw, 1.28rem);
+        font-weight: 500;
+        line-height: 1.5;
+        text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9);
+      }
+
+      .hero-subtitle::before,
+      .hero-subtitle::after {
+        position: absolute;
+        left: 10%;
+        right: 10%;
+        height: 1px;
+        content: "";
+        background: linear-gradient(90deg, transparent, rgba(241, 234, 217, 0.28), transparent);
+      }
+
+      .hero-subtitle::before {
+        top: 0;
+      }
+
+      .hero-subtitle::after {
+        bottom: 0;
       }
 
       .hero-actions {
@@ -1705,6 +1817,10 @@
       }
 
       @media (max-width: 980px) {
+        :root {
+          --top-bar: 58px;
+        }
+
         .drop-header,
         .reserve-event,
         .reward-reveal,
@@ -1738,12 +1854,39 @@
           min-height: 440px;
         }
 
-        .cinematic-bar {
-          height: 5.5vh;
+        .hud-overlay {
+          padding: calc(var(--top-bar) + 0.85rem) 0.85rem;
         }
 
-        .hud-overlay {
-          padding: calc(5.5vh + 0.85rem) 0.85rem;
+        .experience-shell {
+          grid-template-columns: 1fr auto;
+          gap: 0.7rem;
+          padding-inline: 0.85rem;
+        }
+
+        .experience-brand {
+          display: none;
+        }
+
+        .experience-status {
+          font-size: 0.56rem;
+        }
+
+        .experience-tabs {
+          justify-self: start;
+          max-width: calc(100vw - 6.6rem);
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+
+        .experience-tabs::-webkit-scrollbar {
+          display: none;
+        }
+
+        .experience-tab {
+          min-height: 2.25rem;
+          padding: 0 0.78rem;
+          font-size: 0.72rem;
         }
       }
 
@@ -1762,6 +1905,11 @@
 
         .hero-title-group {
           margin-top: -2vh;
+        }
+
+        .hero-subtitle {
+          padding: 0.9rem 0.85rem;
+          background: rgba(3, 4, 3, 0.82);
         }
 
         .exchange-summary,
@@ -1836,6 +1984,17 @@
     <div class="cinematic-bar top" aria-hidden="true"></div>
     <div class="cinematic-bar bottom" aria-hidden="true"></div>
 
+    <header class="experience-shell" aria-label="Experience Lab concepts">
+      <div class="experience-brand">Experience Lab</div>
+      <nav class="experience-tabs" aria-label="Concept tabs">
+        <a class="experience-tab is-active" href="#scroll-content" aria-current="page">Touch Grass Exchange</a>
+        <span class="experience-tab is-next">Squad Rush</span>
+        <span class="experience-tab is-next">Creator Contracts</span>
+        <span class="experience-tab is-next">Map Drop</span>
+      </nav>
+      <div class="experience-status">Prototype 01 / 04</div>
+    </header>
+
     <div class="hud-overlay" aria-hidden="true">
       <div class="reticle"><div class="center-dot"></div></div>
       <div class="hud-row">
@@ -1866,9 +2025,9 @@
           <div class="eyebrow">Surplus XP Rewards Exchange</div>
           <h1>Touch Grass <span class="highlight">Season 4</span></h1>
           <p class="hero-subtitle">
-            Log your Activision ID and convert surplus season XP into Touch Grass
-            Credits. Start with a free Reserve Crate, keep rolling crates, or
-            claim the Operator Skin and Gun Skin directly in the Marketplace.
+            Sync your Activision ID to unlock surplus season XP. The overcap converts
+            into Touch Grass Credits: open the free Reserve Crate, roll more Bonus
+            Reserves, or claim the Operator and MP5 skins directly in the Marketplace.
           </p>
           <form class="id-panel" id="idForm" aria-label="Activision ID sync">
             <div>
