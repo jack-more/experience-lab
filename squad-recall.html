@@ -206,17 +206,17 @@
         position: relative;
         z-index: 2;
         display: grid;
-        grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.52fr);
-        gap: clamp(1.5rem, 5vw, 5.5rem);
+        grid-template-columns: minmax(280px, 0.54fr) minmax(720px, 0.86fr);
+        gap: clamp(1rem, 3vw, 3.75rem);
         align-items: center;
-        width: min(100%, 1440px);
+        width: min(100%, 1720px);
         min-height: 100svh;
         margin: 0 auto;
-        padding: 88px 5vw 4vh;
+        padding: 82px 4vw 24px;
       }
 
       .hero-copy {
-        max-width: 760px;
+        max-width: 560px;
       }
 
       .eyebrow {
@@ -231,10 +231,10 @@
         margin: 0.9rem 0 0;
         color: #fff;
         font-family: var(--font-display);
-        font-size: clamp(4.3rem, 11vw, 11.6rem);
+        font-size: clamp(3.65rem, 6.5vw, 7rem);
         font-weight: 900;
         letter-spacing: -0.06em;
-        line-height: 0.82;
+        line-height: 0.86;
         text-transform: uppercase;
         text-shadow: 0 22px 64px rgba(0, 0, 0, 0.64);
       }
@@ -246,18 +246,20 @@
       }
 
       .subline {
-        max-width: 530px;
+        max-width: 470px;
         margin: 1.15rem 0 0;
         color: rgba(255, 255, 255, 0.76);
-        font-size: clamp(1.02rem, 1.36vw, 1.2rem);
+        font-size: clamp(1rem, 1.08vw, 1.13rem);
         font-weight: 700;
         line-height: 1.45;
       }
 
       .recall-stack {
         display: grid;
-        gap: 0.85rem;
-        width: min(100%, 430px);
+        grid-template-columns: minmax(390px, 520px) minmax(280px, 340px);
+        gap: 1rem;
+        align-items: start;
+        width: min(100%, 880px);
         justify-self: end;
       }
 
@@ -266,7 +268,9 @@
         --accent-2: #121212;
         --paper-tint: #f5f1e8;
         position: relative;
-        min-height: 622px;
+        grid-row: span 2;
+        height: min(calc(100svh - 116px), 720px);
+        min-height: 560px;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 26px;
@@ -321,9 +325,9 @@
         position: relative;
         z-index: 1;
         display: flex;
-        min-height: 622px;
+        min-height: 100%;
         flex-direction: column;
-        padding: 1.55rem;
+        padding: clamp(1.2rem, 1.55vw, 1.6rem);
       }
 
       .card-meta,
@@ -340,7 +344,7 @@
       }
 
       .card-title {
-        margin-top: 4.4rem;
+        margin-top: clamp(2.1rem, 5vh, 4.2rem);
       }
 
       .alert-label {
@@ -352,14 +356,14 @@
       }
 
       .card-title h2 {
-        max-width: 340px;
+        max-width: 100%;
         margin: 0.14rem 0 0;
         color: #0a0a0a;
         font-family: var(--font-display);
-        font-size: clamp(4rem, 8vw, 5.6rem);
+        font-size: clamp(3.45rem, 4.8vw, 5.1rem);
         font-weight: 900;
-        letter-spacing: -0.09em;
-        line-height: 0.78;
+        letter-spacing: -0.075em;
+        line-height: 0.82;
         text-transform: uppercase;
       }
 
@@ -372,12 +376,12 @@
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.5rem;
-        margin-top: 1.1rem;
+        margin-top: 0.85rem;
       }
 
       .stat-pill {
-        min-height: 4.4rem;
-        padding: 0.72rem;
+        min-height: 3.95rem;
+        padding: 0.62rem;
         border: 1px solid rgba(0, 0, 0, 0.12);
         background: rgba(255, 255, 255, 0.56);
       }
@@ -393,16 +397,40 @@
 
       .stat-pill strong {
         display: block;
-        margin-top: 0.32rem;
+        margin-top: 0.24rem;
         font-family: var(--font-tall);
-        font-size: 2.25rem;
+        font-size: 2.05rem;
         font-weight: 700;
         line-height: 0.9;
       }
 
+      .pnl-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 0.55rem;
+        background: rgba(0, 0, 0, 0.12);
+      }
+
+      .pnl-grid div {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.48rem 0.56rem;
+        background: rgba(255, 255, 255, 0.58);
+        font-family: var(--font-mono);
+        font-size: 0.56rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .pnl-grid strong {
+        color: var(--accent);
+      }
+
       .text-card {
-        margin-top: 1rem;
-        padding: 1rem;
+        margin-top: 0.85rem;
+        padding: 0.9rem;
         color: #fff;
         background:
           linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 42%),
@@ -414,17 +442,17 @@
         margin: 0;
         color: rgba(255, 255, 255, 0.88);
         font-family: var(--font-mono);
-        font-size: clamp(0.72rem, 1.52vw, 0.86rem);
+        font-size: clamp(0.68rem, 0.92vw, 0.82rem);
         font-weight: 700;
-        line-height: 1.45;
+        line-height: 1.38;
         white-space: pre-wrap;
       }
 
       .runback {
-        margin: 1.1rem 0 0;
+        margin: 0.82rem 0 0;
         color: #0a0a0a;
         font-family: var(--font-display);
-        font-size: 2.25rem;
+        font-size: clamp(1.8rem, 2.4vw, 2.35rem);
         font-weight: 900;
         letter-spacing: -0.07em;
         line-height: 0.88;
@@ -435,7 +463,7 @@
         display: flex;
         align-items: end;
         justify-content: center;
-        height: 48px;
+        height: 40px;
         gap: 3px;
         margin-top: auto;
         padding-top: 1.25rem;
@@ -455,6 +483,7 @@
         display: grid;
         grid-template-columns: auto minmax(0, 1fr) auto;
         gap: 0.5rem;
+        grid-column: 2;
       }
 
       .style-dock button,
@@ -485,12 +514,40 @@
 
       .actions {
         display: grid;
-        gap: 0.65rem;
-        padding: 0.65rem;
+        gap: 0.8rem;
+        grid-column: 2;
+        padding: 1rem;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 24px;
         background: rgba(0, 0, 0, 0.66);
         backdrop-filter: blur(16px);
+      }
+
+      .action-kicker {
+        color: var(--orange);
+        font-family: var(--font-mono);
+        font-size: 0.64rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .actions h2 {
+        margin: -0.25rem 0 0;
+        color: #fff;
+        font-family: var(--font-display);
+        font-size: clamp(2.1rem, 3vw, 3.2rem);
+        font-weight: 900;
+        letter-spacing: -0.07em;
+        line-height: 0.88;
+        text-transform: uppercase;
+      }
+
+      .actions > p {
+        margin: -0.25rem 0 0;
+        color: rgba(248, 243, 234, 0.7);
+        font-size: 0.92rem;
+        font-weight: 700;
+        line-height: 1.4;
       }
 
       .button-row {
@@ -585,8 +642,19 @@
         }
 
         .recall-stack {
+          grid-template-columns: minmax(0, 430px);
           width: min(100%, 430px);
           justify-self: start;
+        }
+
+        .recall-card,
+        .style-dock,
+        .actions {
+          grid-column: 1;
+        }
+
+        .recall-card {
+          height: auto;
         }
 
         .hand {
@@ -665,8 +733,8 @@
           <div class="eyebrow">Warzone reactivation concept</div>
           <h1 id="page-title">Squad Recall<span>Last Drop</span></h1>
           <p class="subline">
-            Turn the last match into a screenshot-ready recall card, then send the
-            squad a text that gets them back in the lobby.
+            Screenshot the match card. Copy the emoji recap. Text the squad back
+            into the next lobby.
           </p>
         </section>
 
@@ -691,6 +759,13 @@
                 <div class="stat-pill"><span>Finish</span><strong>#3</strong></div>
                 <div class="stat-pill"><span>Elims</span><strong>17</strong></div>
                 <div class="stat-pill"><span>Damage</span><strong>5.8K</strong></div>
+              </div>
+
+              <div class="pnl-grid" aria-label="Performance ledger">
+                <div><span>K/D Delta</span><strong>+4.8</strong></div>
+                <div><span>Clutch Value</span><strong>+320%</strong></div>
+                <div><span>Buyback Spend</span><strong>$12.4K</strong></div>
+                <div><span>Recall Signal</span><strong>94%</strong></div>
               </div>
 
               <div class="text-card">
@@ -730,9 +805,15 @@
           </div>
 
           <div class="actions">
+            <div class="action-kicker">Main CTA</div>
+            <h2>Get the squad back on.</h2>
+            <p>
+              The card is the flex. The text is the recall mechanic: fast, readable,
+              and built to paste straight into the group chat.
+            </p>
             <div class="button-row">
-              <a class="primary" id="smsLink" href="#">Send SMS</a>
-              <button class="secondary" type="button" id="copyButton">Copy Recall Text</button>
+              <a class="primary" id="smsLink" href="#">Open SMS Draft</a>
+              <button class="secondary" type="button" id="copyButton">Copy Emojified Text</button>
             </div>
             <div class="qr-row">
               <img id="qrCode" src="assets/squad-recall-sms-qr.png" alt="QR code for the SMS draft" />
@@ -758,13 +839,14 @@
       const recallText = `WARZONE LAST DROP
 ${match.player}
 
+📊 Last Drop PNL
 🪂 ${match.moment}
-💀 ${match.elims} Elims
-🛡️ ${match.revives} Revives
-⚡ ${match.damage} Damage
+💀 ${match.elims} Elims | ⚡ ${match.damage} Damage
+🛡️ ${match.revives} Revives | 💸 $12.4K Buyback Spend
+📈 K/D Delta +4.8 | 🔥 Clutch Value +320%
 🏁 ${match.finish} Squad Finish
 
-Run it back?`;
+Need one more. Run it back?`;
 
       const asciiStyles = [
         {
