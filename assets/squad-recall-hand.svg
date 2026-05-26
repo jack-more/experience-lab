@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-label="Combat glove hand reaching upward">
+  <defs>
+    <linearGradient id="glove" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#343a32"/>
+      <stop offset="0.52" stop-color="#141914"/>
+      <stop offset="1" stop-color="#050606"/>
+    </linearGradient>
+    <linearGradient id="sleeve" x1="0" x2="1">
+      <stop offset="0" stop-color="#516149"/>
+      <stop offset="0.5" stop-color="#1d251e"/>
+      <stop offset="1" stop-color="#090c0a"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="22" flood-color="#000" flood-opacity=".62"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M378 880 C356 754 352 660 372 570 C383 519 403 480 429 452 C453 426 490 430 506 459 C523 489 509 535 497 581 C481 640 486 736 526 880 Z" fill="url(#sleeve)"/>
+    <path d="M372 575 C412 604 468 610 512 589 L526 642 C474 674 403 666 357 631 Z" fill="#0a0d0b"/>
+    <path d="M401 453 C386 402 372 347 358 292 C351 264 362 241 384 236 C408 231 426 249 433 278 L462 398 C469 423 452 449 426 457 Z" fill="url(#glove)"/>
+    <path d="M441 430 C426 361 414 292 408 228 C405 198 421 178 445 178 C469 178 485 196 489 225 L508 384 C513 421 484 447 452 440 Z" fill="url(#glove)"/>
+    <path d="M489 420 C490 355 492 292 502 235 C507 207 526 193 548 198 C572 203 584 225 579 254 L552 398 C546 431 520 448 491 437 Z" fill="url(#glove)"/>
+    <path d="M540 440 C558 391 576 350 602 313 C618 290 642 285 660 300 C679 316 680 342 665 364 L595 470 C578 496 543 489 535 461 Z" fill="url(#glove)"/>
+    <path d="M377 450 C350 422 324 394 304 362 C288 338 293 313 313 302 C335 289 358 300 375 323 L433 402 C450 426 438 459 407 464 Z" fill="url(#glove)"/>
+    <path d="M395 442 C425 410 495 402 548 432 C587 454 594 507 558 548 C519 592 431 597 386 558 C351 528 356 483 395 442 Z" fill="url(#glove)"/>
+    <path d="M404 463 C446 486 510 486 557 462" fill="none" stroke="#6e7c67" stroke-width="10" opacity=".36"/>
+    <path d="M384 512 C430 534 506 537 564 511" fill="none" stroke="#0b0f0c" stroke-width="18" opacity=".75"/>
+    <path d="M409 554 C455 572 512 570 552 552" fill="none" stroke="#7d8f73" stroke-width="7" opacity=".34"/>
+    <path d="M356 632 C414 672 497 681 551 644" fill="none" stroke="#a6b58b" stroke-width="6" opacity=".2"/>
+  </g>
+</svg>

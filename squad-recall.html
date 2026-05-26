@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Squad Recall: Last Drop</title>
+    <meta
+      name="description"
+      content="A standalone Squad Recall concept that turns a player's last Warzone result into a textable recall card."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&family=Teko:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #030303;
+        --ink: #f8f3ea;
+        --muted: rgba(248, 243, 234, 0.66);
+        --line: rgba(248, 243, 234, 0.16);
+        --orange: #ff4b18;
+        --orange-deep: #c92709;
+        --sky: #8cc9ff;
+        --paper: #f5f1e8;
+        --paper-ink: #080808;
+        --font-display: "Inter", "Arial Black", Arial, sans-serif;
+        --font-tall: "Teko", "Arial Narrow", sans-serif;
+        --font-mono: "Space Mono", "Roboto Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--bg);
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+        color: var(--ink);
+        background: var(--bg);
+        font-family: var(--font-display);
+        letter-spacing: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      a,
+      select {
+        font: inherit;
+      }
+
+      button,
+      select {
+        cursor: pointer;
+      }
+
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 30;
+        display: grid;
+        grid-template-columns: minmax(7rem, 1fr) auto minmax(7rem, 1fr);
+        align-items: center;
+        gap: 1rem;
+        height: 64px;
+        padding: 0 1.4rem;
+        border-bottom: 1px solid rgba(248, 243, 234, 0.18);
+        background: rgba(0, 0, 0, 0.84);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand,
+      .status {
+        color: rgba(248, 243, 234, 0.58);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .status {
+        justify-self: end;
+        color: var(--orange);
+      }
+
+      .tabs {
+        display: flex;
+        border: 1px solid rgba(248, 243, 234, 0.14);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.35rem;
+        padding: 0 1rem;
+        border-right: 1px solid rgba(248, 243, 234, 0.12);
+        color: rgba(248, 243, 234, 0.64);
+        font-family: var(--font-tall);
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .tab:last-child {
+        border-right: 0;
+      }
+
+      .tab[aria-current="page"] {
+        color: #0a0a0a;
+        background: linear-gradient(180deg, #fff, #ded8cc);
+      }
+
+      main {
+        position: relative;
+        min-height: 100svh;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 70% 30%, rgba(255, 75, 24, 0.2), transparent 24rem),
+          linear-gradient(180deg, rgba(92, 174, 255, 0.72), rgba(40, 100, 153, 0.5) 34%, rgba(0, 0, 0, 0.96) 92%);
+      }
+
+      .sky {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.36), transparent 30%, rgba(0, 0, 0, 0.6) 78%),
+          url("assets/squad-recall-alcatraz.svg") center 18% / cover no-repeat;
+        filter: blur(9px) saturate(1.08);
+        transform: scale(1.05);
+      }
+
+      .sky::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.5), transparent 13rem),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.44), rgba(0, 0, 0, 0.04) 42%, rgba(0, 0, 0, 0.58));
+      }
+
+      .speed-lines {
+        position: absolute;
+        inset: 0;
+        opacity: 0.24;
+        background:
+          repeating-linear-gradient(104deg, transparent 0 42px, rgba(255, 255, 255, 0.34) 43px, transparent 45px),
+          repeating-linear-gradient(83deg, transparent 0 72px, rgba(255, 255, 255, 0.16) 74px, transparent 76px);
+        mix-blend-mode: screen;
+        transform: skewY(-8deg);
+      }
+
+      .void {
+        position: absolute;
+        left: 50%;
+        bottom: -30vh;
+        width: 128vw;
+        height: 62vh;
+        border-radius: 50% 50% 0 0;
+        background:
+          radial-gradient(ellipse at center, rgba(0, 0, 0, 0.98), rgba(0, 0, 0, 0.9) 46%, transparent 74%);
+        transform: translateX(-50%);
+      }
+
+      .hand {
+        position: absolute;
+        left: 49%;
+        bottom: -4vh;
+        z-index: 1;
+        width: min(42vw, 550px);
+        min-width: 260px;
+        opacity: 0.9;
+        transform: translateX(-50%) rotate(-3deg);
+        filter: drop-shadow(0 36px 46px rgba(0, 0, 0, 0.72));
+      }
+
+      .plane-edge {
+        position: absolute;
+        inset: auto 0 0;
+        z-index: 1;
+        height: 30vh;
+        background:
+          linear-gradient(15deg, rgba(0, 0, 0, 0.95) 0 45%, transparent 46%),
+          linear-gradient(-18deg, rgba(0, 0, 0, 0.88) 0 36%, transparent 37%);
+        opacity: 0.82;
+      }
+
+      .page {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.52fr);
+        gap: clamp(1.5rem, 5vw, 5.5rem);
+        align-items: center;
+        width: min(100%, 1440px);
+        min-height: 100svh;
+        margin: 0 auto;
+        padding: 88px 5vw 4vh;
+      }
+
+      .hero-copy {
+        max-width: 760px;
+      }
+
+      .eyebrow {
+        color: rgba(255, 255, 255, 0.78);
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0.9rem 0 0;
+        color: #fff;
+        font-family: var(--font-display);
+        font-size: clamp(4.3rem, 11vw, 11.6rem);
+        font-weight: 900;
+        letter-spacing: -0.06em;
+        line-height: 0.82;
+        text-transform: uppercase;
+        text-shadow: 0 22px 64px rgba(0, 0, 0, 0.64);
+      }
+
+      h1 span {
+        display: block;
+        color: var(--orange);
+        letter-spacing: -0.07em;
+      }
+
+      .subline {
+        max-width: 530px;
+        margin: 1.15rem 0 0;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: clamp(1.02rem, 1.36vw, 1.2rem);
+        font-weight: 700;
+        line-height: 1.45;
+      }
+
+      .recall-stack {
+        display: grid;
+        gap: 0.85rem;
+        width: min(100%, 430px);
+        justify-self: end;
+      }
+
+      .recall-card {
+        --accent: #ff4b18;
+        --accent-2: #121212;
+        --paper-tint: #f5f1e8;
+        position: relative;
+        min-height: 622px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 26px;
+        color: var(--paper-ink);
+        background:
+          radial-gradient(circle at 100% 0, color-mix(in srgb, var(--accent) 24%, transparent), transparent 16rem),
+          linear-gradient(145deg, #fff, var(--paper-tint) 62%, #ded8cc);
+        box-shadow: 0 42px 90px rgba(0, 0, 0, 0.48);
+        transition:
+          background 220ms ease,
+          box-shadow 220ms ease,
+          transform 220ms ease;
+      }
+
+      .recall-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 50px 110px rgba(0, 0, 0, 0.52),
+          0 0 55px color-mix(in srgb, var(--accent) 28%, transparent);
+      }
+
+      .ascii-art {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        padding: 1.1rem;
+        color: var(--accent);
+        font-family: var(--font-mono);
+        font-size: clamp(0.48rem, 1.09vw, 0.69rem);
+        font-weight: 700;
+        line-height: 0.92;
+        letter-spacing: -0.04em;
+        opacity: 0.2;
+        white-space: pre;
+        transform: rotate(-7deg) scale(1.15);
+        transform-origin: 50% 44%;
+        mix-blend-mode: multiply;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .card-veil {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.62) 42%, rgba(255, 255, 255, 0.82)),
+          radial-gradient(circle at 76% 36%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 12rem);
+        pointer-events: none;
+      }
+
+      .card-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        min-height: 622px;
+        flex-direction: column;
+        padding: 1.55rem;
+      }
+
+      .card-meta,
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: rgba(0, 0, 0, 0.52);
+        font-family: var(--font-mono);
+        font-size: 0.56rem;
+        font-weight: 700;
+        line-height: 1.35;
+        text-transform: uppercase;
+      }
+
+      .card-title {
+        margin-top: 4.4rem;
+      }
+
+      .alert-label {
+        color: var(--accent);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .card-title h2 {
+        max-width: 340px;
+        margin: 0.14rem 0 0;
+        color: #0a0a0a;
+        font-family: var(--font-display);
+        font-size: clamp(4rem, 8vw, 5.6rem);
+        font-weight: 900;
+        letter-spacing: -0.09em;
+        line-height: 0.78;
+        text-transform: uppercase;
+      }
+
+      .card-title h2 span {
+        display: block;
+        color: var(--accent);
+      }
+
+      .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
+        margin-top: 1.1rem;
+      }
+
+      .stat-pill {
+        min-height: 4.4rem;
+        padding: 0.72rem;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.56);
+      }
+
+      .stat-pill span {
+        display: block;
+        color: rgba(0, 0, 0, 0.54);
+        font-family: var(--font-mono);
+        font-size: 0.56rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .stat-pill strong {
+        display: block;
+        margin-top: 0.32rem;
+        font-family: var(--font-tall);
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 0.9;
+      }
+
+      .text-card {
+        margin-top: 1rem;
+        padding: 1rem;
+        color: #fff;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 42%),
+          #0a0a0a;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+
+      .text-card pre {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.88);
+        font-family: var(--font-mono);
+        font-size: clamp(0.72rem, 1.52vw, 0.86rem);
+        font-weight: 700;
+        line-height: 1.45;
+        white-space: pre-wrap;
+      }
+
+      .runback {
+        margin: 1.1rem 0 0;
+        color: #0a0a0a;
+        font-family: var(--font-display);
+        font-size: 2.25rem;
+        font-weight: 900;
+        letter-spacing: -0.07em;
+        line-height: 0.88;
+        text-transform: uppercase;
+      }
+
+      .barcode {
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        height: 48px;
+        gap: 3px;
+        margin-top: auto;
+        padding-top: 1.25rem;
+      }
+
+      .barcode span {
+        width: var(--w);
+        height: var(--h);
+        background: #0a0a0a;
+      }
+
+      .card-footer {
+        margin-top: 0.9rem;
+      }
+
+      .style-dock {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 0.5rem;
+      }
+
+      .style-dock button,
+      .style-dock select,
+      .primary,
+      .secondary {
+        min-height: 3rem;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16px;
+        color: var(--ink);
+        background: rgba(0, 0, 0, 0.72);
+        font-family: var(--font-tall);
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .style-dock button {
+        width: 3.15rem;
+      }
+
+      .style-dock select {
+        width: 100%;
+        padding: 0 0.9rem;
+        appearance: none;
+      }
+
+      .actions {
+        display: grid;
+        gap: 0.65rem;
+        padding: 0.65rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 24px;
+        background: rgba(0, 0, 0, 0.66);
+        backdrop-filter: blur(16px);
+      }
+
+      .button-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+      }
+
+      .primary,
+      .secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.9rem;
+        text-decoration: none;
+      }
+
+      .primary {
+        color: #fff;
+        border-color: color-mix(in srgb, var(--orange) 70%, transparent);
+        background: linear-gradient(180deg, var(--orange), var(--orange-deep));
+        box-shadow: 0 16px 32px rgba(255, 75, 24, 0.24);
+      }
+
+      .secondary {
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .qr-row {
+        display: grid;
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 0.9rem;
+        align-items: center;
+      }
+
+      .qr-row img {
+        width: 78px;
+        height: 78px;
+        border: 7px solid #fff;
+        border-radius: 13px;
+        background: #fff;
+      }
+
+      .qr-row p,
+      .status-copy {
+        margin: 0;
+        color: rgba(248, 243, 234, 0.58);
+        font-family: var(--font-mono);
+        font-size: 0.64rem;
+        font-weight: 700;
+        line-height: 1.45;
+        text-transform: uppercase;
+      }
+
+      .status-copy {
+        min-height: 1rem;
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      @media (max-width: 980px) {
+        .topbar {
+          grid-template-columns: 1fr auto;
+          padding-inline: 0.85rem;
+        }
+
+        .brand {
+          display: none;
+        }
+
+        .status {
+          font-size: 0.56rem;
+        }
+
+        .tabs {
+          max-width: calc(100vw - 6rem);
+        }
+
+        .tab {
+          padding: 0 0.78rem;
+          font-size: 0.9rem;
+        }
+
+        .page {
+          grid-template-columns: 1fr;
+          align-items: start;
+          padding: 88px 0.85rem 2rem;
+        }
+
+        .hero-copy {
+          max-width: 100%;
+          padding-top: 1.3rem;
+        }
+
+        .recall-stack {
+          width: min(100%, 430px);
+          justify-self: start;
+        }
+
+        .hand {
+          top: 218px;
+          right: -158px;
+          bottom: auto;
+          left: auto;
+          width: 400px;
+          opacity: 0.3;
+          transform: rotate(-10deg);
+        }
+      }
+
+      @media (max-width: 620px) {
+        h1 {
+          font-size: clamp(3.4rem, 16vw, 5.25rem);
+        }
+
+        .subline {
+          max-width: 23rem;
+          font-size: 0.98rem;
+        }
+
+        .recall-card,
+        .card-content {
+          min-height: 560px;
+        }
+
+        .card-title {
+          margin-top: 2.55rem;
+        }
+
+        .card-title h2 {
+          font-size: clamp(3.65rem, 17vw, 4.5rem);
+        }
+
+        .stat-strip,
+        .button-row {
+          grid-template-columns: 1fr;
+        }
+
+        .style-dock {
+          grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+        }
+
+        .qr-row {
+          grid-template-columns: 82px minmax(0, 1fr);
+        }
+
+        .qr-row img {
+          width: 82px;
+          height: 82px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar" aria-label="Experience Lab navigation">
+      <div class="brand">Experience Lab</div>
+      <nav class="tabs" aria-label="Concept tabs">
+        <a class="tab" href="index.html">Touch Grass Exchange</a>
+        <a class="tab" href="squad-recall.html" aria-current="page">Squad Recall: Last Drop</a>
+      </nav>
+      <div class="status">Prototype 02 / 02</div>
+    </header>
+
+    <main>
+      <div class="sky" aria-hidden="true"></div>
+      <div class="speed-lines" aria-hidden="true"></div>
+      <div class="void" aria-hidden="true"></div>
+      <img class="hand" src="assets/squad-recall-hand.svg" alt="" aria-hidden="true" />
+      <div class="plane-edge" aria-hidden="true"></div>
+
+      <div class="page">
+        <section class="hero-copy" aria-labelledby="page-title">
+          <div class="eyebrow">Warzone reactivation concept</div>
+          <h1 id="page-title">Squad Recall<span>Last Drop</span></h1>
+          <p class="subline">
+            Turn the last match into a screenshot-ready recall card, then send the
+            squad a text that gets them back in the lobby.
+          </p>
+        </section>
+
+        <aside class="recall-stack" aria-label="Recall card composer">
+          <article class="recall-card" id="recallCard">
+            <pre class="ascii-art" id="asciiArt" aria-hidden="true"></pre>
+            <div class="card-veil" aria-hidden="true"></div>
+
+            <div class="card-content">
+              <div class="card-meta">
+                <span>Operation<br />Last Drop</span>
+                <span>Target<br />Squad Recall</span>
+                <span>Status<br />Ready</span>
+              </div>
+
+              <div class="card-title">
+                <div class="alert-label" id="styleLabel">High Kill Frame</div>
+                <h2>Warzone<span>Last Drop</span></h2>
+              </div>
+
+              <div class="stat-strip" aria-label="Last match stats">
+                <div class="stat-pill"><span>Finish</span><strong>#3</strong></div>
+                <div class="stat-pill"><span>Elims</span><strong>17</strong></div>
+                <div class="stat-pill"><span>Damage</span><strong>5.8K</strong></div>
+              </div>
+
+              <div class="text-card">
+                <pre id="recallText"></pre>
+              </div>
+
+              <p class="runback">Run it back?</p>
+
+              <div class="barcode" aria-hidden="true">
+                <span style="--w: 5px; --h: 44px"></span>
+                <span style="--w: 9px; --h: 44px"></span>
+                <span style="--w: 4px; --h: 44px"></span>
+                <span style="--w: 14px; --h: 44px"></span>
+                <span style="--w: 5px; --h: 44px"></span>
+                <span style="--w: 5px; --h: 44px"></span>
+                <span style="--w: 10px; --h: 44px"></span>
+                <span style="--w: 4px; --h: 44px"></span>
+                <span style="--w: 9px; --h: 44px"></span>
+                <span style="--w: 5px; --h: 44px"></span>
+                <span style="--w: 18px; --h: 44px"></span>
+                <span style="--w: 4px; --h: 44px"></span>
+                <span style="--w: 10px; --h: 44px"></span>
+                <span style="--w: 5px; --h: 44px"></span>
+              </div>
+
+              <div class="card-footer">
+                <span>JACKGRINDS#7341</span>
+                <span>Alcatraz / Resurgence</span>
+              </div>
+            </div>
+          </article>
+
+          <div class="style-dock" aria-label="ASCII card background controls">
+            <button type="button" id="previousStyle" aria-label="Previous ASCII style">‹</button>
+            <select id="styleSelect" aria-label="ASCII card background style"></select>
+            <button type="button" id="nextStyle" aria-label="Next ASCII style">›</button>
+          </div>
+
+          <div class="actions">
+            <div class="button-row">
+              <a class="primary" id="smsLink" href="#">Send SMS</a>
+              <button class="secondary" type="button" id="copyButton">Copy Recall Text</button>
+            </div>
+            <div class="qr-row">
+              <img id="qrCode" src="assets/squad-recall-sms-qr.png" alt="QR code for the SMS draft" />
+              <p>Scan to open the same recall text on your phone.</p>
+            </div>
+            <p class="status-copy" id="copyStatus">Pick a frame, screenshot the card, or send the text.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script>
+      const match = {
+        player: "JACKGRINDS#7341",
+        map: "Alcatraz / Resurgence",
+        finish: "#3",
+        elims: 17,
+        revives: 3,
+        damage: "5.8K",
+        moment: "Final Circle Buyback Run",
+      };
+
+      const recallText = `WARZONE LAST DROP
+${match.player}
+
+🪂 ${match.moment}
+💀 ${match.elims} Elims
+🛡️ ${match.revives} Revives
+⚡ ${match.damage} Damage
+🏁 ${match.finish} Squad Finish
+
+Run it back?`;
+
+      const asciiStyles = [
+        {
+          name: "01 High Kill Bloom",
+          label: "High Kill Frame",
+          accent: "#ff4b18",
+          paper: "#f5f1e8",
+          art: [
+            "             *        *        *             ",
+            "       *  *  *  HIGH KILL SIGNAL  *  *       ",
+            "    *  #######      #######      #######  *   ",
+            "      ##     ##    ##     ##    ##     ##     ",
+            "   ---##  X  ##----##  X  ##----##  X  ##--- ",
+            "      ##     ##    ##     ##    ##     ##     ",
+            "    *  #######      #######      #######  *   ",
+            "       *   *   *   *   *   *   *   *         ",
+            "  >>>>>>>>>>>>>>>  SQUAD WIPE  <<<<<<<<<<<<<< ",
+            "       *   *   *   *   *   *   *   *         ",
+            "    *  #######      #######      #######  *   ",
+            "      ##  X  ##    ##  X  ##    ##  X  ##    ",
+            "   ---##     ##----##     ##----##     ##--- ",
+            "      #######      #######      #######       ",
+            "             *        *        *             ",
+          ],
+        },
+        {
+          name: "02 Final Circle",
+          label: "Final Circle Frame",
+          accent: "#111111",
+          paper: "#f6f2ea",
+          art: [
+            "                 .----------------.           ",
+            "             .--'                  '--.       ",
+            "          .-'      FINAL CIRCLE       '-.     ",
+            "        .'      .----------------.       '.   ",
+            "       /      .'                  '.       \\  ",
+            "      |      /    RUN IT BACK?      \\       | ",
+            "      |     |     03 / LAST DROP     |      | ",
+            "      |      \\                      /       | ",
+            "       \\      '.                  .'       /  ",
+            "        '.      '----------------'       .'   ",
+            "          '-.                        .-'      ",
+            "             '--.                .--'         ",
+            "                 '--------------'             ",
+          ],
+        },
+        {
+          name: "03 Squad Wipe",
+          label: "Squad Wipe Frame",
+          accent: "#ef233c",
+          paper: "#f8eee8",
+          art: [
+            "  X X X X X X X X X X X X X X X X X X X X X  ",
+            "  X     S Q U A D   W I P E   C A R D     X  ",
+            "  X  /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\  X  ",
+            "  X  || 17 ELIMS  || 17 ELIMS  || 17 ||   X  ",
+            "  X  \\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/  X  ",
+            "  X       TARGETS DOWN / COMMS OPEN       X  ",
+            "  X X X X X X X X X X X X X X X X X X X X X  ",
+          ],
+        },
+        {
+          name: "04 Resurgence Static",
+          label: "Resurgence Frame",
+          accent: "#34d6ff",
+          paper: "#edf6f8",
+          art: [
+            "  . . . . . . . . . . . . . . . . . . . . .  ",
+            "  .  RESURGENCE ONLINE  .  RESURGENCE  .     ",
+            "  . . ::: . . ::: . . ::: . . ::: . . ::: .   ",
+            "  :::  DROP  :::  DROP  :::  DROP  :::  DROP ",
+            "  . . ::: . . ::: . . ::: . . ::: . . ::: .   ",
+            "  .  RECALL ACTIVE  .  RECALL ACTIVE  .      ",
+            "  . . . . . . . . . . . . . . . . . . . . .  ",
+          ],
+        },
+        {
+          name: "05 Buy Station Run",
+          label: "Buyback Frame",
+          accent: "#11a36a",
+          paper: "#eff7ea",
+          art: [
+            "  $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $  ",
+            "  $        BUY STATION ROUTE CLEARED       $  ",
+            "  $   [$]----[$]----[$]----[$]----[$]      $  ",
+            "  $     CASH OUT / SQUAD IN / LAST DROP    $  ",
+            "  $   [$]----[$]----[$]----[$]----[$]      $  ",
+            "  $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $  ",
+          ],
+        },
+        {
+          name: "06 Drop Trail",
+          label: "Drop Trail Frame",
+          accent: "#ff7a1a",
+          paper: "#f7efe6",
+          art: [
+            "        |         |         |         |       ",
+            "       / \\       / \\       / \\       / \\      ",
+            "      /   \\     /   \\     /   \\     /   \\     ",
+            "     /     \\   /     \\   /     \\   /     \\    ",
+            "    v       v v       v v       v v       v   ",
+            "         LAST DROP // SEND THE FLARE          ",
+            "    ^       ^ ^       ^ ^       ^ ^       ^   ",
+            "     \\     /   \\     /   \\     /   \\     /    ",
+            "      \\   /     \\   /     \\   /     \\   /     ",
+            "       \\ /       \\ /       \\ /       \\ /      ",
+          ],
+        },
+        {
+          name: "07 Harbor Grid",
+          label: "Harbor Frame",
+          accent: "#2d9cdb",
+          paper: "#edf3f7",
+          art: [
+            "  +---+---+---+---+---+---+---+---+---+---+  ",
+            "  | H | A | R | B | O | R |   | G | R | D |  ",
+            "  +---+---+---+---+---+---+---+---+---+---+  ",
+            "  | 17| K | I | L | L | S | / | # | 3 |   |  ",
+            "  +---+---+---+---+---+---+---+---+---+---+  ",
+            "  | R | E | C | A | L | L |   | S | Q | D |  ",
+            "  +---+---+---+---+---+---+---+---+---+---+  ",
+          ],
+        },
+        {
+          name: "08 Prison Roofline",
+          label: "Roofline Frame",
+          accent: "#4d4d4d",
+          paper: "#f2f0ea",
+          art: [
+            "  ______________________      ______________  ",
+            " |  PRISON ROOFLINE     |____|   LAST DROP  | ",
+            " |  [] [] [] [] [] []   |    |   [] [] []   | ",
+            " |  [] [] [] [] [] []   |____|   [] [] []   | ",
+            " |__________________________________________| ",
+            "      / / / / / / / /  RECALL SIGNAL  / / /   ",
+          ],
+        },
+        {
+          name: "09 Gulag Ghost",
+          label: "Gulag Frame",
+          accent: "#7c6cff",
+          paper: "#f0eef8",
+          art: [
+            "        .----.        .----.        .----.    ",
+            "       / .--. \\      / .--. \\      / .--. \\   ",
+            "      | |    | |    | |    | |    | |    | |  ",
+            "      | |    | |    | |    | |    | |    | |  ",
+            "       \\ '--' /      \\ '--' /      \\ '--' /   ",
+            "        '----' GULAG GHOST // REDEPLOY        ",
+            "            .----.        .----.              ",
+          ],
+        },
+        {
+          name: "10 Cash Route",
+          label: "Cash Route Frame",
+          accent: "#00a86b",
+          paper: "#f0f7ed",
+          art: [
+            "  ========= CASH ROUTE ========= CASH ROUTE = ",
+            "  -> -> -> LOADOUT -> BUYBACK -> FINAL -> ->  ",
+            "  ========= CASH ROUTE ========= CASH ROUTE = ",
+            "  -> -> -> LOADOUT -> BUYBACK -> FINAL -> ->  ",
+            "  ========= SQUAD RECALL ACTIVE ============  ",
+          ],
+        },
+        {
+          name: "11 Plate Break",
+          label: "Plate Break Frame",
+          accent: "#ff2f63",
+          paper: "#f8edf1",
+          art: [
+            "  [=====] [=====] [=====] [=====] [=====]     ",
+            "  [==// ] [ //==] [==// ] [ //==] [==// ]    ",
+            "  [ //==] [==// ] [ //==] [==// ] [ //==]    ",
+            "       ARMOR BROKE / PUSH MADE / TEXT SENT    ",
+            "  [=====] [=====] [=====] [=====] [=====]     ",
+          ],
+        },
+        {
+          name: "12 Contract Stack",
+          label: "Contract Frame",
+          accent: "#d8a800",
+          paper: "#f8f4e7",
+          art: [
+            "  [BOUNTY] [SCAV] [RECON] [MOST WANTED]      ",
+            "  [BOUNTY] [SCAV] [RECON] [MOST WANTED]      ",
+            "  [BOUNTY] [SCAV] [RECON] [MOST WANTED]      ",
+            "         CONTRACT STACKED // SQUAD NEEDED     ",
+            "  [BOUNTY] [SCAV] [RECON] [MOST WANTED]      ",
+          ],
+        },
+        {
+          name: "13 Sniper Glint",
+          label: "Glint Frame",
+          accent: "#85f7ff",
+          paper: "#eef7f8",
+          art: [
+            "       .        .        .        .           ",
+            "   ---------<*>----------<*>----------<*>---  ",
+            "       .        .        .        .           ",
+            "      GLINT CHECK / ROOF CLEAR / LAST DROP    ",
+            "   ---<*>----------<*>----------<*>---------  ",
+            "       .        .        .        .           ",
+          ],
+        },
+        {
+          name: "14 Gas Edge",
+          label: "Gas Edge Frame",
+          accent: "#b7ff2a",
+          paper: "#f3f7e8",
+          art: [
+            "  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  ",
+            "  ~   GAS EDGE ROTATION // MADE IT LATE    ~  ",
+            "  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  ",
+            "      >>> >>> >>> FINAL CIRCLE >>> >>> >>>    ",
+            "  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  ",
+          ],
+        },
+        {
+          name: "15 Hot Drop",
+          label: "Hot Drop Frame",
+          accent: "#ff2d00",
+          paper: "#f8ece7",
+          art: [
+            "  !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!  ",
+            "  !!!       HOT DROP / 17 ELIMS         !!!   ",
+            "  !!!  _/\\_  _/\\_  _/\\_  _/\\_  _/\\_    !!!  ",
+            "  !!! /    \\/    \\/    \\/    \\/    \\   !!!  ",
+            "  !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!  ",
+          ],
+        },
+        {
+          name: "16 Precision Path",
+          label: "Precision Frame",
+          accent: "#1b1b1b",
+          paper: "#f7f7f2",
+          art: [
+            "  ----+---------+---------+---------+------   ",
+            "      |         |         |         |         ",
+            "  ----+---- PRECISION PATH LOCKED --+------   ",
+            "      |         |    X    |         |         ",
+            "  ----+---------+---------+---------+------   ",
+            "      |       RECALL VECTOR READY   |         ",
+          ],
+        },
+        {
+          name: "17 Loadout Smoke",
+          label: "Loadout Frame",
+          accent: "#ee6c4d",
+          paper: "#f7efe9",
+          art: [
+            "       (  )      (  )      (  )      (  )     ",
+            "     (      )  (      )  (      )  (      )   ",
+            "   (  LOADOUT SMOKE // SQUAD RECALL ACTIVE ) ",
+            "     (      )  (      )  (      )  (      )   ",
+            "       (  )      (  )      (  )      (  )     ",
+          ],
+        },
+        {
+          name: "18 Last Stand",
+          label: "Last Stand Frame",
+          accent: "#d1495b",
+          paper: "#f7eeee",
+          art: [
+            "  ||||||||||||||||||||||||||||||||||||||||||  ",
+            "  ||        LAST STAND // STILL UP        ||  ",
+            "  ||  [x] [x] [x] [x] [x] [x] [x] [x]    ||  ",
+            "  ||        TEXT THE SQUAD BACK IN        ||  ",
+            "  ||||||||||||||||||||||||||||||||||||||||||  ",
+          ],
+        },
+        {
+          name: "19 Victory Ping",
+          label: "Victory Ping Frame",
+          accent: "#2f80ed",
+          paper: "#edf3fb",
+          art: [
+            "             /\\                         /\\    ",
+            "            /  \\       PING SENT       /  \\   ",
+            "           /____\\                   /\\ /____\\ ",
+            "          /      \\   SQUAD RECALL  /  \\      ",
+            "         /________\\               /____\\      ",
+            "             /\\        LAST DROP      /\\      ",
+          ],
+        },
+        {
+          name: "20 Night Vision",
+          label: "Night Vision Frame",
+          accent: "#35ff7d",
+          paper: "#edf8ee",
+          art: [
+            "  01010101010101010101010101010101010101010  ",
+            "  101   NIGHT VISION // COMMS OPEN    10101  ",
+            "  01010101010101010101010101010101010101010  ",
+            "  10101  17 ELIMS  03 FINISH  RUN IT BACK    ",
+            "  01010101010101010101010101010101010101010  ",
+          ],
+        },
+      ];
+
+      const shareUrl = "https://jack-more.github.io/experience-lab/squad-recall.html";
+      const smsBody = `${recallText}\n${shareUrl}`;
+      const smsHref = `sms:&body=${encodeURIComponent(smsBody)}`;
+      const recallCard = document.getElementById("recallCard");
+      const asciiArt = document.getElementById("asciiArt");
+      const styleLabel = document.getElementById("styleLabel");
+      const styleSelect = document.getElementById("styleSelect");
+      const previousStyle = document.getElementById("previousStyle");
+      const nextStyle = document.getElementById("nextStyle");
+      const recallTextElement = document.getElementById("recallText");
+      const smsLink = document.getElementById("smsLink");
+      const copyButton = document.getElementById("copyButton");
+      const copyStatus = document.getElementById("copyStatus");
+
+      let activeStyle = match.elims >= 15 ? 0 : 1;
+
+      asciiStyles.forEach((style, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = style.name;
+        styleSelect.append(option);
+      });
+
+      function setStyle(index) {
+        activeStyle = (index + asciiStyles.length) % asciiStyles.length;
+        const style = asciiStyles[activeStyle];
+        asciiArt.textContent = style.art.join("\n");
+        styleLabel.textContent = style.label;
+        styleSelect.value = String(activeStyle);
+        recallCard.style.setProperty("--accent", style.accent);
+        recallCard.style.setProperty("--paper-tint", style.paper);
+        copyStatus.textContent = `${style.name} selected. Screenshot the card or send the recall text.`;
+      }
+
+      recallTextElement.textContent = recallText;
+      smsLink.href = smsHref;
+      setStyle(activeStyle);
+
+      previousStyle.addEventListener("click", () => setStyle(activeStyle - 1));
+      nextStyle.addEventListener("click", () => setStyle(activeStyle + 1));
+      styleSelect.addEventListener("change", (event) => setStyle(Number(event.target.value)));
+
+      async function copyRecallText() {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(smsBody);
+          return;
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.value = smsBody;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-999px";
+        textarea.style.top = "0";
+        document.body.append(textarea);
+        textarea.select();
+        const copied = document.execCommand("copy");
+        textarea.remove();
+
+        if (!copied) {
+          throw new Error("Copy command failed");
+        }
+      }
+
+      function selectRecallText() {
+        const range = document.createRange();
+        range.selectNodeContents(recallTextElement);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+
+      copyButton.addEventListener("click", async () => {
+        try {
+          await copyRecallText();
+          copyStatus.textContent = "Recall text copied. Paste it into the squad chat.";
+        } catch {
+          selectRecallText();
+          copyStatus.textContent = "Recall text selected. Press Command+C, or use the SMS draft.";
+        }
+      });
+    </script>
+  </body>
+</html>
