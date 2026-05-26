@@ -188,7 +188,12 @@
         max-width: min(58vw, 760px);
         border: 1px solid rgba(241, 234, 217, 0.14);
         background: rgba(241, 234, 217, 0.035);
-        overflow: hidden;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .experience-tabs::-webkit-scrollbar {
+        display: none;
       }
 
       .experience-tab {
@@ -213,6 +218,16 @@
       }
 
       .experience-tab.is-active {
+        color: #081006;
+        background: linear-gradient(180deg, var(--acid), var(--acid-2));
+      }
+
+      .experience-tab:not(.is-next):hover {
+        color: #fff7e8;
+        background: rgba(241, 234, 217, 0.08);
+      }
+
+      .experience-tab.is-active:hover {
         color: #081006;
         background: linear-gradient(180deg, var(--acid), var(--acid-2));
       }
@@ -309,6 +324,13 @@
       section {
         position: relative;
         width: 100%;
+      }
+
+      #touch-grass,
+      #squad-recall,
+      #descent,
+      #drop-room {
+        scroll-margin-top: calc(var(--top-bar) + 1rem);
       }
 
       .hero {
@@ -1805,6 +1827,444 @@
         white-space: nowrap;
       }
 
+      .recall-lab {
+        position: relative;
+        overflow: hidden;
+        min-height: 100vh;
+        padding: 14vh 5vw 12vh;
+        background:
+          radial-gradient(circle at 22% 16%, rgba(122, 183, 255, 0.18), transparent 26rem),
+          radial-gradient(circle at 88% 32%, rgba(255, 104, 71, 0.12), transparent 20rem),
+          linear-gradient(180deg, #030403, #05070a 45%, #030403 100%);
+      }
+
+      .recall-lab::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          linear-gradient(rgba(241, 234, 217, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(241, 234, 217, 0.028) 1px, transparent 1px);
+        background-size: 88px 88px;
+        mask-image: linear-gradient(180deg, transparent, #000 12%, #000 82%, transparent);
+        pointer-events: none;
+      }
+
+      .recall-inner {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 1440px);
+        margin: 0 auto;
+      }
+
+      .recall-header {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.45fr);
+        gap: 2rem;
+        align-items: end;
+        margin-bottom: 2.25rem;
+      }
+
+      .recall-header h2 {
+        max-width: 880px;
+        margin-top: 0.85rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(2.3rem, 6vw, 6rem);
+        line-height: 0.98;
+        text-transform: uppercase;
+      }
+
+      .recall-header p {
+        color: rgba(241, 234, 217, 0.7);
+        font-size: 1.02rem;
+        line-height: 1.62;
+      }
+
+      .recall-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(360px, 0.58fr);
+        gap: 1px;
+        border: 1px solid rgba(241, 234, 217, 0.15);
+        background: rgba(241, 234, 217, 0.12);
+      }
+
+      .last-drop-card,
+      .recall-compose,
+      .branch-note {
+        background:
+          linear-gradient(180deg, rgba(241, 234, 217, 0.07), rgba(241, 234, 217, 0.018)),
+          rgba(7, 10, 12, 0.9);
+      }
+
+      .last-drop-card {
+        position: relative;
+        min-height: 610px;
+        padding: 1.25rem;
+        overflow: hidden;
+      }
+
+      .last-drop-card::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          radial-gradient(circle at 70% 26%, rgba(122, 183, 255, 0.18), transparent 19rem),
+          radial-gradient(circle at 20% 84%, rgba(189, 242, 60, 0.11), transparent 17rem);
+        pointer-events: none;
+      }
+
+      .drop-card-shell {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-height: 100%;
+        border: 1px solid rgba(241, 234, 217, 0.16);
+        background:
+          linear-gradient(135deg, rgba(4, 5, 5, 0.36), rgba(4, 5, 5, 0.82)),
+          rgba(8, 12, 14, 0.82);
+        box-shadow: inset 0 0 0 1px rgba(122, 183, 255, 0.08);
+      }
+
+      .drop-card-top,
+      .drop-card-bottom {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+        color: rgba(241, 234, 217, 0.62);
+        font-family: var(--font-mono);
+        font-size: 0.64rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .drop-card-hero {
+        display: grid;
+        align-content: start;
+        min-height: 0;
+        padding: 1.65rem 2.2rem 1.45rem;
+      }
+
+      .placement-lockup {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 1.15rem;
+        align-items: end;
+      }
+
+      .placement-rank {
+        color: var(--acid);
+        font-family: var(--font-display);
+        font-size: clamp(6rem, 16vw, 14rem);
+        font-weight: 800;
+        line-height: 0.78;
+      }
+
+      .placement-copy span {
+        color: var(--blue);
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .placement-copy h3 {
+        margin-top: 0.35rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 5rem);
+        line-height: 0.96;
+        text-transform: uppercase;
+      }
+
+      .warzone-map {
+        position: absolute;
+        right: 2.2rem;
+        bottom: 8rem;
+        width: min(40%, 360px);
+        aspect-ratio: 1;
+        border: 1px solid rgba(122, 183, 255, 0.24);
+        background:
+          linear-gradient(135deg, rgba(122, 183, 255, 0.1), transparent),
+          rgba(0, 0, 0, 0.22);
+        opacity: 0.76;
+      }
+
+      .warzone-map::before,
+      .warzone-map::after {
+        position: absolute;
+        content: "";
+      }
+
+      .warzone-map::before {
+        inset: 17% 22% 18% 14%;
+        border: 2px solid rgba(189, 242, 60, 0.62);
+        clip-path: polygon(8% 28%, 34% 8%, 72% 12%, 94% 46%, 76% 78%, 48% 92%, 16% 74%);
+      }
+
+      .warzone-map::after {
+        left: 56%;
+        top: 40%;
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--heat);
+        border-radius: 50%;
+        box-shadow: 0 0 32px rgba(255, 104, 71, 0.8);
+      }
+
+      .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 1.55rem;
+        background: rgba(241, 234, 217, 0.12);
+      }
+
+      .stat-strip div {
+        padding: 1rem;
+        background: rgba(3, 4, 3, 0.76);
+      }
+
+      .stat-strip span {
+        color: rgba(241, 234, 217, 0.48);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .stat-strip strong {
+        display: block;
+        margin-top: 0.42rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: 2rem;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .emoji-receipt {
+        margin-top: 1.25rem;
+        padding: 1rem;
+        border: 1px solid rgba(241, 234, 217, 0.14);
+        background: rgba(3, 4, 3, 0.72);
+      }
+
+      .emoji-row {
+        display: grid;
+        grid-template-columns: 5.8rem minmax(0, 1fr);
+        gap: 0.9rem;
+        align-items: center;
+        padding: 0.42rem 0;
+        color: rgba(241, 234, 217, 0.72);
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+      }
+
+      .emoji-row strong {
+        color: #fff7e8;
+        font-family: var(--font-label);
+        font-size: 1rem;
+        text-transform: uppercase;
+      }
+
+      .recall-compose {
+        display: grid;
+        align-content: start;
+        gap: 1rem;
+        padding: 1.25rem;
+      }
+
+      .compose-header h3 {
+        margin-top: 0.55rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: clamp(1.85rem, 3.2vw, 3.6rem);
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .compose-header p {
+        margin-top: 0.8rem;
+        color: rgba(241, 234, 217, 0.66);
+        line-height: 1.58;
+      }
+
+      .friend-picker {
+        display: grid;
+        gap: 1px;
+        border: 1px solid rgba(241, 234, 217, 0.12);
+        background: rgba(241, 234, 217, 0.12);
+      }
+
+      .friend-chip {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.75rem;
+        align-items: center;
+        min-height: 4.3rem;
+        padding: 0.85rem;
+        border: 0;
+        color: var(--warm);
+        text-align: left;
+        background: rgba(6, 8, 10, 0.9);
+      }
+
+      .friend-chip[aria-pressed="true"] {
+        background:
+          linear-gradient(90deg, rgba(122, 183, 255, 0.18), rgba(189, 242, 60, 0.08)),
+          rgba(8, 12, 14, 0.94);
+        box-shadow: inset 3px 0 0 var(--blue);
+      }
+
+      .friend-chip strong {
+        display: block;
+        color: #fff7e8;
+        font-family: var(--font-label);
+        font-size: 1.05rem;
+        text-transform: uppercase;
+      }
+
+      .friend-chip span {
+        color: rgba(241, 234, 217, 0.48);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .friend-chip em {
+        color: var(--acid);
+        font-style: normal;
+        font-family: var(--font-mono);
+        font-size: 0.58rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .message-preview {
+        min-height: 300px;
+        padding: 1rem;
+        border: 1px solid rgba(122, 183, 255, 0.26);
+        background:
+          linear-gradient(180deg, rgba(122, 183, 255, 0.07), transparent 42%),
+          rgba(3, 5, 7, 0.82);
+      }
+
+      .message-phone-top {
+        display: flex;
+        justify-content: space-between;
+        color: rgba(241, 234, 217, 0.48);
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .sms-bubble {
+        margin-top: 1rem;
+        padding: 1rem;
+        color: #06100c;
+        background: linear-gradient(180deg, #d8ff68, #a5ee25);
+        font-family: var(--font-mono);
+        font-size: 0.76rem;
+        font-weight: 700;
+        line-height: 1.54;
+        white-space: pre-line;
+      }
+
+      .recall-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .recall-button,
+      .sms-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 3.2rem;
+        padding: 0 1rem;
+        border: 1px solid rgba(122, 183, 255, 0.45);
+        color: #06100c;
+        background: linear-gradient(180deg, #d8ff68, #a5ee25);
+        font-family: var(--font-label);
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .sms-link {
+        color: #fff7e8;
+        background: rgba(122, 183, 255, 0.1);
+      }
+
+      .recall-status {
+        min-height: 1.1rem;
+        color: var(--blue);
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .comeback-contract {
+        padding: 1rem;
+        border: 1px solid rgba(189, 242, 60, 0.22);
+        background:
+          radial-gradient(circle at 100% 0%, rgba(189, 242, 60, 0.12), transparent 10rem),
+          rgba(3, 5, 4, 0.82);
+      }
+
+      .comeback-contract strong {
+        display: block;
+        margin-top: 0.5rem;
+        color: #fff7e8;
+        font-family: var(--font-display);
+        font-size: 1.65rem;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .comeback-contract p {
+        margin-top: 0.7rem;
+        color: rgba(241, 234, 217, 0.64);
+        line-height: 1.55;
+      }
+
+      .future-branches {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 1.2rem;
+        border: 1px solid rgba(241, 234, 217, 0.12);
+        background: rgba(241, 234, 217, 0.12);
+      }
+
+      .branch-note {
+        min-height: 9rem;
+        padding: 1rem;
+      }
+
+      .branch-note strong {
+        display: block;
+        margin-top: 0.45rem;
+        color: #fff7e8;
+        font-family: var(--font-label);
+        font-size: 1.05rem;
+        text-transform: uppercase;
+      }
+
+      .branch-note p {
+        margin-top: 0.5rem;
+        color: rgba(241, 234, 217, 0.58);
+        font-size: 0.88rem;
+        line-height: 1.45;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -1824,7 +2284,9 @@
         .drop-header,
         .reserve-event,
         .reward-reveal,
-        .crate-grid {
+        .crate-grid,
+        .recall-header,
+        .recall-grid {
           grid-template-columns: 1fr;
         }
 
@@ -1888,6 +2350,16 @@
           padding: 0 0.78rem;
           font-size: 0.72rem;
         }
+
+        .last-drop-card {
+          min-height: 620px;
+        }
+
+        .warzone-map {
+          right: 1.2rem;
+          bottom: 7.2rem;
+          width: min(44%, 260px);
+        }
       }
 
       @media (max-width: 680px) {
@@ -1913,8 +2385,40 @@
         }
 
         .exchange-summary,
-        .path-switch {
+        .path-switch,
+        .stat-strip,
+        .future-branches,
+        .recall-actions {
           grid-template-columns: 1fr;
+        }
+
+        .recall-lab {
+          padding-inline: 0.85rem;
+        }
+
+        .drop-card-hero {
+          padding: 1.1rem;
+        }
+
+        .placement-lockup {
+          grid-template-columns: 1fr;
+        }
+
+        .placement-rank {
+          font-size: 7rem;
+        }
+
+        .warzone-map {
+          position: relative;
+          right: auto;
+          bottom: auto;
+          width: 100%;
+          margin-top: 1.3rem;
+        }
+
+        .emoji-row {
+          grid-template-columns: 4.8rem minmax(0, 1fr);
+          font-size: 0.72rem;
         }
 
         .conversion-meter {
@@ -1987,12 +2491,12 @@
     <header class="experience-shell" aria-label="Experience Lab concepts">
       <div class="experience-brand">Experience Lab</div>
       <nav class="experience-tabs" aria-label="Concept tabs">
-        <a class="experience-tab is-active" href="#scroll-content" aria-current="page">Touch Grass Exchange</a>
-        <span class="experience-tab is-next">Squad Rush</span>
+        <a class="experience-tab is-active" href="#touch-grass" aria-current="page" data-status="Prototype 01 / 04">Touch Grass Exchange</a>
+        <a class="experience-tab" href="#squad-recall" data-status="Prototype 02 / 04">Squad Recall: Last Drop</a>
         <span class="experience-tab is-next">Creator Contracts</span>
         <span class="experience-tab is-next">Map Drop</span>
       </nav>
-      <div class="experience-status">Prototype 01 / 04</div>
+      <div class="experience-status" id="experienceStatus">Prototype 01 / 04</div>
     </header>
 
     <div class="hud-overlay" aria-hidden="true">
@@ -2003,7 +2507,7 @@
           Overcap detected
         </div>
         <div class="hud-data right">
-          <span>Exchange Window</span>
+          <span>Campaign Window</span>
           2D 18H remaining
         </div>
       </div>
@@ -2013,14 +2517,14 @@
           <div id="hud-depth">-0.00 M</div>
         </div>
         <div class="hud-data right">
-          <span>Exchange Paths</span>
-          Reserve Crates / Marketplace ready
+          <span>Experience Paths</span>
+          Exchange / Recall ready
         </div>
       </div>
     </div>
 
     <div id="scroll-content">
-      <section class="hero">
+      <section class="hero" id="touch-grass" data-experience="touch-grass">
         <div class="hero-title-group">
           <div class="eyebrow">Surplus XP Rewards Exchange</div>
           <h1>Touch Grass <span class="highlight">Season 4</span></h1>
@@ -2399,6 +2903,141 @@
           </div>
         </div>
       </section>
+
+      <section class="recall-lab" id="squad-recall" data-experience="squad-recall" aria-label="Squad Recall Last Drop prototype">
+        <div class="recall-inner">
+          <div class="recall-header reveal-card">
+            <div>
+              <div class="eyebrow">Squad Recall: Last Drop</div>
+              <h2>Turn the last match into the next invite.</h2>
+            </div>
+            <p>
+              A post-match share system for bringing lapsed friends back. The player
+              gets a clean Last Drop Card, an emoji receipt built for texts, and a
+              Comeback Contract both friends can complete in-game.
+            </p>
+          </div>
+
+          <div class="recall-grid reveal-card">
+            <article class="last-drop-card" aria-label="Last Warzone match card">
+              <div class="drop-card-shell">
+                <div class="drop-card-top">
+                  <span>Warzone Last Drop</span>
+                  <span>Rebirth Island / Quads</span>
+                </div>
+                <div class="drop-card-hero">
+                  <div class="placement-lockup">
+                    <div class="placement-rank">#3</div>
+                    <div class="placement-copy">
+                      <span>Squad finish</span>
+                      <h3>Final Circle<br />Buyback Run</h3>
+                    </div>
+                  </div>
+                  <div class="warzone-map" aria-hidden="true"></div>
+                  <div class="stat-strip" aria-label="Last match stats">
+                    <div>
+                      <span>Elims</span>
+                      <strong>9</strong>
+                    </div>
+                    <div>
+                      <span>Damage</span>
+                      <strong>3.4K</strong>
+                    </div>
+                    <div>
+                      <span>Revives</span>
+                      <strong>3</strong>
+                    </div>
+                    <div>
+                      <span>Cash</span>
+                      <strong>$18K</strong>
+                    </div>
+                  </div>
+                  <div class="emoji-receipt" aria-label="Emoji match receipt">
+                    <div class="emoji-row"><strong>Drop</strong><span>🪂🪂🪂 Final circle squad</span></div>
+                    <div class="emoji-row"><strong>Heat</strong><span>💀💀💀💀💀💀💀💀💀 9 elims</span></div>
+                    <div class="emoji-row"><strong>Save</strong><span>🛡️🛡️🛡️ 3 revives</span></div>
+                    <div class="emoji-row"><strong>Bank</strong><span>💰💰💰 Buyback money secured</span></div>
+                    <div class="emoji-row"><strong>Ask</strong><span>🏁 Run it back tonight?</span></div>
+                  </div>
+                </div>
+                <div class="drop-card-bottom">
+                  <span>JACKGRINDS#7341</span>
+                  <span>Share code: LD-03-9E-3R</span>
+                </div>
+              </div>
+            </article>
+
+            <aside class="recall-compose" aria-label="Text invite composer">
+              <div class="compose-header">
+                <span class="fine">Recall text</span>
+                <h3>Send the receipt. Start the contract.</h3>
+                <p>
+                  Pick a friend who has gone cold, then send a match recap that
+                  feels native to the group chat instead of like a marketing blast.
+                </p>
+              </div>
+
+              <div class="friend-picker" role="group" aria-label="Choose recall target">
+                <button class="friend-chip" type="button" data-friend="mason" aria-pressed="true">
+                  <span><strong>Mason</strong><span>Last seen 46 days ago</span></span>
+                  <em>Best fit</em>
+                </button>
+                <button class="friend-chip" type="button" data-friend="riley" aria-pressed="false">
+                  <span><strong>Riley</strong><span>Last seen 19 days ago</span></span>
+                  <em>Squad fill</em>
+                </button>
+                <button class="friend-chip" type="button" data-friend="trey" aria-pressed="false">
+                  <span><strong>Trey</strong><span>Last seen 73 days ago</span></span>
+                  <em>High recall</em>
+                </button>
+              </div>
+
+              <div class="message-preview">
+                <div class="message-phone-top">
+                  <span id="recallRecipient">To Mason</span>
+                  <span>SMS Draft</span>
+                </div>
+                <div class="sms-bubble" id="recallMessage" aria-live="polite"></div>
+              </div>
+
+              <div class="recall-actions">
+                <button class="recall-button" type="button" id="copyRecallButton">Copy recall text</button>
+                <a class="sms-link" id="smsDraftLink" href="#">Open SMS draft</a>
+              </div>
+              <div class="recall-status" id="recallStatus">Ready to recall Mason.</div>
+
+              <div class="comeback-contract">
+                <span class="fine">Comeback Contract</span>
+                <strong>Play 3 matches together this weekend.</strong>
+                <p>
+                  Returning friend gets a Welcome Back Reserve Crate. Sender gets
+                  a Squad Recall token. Both unlock a shared calling card if the
+                  squad completes the contract.
+                </p>
+              </div>
+            </aside>
+          </div>
+
+          <div class="future-branches reveal-card" aria-label="Future Experience Lab branches">
+            <article class="branch-note">
+              <span class="fine">Future tab</span>
+              <strong>Creator Contracts</strong>
+              <p>
+                Creator-issued community bounties: watch, join, complete the creator's
+                weekly squad challenge, and earn a campaign-specific cosmetic token.
+              </p>
+            </article>
+            <article class="branch-note">
+              <span class="fine">Future tab</span>
+              <strong>Map Drop</strong>
+              <p>
+                A clean seasonal map-reveal experience where POIs unlock as players
+                complete playlist milestones and share coordinates with friends.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script>
@@ -2504,6 +3143,70 @@
       const reserveStageElement = select("#reserve-crate");
       const assetViewers = [];
       let isDocumentVisible = !document.hidden;
+      const experienceTabs = Array.from(document.querySelectorAll('.experience-tab[href^="#"]'));
+      const experienceStatus = select("#experienceStatus");
+      const recallFriends = {
+        mason: {
+          name: "Mason",
+          days: "46 days ago",
+          hook: "You were always our buyback guy.",
+        },
+        riley: {
+          name: "Riley",
+          days: "19 days ago",
+          hook: "We need your endgame comms back.",
+        },
+        trey: {
+          name: "Trey",
+          days: "73 days ago",
+          hook: "The squad has been missing the chaos.",
+        },
+      };
+
+      function setActiveExperience(targetHash) {
+        experienceTabs.forEach((tab) => {
+          const isActive = tab.getAttribute("href") === targetHash;
+          tab.classList.toggle("is-active", isActive);
+          if (isActive) {
+            tab.setAttribute("aria-current", "page");
+            if (experienceStatus) experienceStatus.textContent = tab.dataset.status || "Prototype";
+          } else {
+            tab.removeAttribute("aria-current");
+          }
+        });
+      }
+
+      function buildRecallMessage(friendName) {
+        return `WARZONE LAST DROP
+JACKGRINDS#7341
+
+🪂🪂🪂 Final circle squad
+💀💀💀💀💀💀💀💀💀 9 elims
+🛡️🛡️🛡️ 3 revives
+💰💰💰 Buyback money secured
+🏁 #3 squad finish
+
+${friendName}, run it back?
+Squad Recall contract: play 3 matches together this weekend.`;
+      }
+
+      function renderRecallInvite(friendKey = "mason") {
+        const friend = recallFriends[friendKey] || recallFriends.mason;
+        const message = buildRecallMessage(friend.name);
+        select("#recallRecipient").textContent = `To ${friend.name}`;
+        select("#recallMessage").textContent = `${message}\n\n${friend.hook}`;
+        select("#recallStatus").textContent = `Ready to recall ${friend.name}. Last seen ${friend.days}.`;
+        select("#smsDraftLink").href = `sms:&body=${encodeURIComponent(`${message}\n\n${friend.hook}`)}`;
+      }
+
+      function hydrateExperienceHash() {
+        const activeTarget = experienceTabs.find((tab) => tab.getAttribute("href") === window.location.hash);
+        if (!activeTarget) return;
+        setActiveExperience(window.location.hash);
+        window.setTimeout(() => {
+          select(window.location.hash)?.scrollIntoView({ block: "start" });
+        }, 120);
+      }
 
       function createTouchGrassTexture(kind) {
         const canvas = document.createElement("canvas");
@@ -3050,6 +3753,48 @@
         revealObserver.observe(element);
       });
 
+      experienceTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          setActiveExperience(tab.getAttribute("href"));
+        });
+      });
+
+      const experienceObserver = new IntersectionObserver(
+        (entries) => {
+          const visibleEntry = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (visibleEntry) setActiveExperience(`#${visibleEntry.target.id}`);
+        },
+        { threshold: [0.28, 0.44], rootMargin: "-24% 0px -52% 0px" }
+      );
+
+      ["#touch-grass", "#squad-recall"].forEach((experienceSelector) => {
+        const experienceSection = select(experienceSelector);
+        if (experienceSection) experienceObserver.observe(experienceSection);
+      });
+
+      document.querySelectorAll(".friend-chip").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".friend-chip").forEach((chip) => {
+            chip.setAttribute("aria-pressed", String(chip === button));
+          });
+          renderRecallInvite(button.dataset.friend);
+        });
+      });
+
+      select("#copyRecallButton").addEventListener("click", async () => {
+        const recallText = select("#recallMessage").textContent;
+        try {
+          await navigator.clipboard.writeText(recallText);
+          select("#recallStatus").textContent = "Recall text copied. Drop it in the group chat.";
+        } catch {
+          select("#recallStatus").textContent = "Recall text selected in preview. Copy from the SMS draft.";
+        }
+      });
+
+      renderRecallInvite();
+
       function renderConversion(progress) {
         const xpRemaining = Math.round(totalSurplusXp * (1 - progress));
         const creditsReady = Math.round(totalExchangeCredits * progress);
@@ -3065,6 +3810,7 @@
       }
 
       renderClaimMode();
+      hydrateExperienceHash();
       hydrateCrateFlowFromUrl();
       setupTouchGrassModel({
         mountSelector: "#reserveCrateModel",
