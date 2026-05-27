@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Squad Recall: Last Drop</title>
+    <title>Last Drop: Recall</title>
     <meta
       name="description"
-      content="A standalone Squad Recall concept that turns a player's last Warzone result into a textable recall card."
+      content="A standalone Last Drop: Recall concept that turns a player's last Warzone result into a shareable recall card."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -750,7 +750,7 @@
       <div class="brand">Experience Lab</div>
       <nav class="tabs" aria-label="Concept tabs">
         <a class="tab" href="index.html">Touch Grass Exchange</a>
-        <a class="tab" href="squad-recall.html" aria-current="page">Squad Recall: Last Drop</a>
+        <a class="tab" href="squad-recall.html" aria-current="page">Last Drop: Recall</a>
       </nav>
       <div class="status">Prototype 02 / 02</div>
     </header>
@@ -765,7 +765,7 @@
       <div class="page">
         <section class="hero-copy" aria-labelledby="page-title">
           <div class="eyebrow">Warzone reactivation concept</div>
-          <h1 id="page-title">Squad Recall<span>Last Drop</span></h1>
+          <h1 id="page-title">Last Drop<span>Recall</span></h1>
           <p class="subline">
             Generate the flex card. Copy the image. Text the squad.
           </p>
@@ -778,7 +778,7 @@
               id="shareCardCanvas"
               width="1400"
               height="900"
-              aria-label="Generated Squad Recall share card"
+              aria-label="Generated Last Drop Recall share card"
             ></canvas>
           </article>
 
@@ -815,15 +815,15 @@
         player: "JACKGRINDS#7341",
         map: "Alcatraz / Resurgence",
         finish: "#1",
-        elims: 21,
+        kills: 21,
         redeploys: 2,
         revives: 3,
         damage: "7.9K",
         moment: "Final Circle Squad Wipe",
       };
 
-      const recallText = `SQUAD RECALL: LAST DROP
-${match.elims} elims. ${match.finish} finish. ${match.moment}.
+      const recallText = `LAST DROP: RECALL
+${match.kills} kills. ${match.finish} finish. ${match.moment}.
 
 Need one more. Run it back:`;
 
@@ -886,7 +886,7 @@ Need one more. Run it back:`;
           art: [
             "      _______       _______       _______    ",
             "    .'   8   '.   .'   8   '.   .'   8   '. ",
-            "   /  EIGHT   \\ /   BALL   \\ /  CARD    \\",
+            "   /  EIGHT   \\ /   BALL   \\ /  RUN     \\",
             "   \\__HOT RUN__/ \\__HOT RUN__/ \\__HOT RUN__/",
           ],
         },
@@ -948,12 +948,12 @@ Need one more. Run it back:`;
             "  XX  20+  XX  20+  XX  20+  XX  20+  XX    ",
             "  BOMBS AWAY / SQUAD ERASED / LOBBY BROKEN  ",
             "  XX  20+  XX  20+  XX  20+  XX  20+  XX    ",
-            "  //// TWENTY BOMB CARD //// TWENTY BOMB //// ",
+            "  //// TWENTY BOMB RUN //// TWENTY BOMB //// ",
             "  XX  20+  XX  20+  XX  20+  XX  20+  XX    ",
           ],
           featureArt: [
             "      .-------------.",
-            "    .'   20+ KILL   '.",
+            "    .'   20+ KILLS  '.",
             "   /  .-----------.   \\",
             "  |  /  X  X  X   \\   |",
             "  | |  XXXXXX  XX  |  |",
@@ -1046,16 +1046,16 @@ Need one more. Run it back:`;
       const copyStatus = document.getElementById("copyStatus");
 
       const cardMeta = [
-        { metric: "elims", minValue: 2, tierName: "Two-Piece", requirement: "2+ kills" },
-        { metric: "elims", minValue: 3, tierName: "Triple Tap", requirement: "3+ kills" },
-        { metric: "elims", minValue: 4, tierName: "Four Down", requirement: "4+ kills" },
-        { metric: "elims", minValue: 5, tierName: "Five Alive", requirement: "5+ kills" },
-        { metric: "elims", minValue: 8, tierName: "Eight Ball", requirement: "8+ kills" },
-        { metric: "elims", minValue: 10, tierName: "Double Digits", requirement: "10+ kills" },
-        { metric: "elims", minValue: 12, tierName: "Dozen Run", requirement: "12+ kills" },
-        { metric: "elims", minValue: 15, tierName: "High Kill Bloom", requirement: "15+ kills" },
-        { metric: "elims", minValue: 18, tierName: "Almost Bomb", requirement: "18+ kills" },
-        { metric: "elims", minValue: 20, tierName: "Twenty Bomb", requirement: "20+ kills" },
+        { metric: "kills", minValue: 2, tierName: "Two-Piece", requirement: "2+ kills" },
+        { metric: "kills", minValue: 3, tierName: "Triple Tap", requirement: "3+ kills" },
+        { metric: "kills", minValue: 4, tierName: "Four Down", requirement: "4+ kills" },
+        { metric: "kills", minValue: 5, tierName: "Five Alive", requirement: "5+ kills" },
+        { metric: "kills", minValue: 8, tierName: "Eight Ball", requirement: "8+ kills" },
+        { metric: "kills", minValue: 10, tierName: "Double Digits", requirement: "10+ kills" },
+        { metric: "kills", minValue: 12, tierName: "Dozen Run", requirement: "12+ kills" },
+        { metric: "kills", minValue: 15, tierName: "High Kill Bloom", requirement: "15+ kills" },
+        { metric: "kills", minValue: 18, tierName: "Almost Bomb", requirement: "18+ kills" },
+        { metric: "kills", minValue: 20, tierName: "Twenty Bomb", requirement: "20+ kills" },
         { metric: "redeploys", minValue: 1, tierName: "Buyback Run", requirement: "1+ redeploy" },
         { metric: "redeploys", minValue: 2, tierName: "Redeploy Chain", requirement: "2+ redeploys" },
         { metric: "revives", minValue: 1, tierName: "Revive Save", requirement: "1+ revive" },
@@ -1074,7 +1074,7 @@ Need one more. Run it back:`;
       const requestedStyle = new URLSearchParams(window.location.search).get("style");
       let activeStyle = asciiStyles.reduce((bestIndex, style, index) => {
         if (
-          style.metric === "elims" &&
+          style.metric === "kills" &&
           isStyleUnlocked(style) &&
           style.minValue >= asciiStyles[bestIndex].minValue
         ) {
@@ -1171,7 +1171,7 @@ Need one more. Run it back:`;
               (col > 8 && row < 4) ||
               (col < 4 && row > 8);
 
-            if (!inFinder && (row * 7 + col * 5 + match.elims) % 4 === 0) {
+            if (!inFinder && (row * 7 + col * 5 + match.kills) % 4 === 0) {
               ctx.fillStyle = fg;
               ctx.fillRect(x + col * cell, y + row * cell, cell * 0.86, cell * 0.86);
             }
@@ -1188,7 +1188,7 @@ Need one more. Run it back:`;
           return { value: `+${match.revives}`, label: "REVIVES" };
         }
 
-        return { value: `+${match.elims}`, label: "ELIMS" };
+        return { value: `+${match.kills}`, label: "KILLS" };
       }
 
       function renderShareCard() {
@@ -1197,9 +1197,8 @@ Need one more. Run it back:`;
         const width = shareCardCanvas.width;
         const height = shareCardCanvas.height;
         const unlocked = isStyleUnlocked(style);
-        const tierNumber = activeStyle + 1;
         const primary = getPrimaryStat(style);
-        const isPrestigeKill = style.metric === "elims" && style.minValue >= 20;
+        const isPrestigeKill = style.metric === "kills" && style.minValue >= 20;
         const artBg = isPrestigeKill ? style.accent : "#0d22f5";
         const artInk = isPrestigeKill ? "#120603" : "#f7f1e7";
 
@@ -1261,15 +1260,15 @@ Need one more. Run it back:`;
 
         ctx.fillStyle = "#f7f1e7";
         ctx.font = "900 44px Inter, Arial, sans-serif";
-        ctx.fillText("SQUAD RECALL", 54, 78);
+        ctx.fillText("LAST DROP: RECALL", 54, 78);
         ctx.font = "700 20px 'Space Mono', monospace";
         ctx.fillStyle = "rgba(247, 241, 231, 0.62)";
-        ctx.fillText("LAST DROP // ALCATRAZ", 58, 114);
+        ctx.fillText("WARZONE // ALCATRAZ", 58, 114);
 
         fillRoundedRect(ctx, 58, 150, 290, 42, 21, unlocked ? style.accent : "#4b4b4b");
         ctx.fillStyle = "#fff";
         ctx.font = "700 20px 'Space Mono', monospace";
-        ctx.fillText(`${style.requirement.toUpperCase()} CARD`, 82, 178);
+        ctx.fillText(style.requirement.toUpperCase(), 82, 178);
 
         ctx.fillStyle = style.accent;
         ctx.font = "900 190px Inter, Arial, sans-serif";
@@ -1280,9 +1279,8 @@ Need one more. Run it back:`;
 
         ctx.fillStyle = "rgba(247, 241, 231, 0.58)";
         ctx.font = "700 21px 'Space Mono', monospace";
-        ctx.fillText(`CARD ${String(tierNumber).padStart(2, "0")} / ${asciiStyles.length}`, 62, 536);
         ctx.fillStyle = style.accent;
-        ctx.fillText(style.tierName.toUpperCase(), 252, 536);
+        ctx.fillText(style.tierName.toUpperCase(), 62, 536);
 
         const stats = [
           ["FINISH", match.finish],
@@ -1311,14 +1309,6 @@ Need one more. Run it back:`;
         ctx.fillText(match.player, 58, 862);
         ctx.fillText(match.moment.toUpperCase(), 354, 862);
 
-        ctx.fillStyle = style.accent;
-        ctx.font = "700 18px 'Space Mono', monospace";
-        const nextLocked = asciiStyles
-          .filter((candidate) => candidate.metric === style.metric && !isStyleUnlocked(candidate))
-          .sort((a, b) => a.minValue - b.minValue)[0];
-        const nextText = nextLocked ? `NEXT UNLOCK: ${nextLocked.requirement} ${nextLocked.tierName}` : "MAX TIER UNLOCKED";
-        ctx.fillText(nextText.toUpperCase(), 58, 568);
-
         drawMiniQr(ctx, 676, 754, 104, "#080808");
         ctx.fillStyle = "rgba(247, 241, 231, 0.48)";
         ctx.font = "700 14px 'Space Mono', monospace";
@@ -1338,7 +1328,7 @@ Need one more. Run it back:`;
           ctx.font = "900 78px Inter, Arial, sans-serif";
           ctx.fillText(style.requirement.toUpperCase(), 0, -10);
           ctx.font = "700 28px 'Space Mono', monospace";
-          ctx.fillText("LOCKED CARD PREVIEW", 0, 46);
+          ctx.fillText("LOCKED PREVIEW", 0, 46);
           ctx.restore();
         }
       }
@@ -1389,7 +1379,7 @@ Need one more. Run it back:`;
         const downloadUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.download = `squad-recall-${match.elims}-elims.png`;
+        link.download = `last-drop-recall-${match.kills}-kills.png`;
         document.body.append(link);
         link.click();
         link.remove();
