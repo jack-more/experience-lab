@@ -522,7 +522,7 @@
 
       .actions {
         display: grid;
-        grid-template-columns: minmax(13rem, 1.15fr) minmax(18rem, 1fr);
+        grid-template-columns: 1fr 1fr;
         gap: 0.58rem;
         grid-column: 1;
         grid-row: 2;
@@ -640,10 +640,7 @@
       }
 
       .status-copy {
-        grid-column: 1 / -1;
-        min-height: 0.8rem;
-        padding: 0 0.2rem;
-        color: rgba(255, 255, 255, 0.72);
+        display: none;
       }
 
       @media (max-width: 980px) {
@@ -789,22 +786,8 @@
           </div>
 
           <div class="actions">
-            <div class="action-kicker">Main CTA</div>
-            <h2>Share the drop.</h2>
-            <p>
-              Copy the card for socials or send the emoji recap straight to squad chat.
-            </p>
-            <button class="primary is-image" type="button" id="copyImageButton">Copy Card Image</button>
-            <div class="button-row">
-              <a class="primary" id="smsLink" href="#">Open SMS Draft</a>
-              <button class="secondary" type="button" id="copyButton">Copy Invite Text</button>
-            </div>
-            <pre class="sms-preview" id="recallText"></pre>
-            <div class="qr-row">
-              <img id="qrCode" src="assets/squad-recall-sms-qr.png" alt="QR code for the SMS draft" />
-              <p>Scan to open the same recall text on your phone.</p>
-            </div>
-            <p class="status-copy" id="copyStatus">The card is the flex. The text is just the squad invite.</p>
+            <button class="primary is-image" type="button" id="copyImageButton">Copy Card</button>
+            <a class="secondary" id="smsLink" href="#">Invite Squad</a>
           </div>
         </aside>
       </div>
@@ -978,17 +961,19 @@ Need one more. Run it back:`;
             "   XX XX XX XX XX XX",
           ],
           featureArt: [
-            "      .-^^^^^^^^-.",
-            "    .'  _      _  '.",
-            "   /   (x)    (x)   \\",
-            "  |       /\\        |",
-            "  |    .------.     |",
-            "  |    | 20+  |     |",
-            "  |    |KILLS |     |",
-            "   \\    '----'     /",
-            "    '.  LOBBY   .'",
-            "      '--WIPE--'",
+            "       .----------------.",
+            "    .-'   TWENTY BOMB    '-.",
+            "   /    .--------------.     \\",
+            "  |     |   20+ KILLS  |      |",
+            "  |     |  LOBBY WIPE  |      |",
+            "  |     '--------------'      |",
+            "   \\        RUN BACK         /",
+            "    '-.___________________.-'",
           ],
+          featureX: 770,
+          featureY: 164,
+          featureFontSize: 29,
+          featureLineHeight: 43,
         },
         {
           name: "11 Buyback Run",
@@ -1076,11 +1061,8 @@ Need one more. Run it back:`;
       const styleSelect = document.getElementById("styleSelect");
       const previousStyle = document.getElementById("previousStyle");
       const nextStyle = document.getElementById("nextStyle");
-      const recallTextElement = document.getElementById("recallText");
       const smsLink = document.getElementById("smsLink");
       const copyImageButton = document.getElementById("copyImageButton");
-      const copyButton = document.getElementById("copyButton");
-      const copyStatus = document.getElementById("copyStatus");
 
       const cardMeta = [
         { metric: "kills", minValue: 2, tierName: "Two-Piece", requirement: "2+ kills" },
@@ -1256,7 +1238,7 @@ Need one more. Run it back:`;
         ctx.rect(768, 0, width - 768, height);
         ctx.clip();
 
-        ctx.globalAlpha = 0.18;
+        ctx.globalAlpha = 0.1;
         ctx.fillStyle = "#000";
         for (let y = -80; y < height + 120; y += 92) {
           ctx.fillRect(832, y, 148, 58);
@@ -1264,13 +1246,13 @@ Need one more. Run it back:`;
           ctx.fillRect(1260, y - 18, 86, 58);
         }
 
-        ctx.globalAlpha = unlocked ? 0.9 : 0.44;
+        ctx.globalAlpha = unlocked ? 0.94 : 0.44;
         ctx.fillStyle = artInk;
-        ctx.font = "700 32px 'Space Mono', monospace";
+        ctx.font = `700 ${style.featureFontSize || 34}px 'Space Mono', monospace`;
         const centerpiece = style.featureArt || style.art;
-        drawLines(ctx, centerpiece, 844, 150, 42);
+        drawLines(ctx, centerpiece, style.featureX || 826, style.featureY || 140, style.featureLineHeight || 43);
 
-        ctx.globalAlpha = 0.18;
+        ctx.globalAlpha = 0.08;
         ctx.font = "700 18px 'Space Mono', monospace";
         for (let y = 24; y < height; y += 58) {
           drawLines(ctx, style.art.slice(0, 3), 810, y, 22);
@@ -1278,9 +1260,9 @@ Need one more. Run it back:`;
 
         ctx.globalAlpha = 1;
         ctx.strokeStyle = artInk;
-        ctx.lineWidth = 6;
-        ctx.setLineDash([16, 12]);
-        strokeRoundedRect(ctx, 818, 112, 500, 540, 26, artInk, 6);
+        ctx.lineWidth = 5;
+        ctx.setLineDash([]);
+        strokeRoundedRect(ctx, 818, 112, 500, 540, 26, artInk, 5);
         ctx.restore();
 
         ctx.save();
@@ -1296,28 +1278,30 @@ Need one more. Run it back:`;
         ctx.restore();
 
         ctx.fillStyle = "#f7f1e7";
-        ctx.font = "900 44px Inter, Arial, sans-serif";
-        ctx.fillText("LAST DROP: RECALL", 54, 78);
-        ctx.font = "700 20px 'Space Mono', monospace";
+        ctx.font = "900 42px Inter, Arial, sans-serif";
+        ctx.fillText("LAST DROP: RECALL", 54, 70);
+        ctx.font = "900 38px 'Space Mono', monospace";
+        ctx.fillText(match.player.toUpperCase(), 56, 124);
+        ctx.font = "700 18px 'Space Mono', monospace";
         ctx.fillStyle = "rgba(247, 241, 231, 0.62)";
-        ctx.fillText("WARZONE // ALCATRAZ", 58, 114);
+        ctx.fillText("WARZONE // ALCATRAZ", 58, 158);
 
-        fillRoundedRect(ctx, 58, 150, 290, 42, 21, unlocked ? style.accent : "#4b4b4b");
+        fillRoundedRect(ctx, 58, 188, 290, 42, 21, unlocked ? style.accent : "#4b4b4b");
         ctx.fillStyle = "#fff";
         ctx.font = "700 20px 'Space Mono', monospace";
-        ctx.fillText(style.requirement.toUpperCase(), 82, 178);
+        ctx.fillText(style.requirement.toUpperCase(), 82, 216);
 
         ctx.fillStyle = style.accent;
         ctx.font = "900 190px Inter, Arial, sans-serif";
-        ctx.fillText(primary.value, 54, 386);
+        ctx.fillText(primary.value, 54, 424);
         ctx.fillStyle = "#f7f1e7";
         ctx.font = "900 94px Inter, Arial, sans-serif";
-        ctx.fillText(primary.label, 64, 482);
+        ctx.fillText(primary.label, 64, 520);
 
         ctx.fillStyle = "rgba(247, 241, 231, 0.58)";
         ctx.font = "700 21px 'Space Mono', monospace";
         ctx.fillStyle = style.accent;
-        ctx.fillText(style.tierName.toUpperCase(), 62, 536);
+        ctx.fillText(style.tierName.toUpperCase(), 62, 566);
 
         const stats = [
           ["FINISH", match.finish],
@@ -1328,7 +1312,7 @@ Need one more. Run it back:`;
 
         stats.forEach(([label, value], index) => {
           const x = 58 + (index % 2) * 318;
-          const y = 596 + Math.floor(index / 2) * 108;
+          const y = 622 + Math.floor(index / 2) * 104;
           fillRoundedRect(ctx, x, y, 276, 78, 12, "rgba(255, 255, 255, 0.075)");
           ctx.fillStyle = "rgba(247, 241, 231, 0.54)";
           ctx.font = "700 17px 'Space Mono', monospace";
@@ -1338,13 +1322,9 @@ Need one more. Run it back:`;
           ctx.fillText(String(value).toUpperCase(), x + 20, y + 64);
         });
 
-        ctx.fillStyle = "#f7f1e7";
-        ctx.font = "900 34px Inter, Arial, sans-serif";
-        ctx.fillText("RUN IT BACK?", 58, 830);
         ctx.fillStyle = "rgba(247, 241, 231, 0.62)";
-        ctx.font = "700 18px 'Space Mono', monospace";
-        ctx.fillText(match.player, 58, 862);
-        ctx.fillText(match.moment.toUpperCase(), 354, 862);
+        ctx.font = "700 20px 'Space Mono', monospace";
+        ctx.fillText(match.moment.toUpperCase(), 58, 850);
 
         drawMiniQr(ctx, 676, 754, 104, "#080808");
         ctx.fillStyle = "rgba(247, 241, 231, 0.48)";
@@ -1377,11 +1357,8 @@ Need one more. Run it back:`;
         recallCard.style.setProperty("--accent", style.accent);
         recallCard.style.setProperty("--paper-tint", style.paper);
         renderShareCard();
-        const lockLabel = isStyleUnlocked(style) ? "unlocked" : "locked preview";
-        copyStatus.textContent = `${style.requirement} ${style.tierName}: ${lockLabel}.`;
       }
 
-      recallTextElement.textContent = recallText;
       smsLink.href = smsHref;
       setStyle(activeStyle);
       if (document.fonts) {
@@ -1409,7 +1386,6 @@ Need one more. Run it back:`;
 
         if (navigator.clipboard && window.ClipboardItem && window.isSecureContext) {
           await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-          copyStatus.textContent = "Card image copied. Paste it into the chat.";
           return;
         }
 
@@ -1421,55 +1397,12 @@ Need one more. Run it back:`;
         link.click();
         link.remove();
         URL.revokeObjectURL(downloadUrl);
-        copyStatus.textContent = "Card image downloaded. Share the PNG with the squad.";
-      }
-
-      async function copyRecallText() {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(smsBody);
-          return;
-        }
-
-        const textarea = document.createElement("textarea");
-        textarea.value = smsBody;
-        textarea.setAttribute("readonly", "");
-        textarea.style.position = "fixed";
-        textarea.style.left = "-999px";
-        textarea.style.top = "0";
-        document.body.append(textarea);
-        textarea.select();
-        const copied = document.execCommand("copy");
-        textarea.remove();
-
-        if (!copied) {
-          throw new Error("Copy command failed");
-        }
-      }
-
-      function selectRecallText() {
-        const range = document.createRange();
-        range.selectNodeContents(recallTextElement);
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
       }
 
       copyImageButton.addEventListener("click", async () => {
         try {
           await copyCardImage();
-        } catch {
-          copyStatus.textContent = "Image copy blocked. Try the browser share/download option.";
-        }
-      });
-
-      copyButton.addEventListener("click", async () => {
-        try {
-          await copyRecallText();
-          copyStatus.textContent = "Recall text copied. Paste it into the squad chat.";
-        } catch {
-          selectRecallText();
-          copyStatus.textContent = "Recall text selected. Press Command+C, or use the SMS draft.";
-        }
+        } catch {}
       });
     </script>
   </body>
