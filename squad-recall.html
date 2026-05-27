@@ -802,12 +802,12 @@
       const match = {
         player: "JACKGRINDS#7341",
         map: "Alcatraz / Resurgence",
-        finish: "#3",
-        elims: 17,
+        finish: "#1",
+        elims: 21,
         redeploys: 2,
         revives: 3,
-        damage: "5.8K",
-        moment: "Final Circle Buyback Run",
+        damage: "7.9K",
+        moment: "Final Circle Squad Wipe",
       };
 
       const recallText = `WARZONE LAST DROP
@@ -1040,16 +1040,29 @@ Need one more. Run it back?`;
           ],
         },
         {
-          name: "15 Hot Drop",
-          label: "Hot Drop Frame",
+          name: "15 Twenty Bomb",
+          label: "Twenty Bomb ASCII",
           accent: "#ff2d00",
-          paper: "#f8ece7",
+          paper: "#fff2e8",
           art: [
-            "  !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!  ",
-            "  !!!       HOT DROP / 17 ELIMS         !!!   ",
-            "  !!!  _/\\_  _/\\_  _/\\_  _/\\_  _/\\_    !!!  ",
-            "  !!! /    \\/    \\/    \\/    \\/    \\   !!!  ",
-            "  !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!  ",
+            "  XX  20+  XX  20+  XX  20+  XX  20+  XX    ",
+            "  BOMBS AWAY / SQUAD ERASED / LOBBY BROKEN  ",
+            "  XX  20+  XX  20+  XX  20+  XX  20+  XX    ",
+            "  //// TWENTY BOMB CARD //// TWENTY BOMB //// ",
+            "  XX  20+  XX  20+  XX  20+  XX  20+  XX    ",
+          ],
+          featureArt: [
+            "      .-------------.",
+            "    .'   20+ KILL   '.",
+            "   /  .-----------.   \\",
+            "  |  /  X  X  X   \\   |",
+            "  | |  XXXXXX  XX  |  |",
+            "  | |  XX  XX  XX  |  |",
+            "  |  \\   X  X  X  /   |",
+            "   \\  '-----------'  /",
+            "    '.   B O M B   .'",
+            "      '-----------'",
+            "       LOBBY WIPE",
           ],
         },
         {
@@ -1136,7 +1149,7 @@ Need one more. Run it back?`;
       const copyButton = document.getElementById("copyButton");
       const copyStatus = document.getElementById("copyStatus");
 
-      const tierThresholds = [15, 7, 17, 3, 8, 0, 5, 10, 11, 12, 13, 14, 16, 18, 20, 21, 22, 23, 25, 30];
+      const tierThresholds = [15, 7, 17, 3, 8, 0, 5, 10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 50];
       const tierNames = [
         "High Kill Bloom",
         "Final Circle",
@@ -1261,6 +1274,25 @@ Need one more. Run it back?`;
           drawLines(ctx, artLines, -520, block * 120, 32);
         }
         ctx.restore();
+
+        if (style.featureArt) {
+          ctx.save();
+          ctx.globalAlpha = unlocked ? 0.88 : 0.34;
+          ctx.fillStyle = style.accent;
+          ctx.font = "700 31px 'Space Mono', monospace";
+          ctx.shadowColor = `${style.accent}66`;
+          ctx.shadowBlur = unlocked ? 18 : 0;
+          drawLines(ctx, style.featureArt, 555, 190, 38);
+          ctx.restore();
+
+          ctx.save();
+          ctx.globalAlpha = unlocked ? 0.9 : 0.28;
+          ctx.strokeStyle = style.accent;
+          ctx.lineWidth = 6;
+          ctx.setLineDash([18, 12]);
+          strokeRoundedRect(ctx, 530, 154, 440, 500, 28, style.accent, 6);
+          ctx.restore();
+        }
 
         ctx.save();
         ctx.globalAlpha = 0.08;
