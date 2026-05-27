@@ -961,25 +961,28 @@ Need one more. Run it back:`;
             "## ## ## ## ## ##",
           ],
           featureArt: [
-            "  ____   ___        ",
-            " |___ \\ / _ \\   _   ",
-            "   __) | | | |_| |_ ",
-            "  / __/| |_| |_   _|",
-            " |_____|\\___/  |_|  ",
+            " _____  _____       ",
+            "/ __  \\|  _  |  _   ",
+            "`' / /'| |/' |_| |_ ",
+            "  / /  |  /| |_   _|",
+            "./ /___\\ |_/ / |_|  ",
+            "\\_____/ \\___/       ",
             "",
-            " _  _____ _    _    ____ ",
-            "| |/ /_ _| |  | |  / ___|",
-            "| ' / | || |  | |  \\___ \\",
-            "| . \\ | || |__| |___ ___) |",
-            "|_|\\_\\___|_____|____|____/",
+            " _   _______ _      _      _____ ",
+            "| | / /_   _| |    | |    /  ___|",
+            "| |/ /  | | | |    | |    \\ `--. ",
+            "|    \\  | | | |    | |     `--. \\",
+            "| |\\  \\_| |_| |____| |____/\\__/ /",
+            "\\_| \\_/\\___/\\_____/\\_____/\\____/ ",
             "",
-            "TWENTY BOMB // LOBBY WIPE",
+            "[ TWENTY BOMB // LOBBY WIPE ]",
           ],
-          featureX: 792,
-          featureY: 132,
-          featureFontSize: 27,
+          featureX: 790,
+          featureY: 122,
+          featureFontSize: 25,
           featureLineHeight: 34,
           featureFrame: false,
+          textureBlocks: false,
         },
         {
           name: "11 Buyback Run",
@@ -1244,12 +1247,14 @@ Need one more. Run it back:`;
         ctx.rect(768, 0, width - 768, height);
         ctx.clip();
 
-        ctx.globalAlpha = 0.1;
-        ctx.fillStyle = "#000";
-        for (let y = -80; y < height + 120; y += 92) {
-          ctx.fillRect(832, y, 148, 58);
-          ctx.fillRect(1060, y + 36, 110, 58);
-          ctx.fillRect(1260, y - 18, 86, 58);
+        if (style.textureBlocks !== false) {
+          ctx.globalAlpha = 0.1;
+          ctx.fillStyle = "#000";
+          for (let y = -80; y < height + 120; y += 92) {
+            ctx.fillRect(832, y, 148, 58);
+            ctx.fillRect(1060, y + 36, 110, 58);
+            ctx.fillRect(1260, y - 18, 86, 58);
+          }
         }
 
         ctx.globalAlpha = unlocked ? 0.94 : 0.44;
