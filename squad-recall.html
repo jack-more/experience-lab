@@ -231,9 +231,9 @@
         margin: 0.9rem 0 0;
         color: #fff;
         font-family: var(--font-display);
-        font-size: clamp(3.35rem, 5.85vw, 6.25rem);
+        font-size: 6.05rem;
         font-weight: 900;
-        letter-spacing: -0.06em;
+        letter-spacing: 0;
         line-height: 0.86;
         text-transform: uppercase;
         text-shadow: 0 22px 64px rgba(0, 0, 0, 0.64);
@@ -242,14 +242,14 @@
       h1 span {
         display: block;
         color: var(--orange);
-        letter-spacing: -0.07em;
+        letter-spacing: 0;
       }
 
       .subline {
         max-width: 470px;
         margin: 1.15rem 0 0;
         color: rgba(255, 255, 255, 0.76);
-        font-size: clamp(1rem, 1.08vw, 1.13rem);
+        font-size: 1.08rem;
         font-weight: 700;
         line-height: 1.45;
       }
@@ -299,199 +299,11 @@
           0 0 55px color-mix(in srgb, var(--accent) 28%, transparent);
       }
 
-      .ascii-art {
-        position: absolute;
-        inset: 0;
-        margin: 0;
-        padding: 1.1rem;
-        color: var(--accent);
-        font-family: var(--font-mono);
-        font-size: clamp(0.48rem, 1.09vw, 0.69rem);
-        font-weight: 700;
-        line-height: 0.92;
-        letter-spacing: -0.04em;
-        opacity: 0.2;
-        white-space: pre;
-        transform: rotate(-7deg) scale(1.15);
-        transform-origin: 50% 44%;
-        mix-blend-mode: multiply;
-        user-select: none;
-        pointer-events: none;
-      }
-
-      .card-veil {
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.62) 42%, rgba(255, 255, 255, 0.82)),
-          radial-gradient(circle at 76% 36%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 12rem);
-        pointer-events: none;
-      }
-
-      .card-content {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        min-height: 100%;
-        flex-direction: column;
-        padding: clamp(1.2rem, 1.55vw, 1.6rem);
-      }
-
-      .card-meta,
-      .card-footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        color: rgba(0, 0, 0, 0.52);
-        font-family: var(--font-mono);
-        font-size: 0.56rem;
-        font-weight: 700;
-        line-height: 1.35;
-        text-transform: uppercase;
-      }
-
-      .card-title {
-        margin-top: clamp(2.1rem, 5vh, 4.2rem);
-      }
-
-      .alert-label {
-        color: var(--accent);
-        font-family: var(--font-mono);
-        font-size: 0.66rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .card-title h2 {
-        max-width: 100%;
-        margin: 0.14rem 0 0;
-        color: #0a0a0a;
-        font-family: var(--font-display);
-        font-size: clamp(3.45rem, 4.8vw, 5.1rem);
-        font-weight: 900;
-        letter-spacing: -0.075em;
-        line-height: 0.82;
-        text-transform: uppercase;
-      }
-
-      .card-title h2 span {
-        display: block;
-        color: var(--accent);
-      }
-
-      .stat-strip {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.5rem;
-        margin-top: 0.85rem;
-      }
-
-      .stat-pill {
-        min-height: 3.95rem;
-        padding: 0.62rem;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        background: rgba(255, 255, 255, 0.56);
-      }
-
-      .stat-pill span {
-        display: block;
-        color: rgba(0, 0, 0, 0.54);
-        font-family: var(--font-mono);
-        font-size: 0.56rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .stat-pill strong {
-        display: block;
-        margin-top: 0.24rem;
-        font-family: var(--font-tall);
-        font-size: 2.05rem;
-        font-weight: 700;
-        line-height: 0.9;
-      }
-
-      .pnl-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1px;
-        margin-top: 0.55rem;
-        background: rgba(0, 0, 0, 0.12);
-      }
-
-      .pnl-grid div {
-        display: flex;
-        justify-content: space-between;
-        gap: 0.75rem;
-        padding: 0.48rem 0.56rem;
-        background: rgba(255, 255, 255, 0.58);
-        font-family: var(--font-mono);
-        font-size: 0.56rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .pnl-grid strong {
-        color: var(--accent);
-      }
-
-      .text-card {
-        margin-top: 0.85rem;
-        padding: 0.9rem;
-        color: #fff;
-        background:
-          linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 42%),
-          #0a0a0a;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-      }
-
-      .text-card pre {
-        margin: 0;
-        color: rgba(255, 255, 255, 0.88);
-        font-family: var(--font-mono);
-        font-size: clamp(0.68rem, 0.92vw, 0.82rem);
-        font-weight: 700;
-        line-height: 1.38;
-        white-space: pre-wrap;
-      }
-
-      .runback {
-        margin: 0.82rem 0 0;
-        color: #0a0a0a;
-        font-family: var(--font-display);
-        font-size: clamp(1.8rem, 2.4vw, 2.35rem);
-        font-weight: 900;
-        letter-spacing: -0.07em;
-        line-height: 0.88;
-        text-transform: uppercase;
-      }
-
-      .barcode {
-        display: flex;
-        align-items: end;
-        justify-content: center;
-        height: 40px;
-        gap: 3px;
-        margin-top: auto;
-        padding-top: 1.25rem;
-      }
-
-      .barcode span {
-        width: var(--w);
-        height: var(--h);
-        background: #0a0a0a;
-      }
-
-      .card-footer {
-        margin-top: 0.9rem;
-      }
-
       .style-dock {
         display: grid;
         grid-template-columns: auto minmax(0, 1fr) auto;
         gap: 0.5rem;
         grid-column: 1;
-        grid-row: 3;
       }
 
       .style-dock button,
@@ -525,66 +337,12 @@
         grid-template-columns: 1fr 1fr;
         gap: 0.58rem;
         grid-column: 1;
-        grid-row: 2;
         align-items: stretch;
         padding: 0.62rem;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 18px;
         background: rgba(0, 0, 0, 0.66);
         backdrop-filter: blur(16px);
-      }
-
-      .sms-preview {
-        display: none;
-        max-height: 9rem;
-        margin: 0;
-        overflow: hidden;
-        padding: 0.85rem;
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        border-radius: 14px;
-        color: rgba(255, 255, 255, 0.84);
-        background: rgba(255, 255, 255, 0.055);
-        font-family: var(--font-mono);
-        font-size: 0.7rem;
-        font-weight: 700;
-        line-height: 1.45;
-        white-space: pre-wrap;
-      }
-
-      .action-kicker {
-        display: none;
-        color: var(--orange);
-        font-family: var(--font-mono);
-        font-size: 0.64rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .actions h2 {
-        display: none;
-        margin: -0.25rem 0 0;
-        color: #fff;
-        font-family: var(--font-display);
-        font-size: clamp(2.1rem, 3vw, 3.2rem);
-        font-weight: 900;
-        letter-spacing: -0.07em;
-        line-height: 0.88;
-        text-transform: uppercase;
-      }
-
-      .actions > p {
-        display: none;
-        margin: -0.25rem 0 0;
-        color: rgba(248, 243, 234, 0.7);
-        font-size: 0.92rem;
-        font-weight: 700;
-        line-height: 1.4;
-      }
-
-      .button-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.58rem;
       }
 
       .primary,
@@ -613,34 +371,10 @@
         color: rgba(255, 255, 255, 0.82);
       }
 
-      .qr-row {
-        display: none;
-        grid-template-columns: 78px minmax(0, 1fr);
-        gap: 0.9rem;
-        align-items: center;
-      }
-
-      .qr-row img {
-        width: 78px;
-        height: 78px;
-        border: 7px solid #fff;
-        border-radius: 13px;
-        background: #fff;
-      }
-
-      .qr-row p,
-      .status-copy {
-        margin: 0;
-        color: rgba(248, 243, 234, 0.58);
-        font-family: var(--font-mono);
-        font-size: 0.64rem;
-        font-weight: 700;
-        line-height: 1.45;
-        text-transform: uppercase;
-      }
-
-      .status-copy {
-        display: none;
+      @media (max-width: 1240px) {
+        h1 {
+          font-size: 5.25rem;
+        }
       }
 
       @media (max-width: 980px) {
@@ -702,25 +436,12 @@
 
       @media (max-width: 620px) {
         h1 {
-          font-size: clamp(3.4rem, 16vw, 5.25rem);
+          font-size: 4.55rem;
         }
 
         .subline {
           max-width: 23rem;
           font-size: 0.98rem;
-        }
-
-        .card-title {
-          margin-top: 2.55rem;
-        }
-
-        .card-title h2 {
-          font-size: clamp(3.65rem, 17vw, 4.5rem);
-        }
-
-        .stat-strip,
-        .button-row {
-          grid-template-columns: 1fr;
         }
 
         .actions {
@@ -731,13 +452,17 @@
           grid-template-columns: 3rem minmax(0, 1fr) 3rem;
         }
 
-        .qr-row {
-          grid-template-columns: 82px minmax(0, 1fr);
-        }
+      }
 
-        .qr-row img {
-          width: 82px;
-          height: 82px;
+      @media (max-width: 440px) {
+        h1 {
+          font-size: 3.35rem;
+        }
+      }
+
+      @media (max-width: 360px) {
+        h1 {
+          font-size: 2.95rem;
         }
       }
     </style>
@@ -762,7 +487,7 @@
       <div class="page">
         <section class="hero-copy" aria-labelledby="page-title">
           <div class="eyebrow">Warzone reactivation concept</div>
-          <h1 id="page-title">Last Drop<span>Recall</span></h1>
+          <h1 id="page-title">Last Drop:<span>Recall</span></h1>
           <p class="subline">
             Generate the flex card. Copy the image. Text the squad.
           </p>
@@ -779,15 +504,15 @@
             ></canvas>
           </article>
 
-          <div class="style-dock" aria-label="ASCII card background controls">
-            <button type="button" id="previousStyle" aria-label="Previous ASCII style">‹</button>
-            <select id="styleSelect" aria-label="ASCII card background style"></select>
-            <button type="button" id="nextStyle" aria-label="Next ASCII style">›</button>
+          <div class="actions">
+            <button class="primary is-image" type="button" id="copyImageButton">Copy Card Image</button>
+            <a class="secondary" id="smsLink" href="#">Invite Squad / SMS</a>
           </div>
 
-          <div class="actions">
-            <button class="primary is-image" type="button" id="copyImageButton">Copy Card</button>
-            <a class="secondary" id="smsLink" href="#">Invite Squad</a>
+          <div class="style-dock" aria-label="Card art style controls">
+            <button type="button" id="previousStyle" aria-label="Previous card style">‹</button>
+            <select id="styleSelect" aria-label="Card art style"></select>
+            <button type="button" id="nextStyle" aria-label="Next card style">›</button>
           </div>
         </aside>
       </div>
@@ -810,260 +535,232 @@ ${match.kills} kills. ${match.finish} finish. ${match.moment}.
 
 Need one more. Run it back:`;
 
-      const asciiStyles = [
+      const cardStyles = [
         {
-          name: "01 Two-Piece",
-          label: "Two-Piece ASCII",
-          accent: "#ff4b18",
+          metric: "kills",
+          minValue: 2,
+          tierName: "Two-Piece",
+          requirement: "2+ kills",
+          family: "kill",
+          serial: "K02",
+          accent: "#ff5a1f",
+          accent2: "#ffd06a",
+          deep: "#170807",
+          mid: "#43130b",
           paper: "#f5f1e8",
-          art: [
-            "     .-^^-.    .-^^-.",
-            "    /  x  \\  /  x  \\",
-            "   |   __  ||  __   |",
-            "   |  /_/  ||  \\_\\  |",
-            "    \\_____/  \\_____/",
-            "       TWO-PIECE",
-            "     QUICK CLEAN SPLIT",
-          ],
+          title: "Two-Piece",
+          subtitle: "Quick clean split",
         },
         {
-          name: "02 Triple Tap",
-          label: "Triple Tap ASCII",
-          accent: "#111111",
+          metric: "kills",
+          minValue: 3,
+          tierName: "Triple Tap",
+          requirement: "3+ kills",
+          family: "kill",
+          serial: "K03",
+          accent: "#f8f1df",
+          accent2: "#ff4b18",
+          deep: "#060606",
+          mid: "#22201d",
           paper: "#f6f2ea",
-          art: [
-            "      .-.   .-.   .-.",
-            "     (x_x) (x_x) (x_x)",
-            "      /|\\   /|\\   /|\\",
-            "      / \\   / \\   / \\",
-            "    .-----------------.",
-            "       THREE IN FEED",
-            "    '-----------------'",
-          ],
+          title: "Triple Tap",
+          subtitle: "Three in the feed",
         },
         {
-          name: "03 Four Down",
-          label: "Four Down ASCII",
+          metric: "kills",
+          minValue: 4,
+          tierName: "Four Down",
+          requirement: "4+ kills",
+          family: "kill",
+          serial: "K04",
           accent: "#ef233c",
+          accent2: "#f4c05d",
+          deep: "#18060a",
+          mid: "#4a1019",
           paper: "#f8eee8",
-          art: [
-            "       [x]       [x]",
-            "          \\     /",
-            "           \\   /",
-            "            \\ /",
-            "            / \\",
-            "          /     \\",
-            "       [x]       [x]",
-            "        FULL SQUAD DOWN",
-          ],
+          title: "Four Down",
+          subtitle: "Full squad cracked",
         },
         {
-          name: "04 Five Alive",
-          label: "Five Alive ASCII",
+          metric: "kills",
+          minValue: 5,
+          tierName: "Five Alive",
+          requirement: "5+ kills",
+          family: "kill",
+          serial: "K05",
           accent: "#34d6ff",
+          accent2: "#fff2c4",
+          deep: "#071218",
+          mid: "#12374b",
           paper: "#edf6f8",
-          art: [
-            "          .-^-.",
-            "       .'   |   '.",
-            "      /  .--+--.  \\",
-            "   __/__/   |   \\__\\__",
-            "       5   5   5   5",
-            "          5 ALIVE",
-            "       RESURGENCE PULSE",
-          ],
+          title: "Five Alive",
+          subtitle: "Resurgence pulse",
         },
         {
-          name: "05 Eight Ball",
-          label: "Eight Ball ASCII",
+          metric: "kills",
+          minValue: 8,
+          tierName: "Eight Ball",
+          requirement: "8+ kills",
+          family: "kill",
+          serial: "K08",
           accent: "#11a36a",
+          accent2: "#e8cf72",
+          deep: "#04100b",
+          mid: "#0c3627",
           paper: "#eff7ea",
-          art: [
-            "        .----------.",
-            "      .'   .--.     '.",
-            "     /    / 8  \\      \\",
-            "    |     \\__/        |",
-            "    |    HOT RUN      |",
-            "     \\              /",
-            "       '----------'",
-          ],
+          title: "Eight Ball",
+          subtitle: "Hot run marker",
         },
         {
-          name: "06 Double Digits",
-          label: "Double Digits ASCII",
+          metric: "kills",
+          minValue: 10,
+          tierName: "Double Digits",
+          requirement: "10+ kills",
+          family: "kill",
+          serial: "K10",
           accent: "#ff7a1a",
+          accent2: "#f2d36b",
+          deep: "#160906",
+          mid: "#45210a",
           paper: "#f7efe6",
-          art: [
-            "      10  10  10  10",
-            "    .----------------.",
-            "    |   DOUBLE       |",
-            "    |   DIGITS       |",
-            "    |   LOBBY        |",
-            "    |   NOTICED      |",
-            "    '----------------'",
-          ],
+          title: "Double Digits",
+          subtitle: "Lobby noticed",
         },
         {
-          name: "07 Dozen Run",
-          label: "Dozen Run ASCII",
+          metric: "kills",
+          minValue: 12,
+          tierName: "Dozen Run",
+          requirement: "12+ kills",
+          family: "kill",
+          serial: "K12",
           accent: "#2d9cdb",
+          accent2: "#f5d77a",
+          deep: "#061019",
+          mid: "#12324f",
           paper: "#edf3f7",
-          art: [
-            "    +--+--+--+--+--+--+",
-            "    |1 |2 |1 |2 |1 |2 |",
-            "    +--+--+--+--+--+--+",
-            "          DOZEN RUN",
-            "       DAMAGE ON BOARD",
-            "    +--+--+--+--+--+--+",
-          ],
+          title: "Dozen Run",
+          subtitle: "Damage on board",
         },
         {
-          name: "08 High Kill Bloom",
-          label: "High Kill ASCII",
-          accent: "#4d4d4d",
+          metric: "kills",
+          minValue: 15,
+          tierName: "High Kill Bloom",
+          requirement: "15+ kills",
+          family: "kill",
+          serial: "K15",
+          accent: "#d8d8d8",
+          accent2: "#ff5a1f",
+          deep: "#060606",
+          mid: "#242424",
           paper: "#f2f0ea",
-          art: [
-            "           \\  |  /",
-            "        ---- . ----",
-            "      --   .' '.   --",
-            "          / 15+ \\",
-            "      --  '. .'   --",
-            "        ---- ' ----",
-            "           /  |  \\",
-            "        HIGH KILL BLOOM",
-          ],
+          title: "High Kill Bloom",
+          subtitle: "Lobby in orbit",
         },
         {
-          name: "09 Almost Bomb",
-          label: "Almost Bomb ASCII",
+          metric: "kills",
+          minValue: 18,
+          tierName: "Almost Bomb",
+          requirement: "18+ kills",
+          family: "kill",
+          serial: "K18",
           accent: "#7c6cff",
+          accent2: "#f8ca58",
+          deep: "#080714",
+          mid: "#241654",
           paper: "#f0eef8",
-          art: [
-            "         _.-^^-._",
-            "      .-'  18+   '-.",
-            "     /   ALMOST      \\",
-            "    |      BOMB       |",
-            "     \\_            _/",
-            "       '--. . .--'",
-            "          | | |",
-            "       ONE MORE FIGHT",
-          ],
+          title: "Almost Bomb",
+          subtitle: "One more fight",
         },
         {
-          name: "10 Twenty Bomb",
-          label: "Twenty Bomb ASCII",
+          metric: "kills",
+          minValue: 20,
+          tierName: "Twenty Bomb",
+          requirement: "20+ kills",
+          family: "kill",
+          serial: "K20",
           accent: "#ff2d00",
-          artBg: "#080808",
-          artInk: "#f7f1e7",
+          accent2: "#ffd069",
+          deep: "#070303",
+          mid: "#3a0904",
           paper: "#fff2e8",
-          art: [
-            "## ## ## ## ## ##",
-            "20+ 20+ 20+ 20+",
-            "## ## ## ## ## ##",
-            "TWENTY BOMB",
-            "## ## ## ## ## ##",
-          ],
-          featureArt: [
-            "        .-''''''''''''''''-.",
-            "     .-'    LAST DROP       '-.",
-            "   .'     .------------.       '.",
-            "  /      /   _      _   \\        \\",
-            " |      |   (x)    (x)   |        |",
-            " |      |       /\\       |        |",
-            " |      |    .------.    |        |",
-            " |      |    | 20+  |    |        |",
-            " |      |    |KILLS |    |        |",
-            " |       \\   '------'   /         |",
-            "  \\       '.          .'         /",
-            "   '.       '-.____.-'        .'",
-            "     '-.                  .-'",
-            "        '----._______.----'",
-            "",
-            "      [ TWENTY BOMB CARD ]",
-            "      [ FINAL CIRCLE WIPE ]",
-            "",
-            "          JACKGRINDS#7341",
-          ],
-          featureX: 790,
-          featureY: 80,
-          featureFontSize: 21,
-          featureLineHeight: 30,
-          featureFrame: false,
-          textureBlocks: false,
+          title: "Twenty Bomb",
+          subtitle: "Final circle squad wipe",
+          prestige: true,
         },
         {
-          name: "11 Buyback Run",
-          label: "Buyback ASCII",
-          accent: "#00a86b",
+          metric: "redeploys",
+          minValue: 1,
+          tierName: "Buyback Run",
+          requirement: "1+ redeploy",
+          family: "redeploy",
+          serial: "R01",
+          accent: "#0ee073",
+          accent2: "#f1ca5b",
+          deep: "#03120a",
+          mid: "#063b22",
           paper: "#f0f7ed",
-          art: [
-            "       _____________",
-            "      | BUY  |  $  |",
-            "      |______|_____|",
-            "        |  $ $  |",
-            "        | CASH  |",
-            "     ___|______|___",
-            "    /_ SQUAD BACK _\\",
-          ],
+          title: "Buyback Run",
+          subtitle: "Cash got the squad back",
         },
         {
-          name: "12 Redeploy Chain",
-          label: "Redeploy ASCII",
+          metric: "redeploys",
+          minValue: 2,
+          tierName: "Redeploy Chain",
+          requirement: "2+ redeploys",
+          family: "redeploy",
+          serial: "R02",
           accent: "#ee6c4d",
+          accent2: "#4fffa0",
+          deep: "#130807",
+          mid: "#442114",
           paper: "#f7efe9",
-          art: [
-            "     ___      ___      ___",
-            "   _/___\\_  _/___\\_  _/___\\_",
-            "     \\|/      \\|/      \\|/",
-            "      |        |        |",
-            "     / \\      / \\      / \\",
-            "       BACK IN THE SKY",
-            "       REDEPLOY CHAIN",
-          ],
+          title: "Redeploy Chain",
+          subtitle: "Back in the sky",
         },
         {
-          name: "13 Revive Save",
-          label: "Revive ASCII",
+          metric: "revives",
+          minValue: 1,
+          tierName: "Revive Save",
+          requirement: "1+ revive",
+          family: "revive",
+          serial: "V01",
           accent: "#d1495b",
+          accent2: "#8ee6ff",
+          deep: "#11070d",
+          mid: "#3c1423",
           paper: "#f7eeee",
-          art: [
-            "         .--------.",
-            "         |   ++   |",
-            "     .---'   ++   '---.",
-            "     |    HOLD LINE   |",
-            "     '---.        .---'",
-            "         |________|",
-            "          REVIVE SAVE",
-          ],
+          title: "Revive Save",
+          subtitle: "Saved the run",
         },
         {
-          name: "14 Squad Medic",
-          label: "Medic ASCII",
+          metric: "revives",
+          minValue: 3,
+          tierName: "Squad Medic",
+          requirement: "3+ revives",
+          family: "revive",
+          serial: "V03",
           accent: "#2f80ed",
+          accent2: "#ccfb6d",
+          deep: "#050b17",
+          mid: "#102b55",
           paper: "#edf3fb",
-          art: [
-            "        __      __",
-            "    ___/  \\____/  \\___",
-            "   /     ++++++      \\",
-            "  |  MED  ++++  REV   |",
-            "   \\___   ++++   ___/",
-            "       \\________/",
-            "       EVERYONE BACK",
-          ],
+          title: "Squad Medic",
+          subtitle: "Everyone got a second life",
         },
         {
-          name: "15 Clutch Buyback",
-          label: "Clutch Buyback ASCII",
+          metric: "redeploys",
+          minValue: 3,
+          tierName: "Clutch Buyback",
+          requirement: "3+ redeploys",
+          family: "redeploy",
+          serial: "R03",
           accent: "#35ff7d",
+          accent2: "#f9e56a",
+          deep: "#030f08",
+          mid: "#0b4b24",
           paper: "#edf8ee",
-          art: [
-            "       $ -----> SKY",
-            "        \\        /",
-            "         \\  []  /",
-            "          \\____/",
-            "          / || \\",
-            "        LAST CASH",
-            "       SQUAD SENT",
-          ],
+          title: "Clutch Buyback",
+          subtitle: "Last cash, squad sent",
         },
       ];
 
@@ -1079,53 +776,31 @@ Need one more. Run it back:`;
       const smsLink = document.getElementById("smsLink");
       const copyImageButton = document.getElementById("copyImageButton");
 
-      const cardMeta = [
-        { metric: "kills", minValue: 2, tierName: "Two-Piece", requirement: "2+ kills" },
-        { metric: "kills", minValue: 3, tierName: "Triple Tap", requirement: "3+ kills" },
-        { metric: "kills", minValue: 4, tierName: "Four Down", requirement: "4+ kills" },
-        { metric: "kills", minValue: 5, tierName: "Five Alive", requirement: "5+ kills" },
-        { metric: "kills", minValue: 8, tierName: "Eight Ball", requirement: "8+ kills" },
-        { metric: "kills", minValue: 10, tierName: "Double Digits", requirement: "10+ kills" },
-        { metric: "kills", minValue: 12, tierName: "Dozen Run", requirement: "12+ kills" },
-        { metric: "kills", minValue: 15, tierName: "High Kill Bloom", requirement: "15+ kills" },
-        { metric: "kills", minValue: 18, tierName: "Almost Bomb", requirement: "18+ kills" },
-        { metric: "kills", minValue: 20, tierName: "Twenty Bomb", requirement: "20+ kills" },
-        { metric: "redeploys", minValue: 1, tierName: "Buyback Run", requirement: "1+ redeploy" },
-        { metric: "redeploys", minValue: 2, tierName: "Redeploy Chain", requirement: "2+ redeploys" },
-        { metric: "revives", minValue: 1, tierName: "Revive Save", requirement: "1+ revive" },
-        { metric: "revives", minValue: 3, tierName: "Squad Medic", requirement: "3+ revives" },
-        { metric: "redeploys", minValue: 3, tierName: "Clutch Buyback", requirement: "3+ redeploys" },
-      ];
-
-      asciiStyles.forEach((style, index) => {
-        Object.assign(style, cardMeta[index]);
-      });
-
       function isStyleUnlocked(style) {
         return match[style.metric] >= style.minValue;
       }
 
       const requestedStyle = new URLSearchParams(window.location.search).get("style");
-      let activeStyle = asciiStyles.reduce((bestIndex, style, index) => {
+      let activeStyle = cardStyles.reduce((bestIndex, style, index) => {
         if (
           style.metric === "kills" &&
           isStyleUnlocked(style) &&
-          style.minValue >= asciiStyles[bestIndex].minValue
+          style.minValue >= cardStyles[bestIndex].minValue
         ) {
           return index;
         }
 
         return bestIndex;
-      }, 5);
+      }, 0);
 
       if (requestedStyle !== null) {
         const requestedIndex = Number(requestedStyle);
-        if (Number.isInteger(requestedIndex) && requestedIndex >= 0 && requestedIndex < asciiStyles.length) {
+        if (Number.isInteger(requestedIndex) && requestedIndex >= 0 && requestedIndex < cardStyles.length) {
           activeStyle = requestedIndex;
         }
       }
 
-      asciiStyles.forEach((style, index) => {
+      cardStyles.forEach((style, index) => {
         const option = document.createElement("option");
         option.value = String(index);
         const lockState = isStyleUnlocked(style) ? "unlocked" : "locked";
@@ -1160,23 +835,75 @@ Need one more. Run it back:`;
         ctx.stroke();
       }
 
-      function drawLines(ctx, lines, x, y, lineHeight) {
-        lines.forEach((line, index) => {
-          ctx.fillText(line, x, y + index * lineHeight);
-        });
+      function hexToRgb(hex) {
+        const clean = hex.replace("#", "");
+        const value = parseInt(clean.length === 3 ? clean.replace(/(.)/g, "$1$1") : clean, 16);
+        return {
+          r: (value >> 16) & 255,
+          g: (value >> 8) & 255,
+          b: value & 255,
+        };
       }
 
-      function drawStatBox(ctx, x, y, width, label, value, accent = "#0a0a0a") {
-        fillRoundedRect(ctx, x, y, width, 120, 0, "rgba(255, 255, 255, 0.58)");
-        ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, width, 120);
-        ctx.fillStyle = "rgba(0, 0, 0, 0.54)";
-        ctx.font = "700 22px 'Space Mono', monospace";
-        ctx.fillText(label.toUpperCase(), x + 24, y + 38);
-        ctx.fillStyle = accent;
-        ctx.font = "900 58px 'Teko', sans-serif";
-        ctx.fillText(String(value).toUpperCase(), x + 24, y + 96);
+      function alpha(hex, opacity) {
+        const { r, g, b } = hexToRgb(hex);
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+      }
+
+      function seededRandom(seed) {
+        let value = seed >>> 0;
+        return () => {
+          value += 0x6d2b79f5;
+          let t = value;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function drawFittedText(ctx, text, x, y, maxWidth, fontSize, minSize, fontFamily, weight = 900) {
+        let size = fontSize;
+
+        do {
+          ctx.font = `${weight} ${size}px ${fontFamily}`;
+          if (ctx.measureText(text).width <= maxWidth || size <= minSize) {
+            break;
+          }
+
+          size -= 2;
+        } while (size > minSize);
+
+        ctx.fillText(text, x, y);
+        return size;
+      }
+
+      function drawGrain(ctx, width, height, seed, opacity) {
+        const random = seededRandom(seed);
+        ctx.save();
+        ctx.globalAlpha = opacity;
+
+        for (let index = 0; index < 1200; index += 1) {
+          const x = random() * width;
+          const y = random() * height;
+          const shade = random() > 0.58 ? "#ffffff" : "#000000";
+          ctx.fillStyle = shade;
+          ctx.fillRect(x, y, random() * 2.4 + 0.4, random() * 2.4 + 0.4);
+        }
+
+        ctx.restore();
+      }
+
+      function drawBarcode(ctx, x, y, width, height, color) {
+        const bars = [4, 2, 9, 3, 5, 2, 11, 2, 4, 7, 2, 6, 3, 8, 2, 5];
+        let cursor = x;
+        ctx.fillStyle = color;
+
+        bars.forEach((bar, index) => {
+          const barWidth = (bar / 82) * width;
+          const barHeight = height * (index % 3 === 0 ? 1 : index % 2 === 0 ? 0.74 : 0.48);
+          ctx.fillRect(cursor, y + height - barHeight, barWidth, barHeight);
+          cursor += barWidth + width * 0.011;
+        });
       }
 
       function drawMiniQr(ctx, x, y, size, fg = "#ffffff") {
@@ -1215,169 +942,565 @@ Need one more. Run it back:`;
 
       function getPrimaryStat(style) {
         if (style.metric === "redeploys") {
-          return { value: `+${match.redeploys}`, label: "REDEPLOYS" };
+          return { value: `+${match.redeploys}`, label: "redeploys" };
         }
 
         if (style.metric === "revives") {
-          return { value: `+${match.revives}`, label: "REVIVES" };
+          return { value: `+${match.revives}`, label: "revives" };
         }
 
-        return { value: `+${match.kills}`, label: "KILLS" };
+        return { value: `+${match.kills}`, label: "kills" };
       }
 
-      function renderShareCard() {
-        const style = asciiStyles[activeStyle];
-        const ctx = shareCardContext;
-        const width = shareCardCanvas.width;
-        const height = shareCardCanvas.height;
-        const unlocked = isStyleUnlocked(style);
-        const primary = getPrimaryStat(style);
-        const isPrestigeKill = style.metric === "kills" && style.minValue >= 20;
-        const artBg = style.artBg || (isPrestigeKill ? style.accent : "#0d22f5");
-        const artInk = style.artInk || (isPrestigeKill ? "#120603" : "#f7f1e7");
+      function drawKatana(ctx, cx, cy, angle, length, accent, highlight) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        fillRoundedRect(ctx, -length * 0.44, -7, length * 0.8, 14, 7, "rgba(244, 241, 224, 0.72)");
+        fillRoundedRect(ctx, length * 0.24, -5, length * 0.22, 10, 5, highlight);
+        fillRoundedRect(ctx, -length * 0.5, -11, length * 0.1, 22, 4, accent);
+        ctx.fillStyle = "rgba(0, 0, 0, 0.56)";
+        ctx.fillRect(-length * 0.58, -18, length * 0.1, 36);
+        ctx.restore();
+      }
 
-        ctx.clearRect(0, 0, width, height);
-
-        const baseGradient = ctx.createLinearGradient(0, 0, width, height);
-        baseGradient.addColorStop(0, "#050606");
-        baseGradient.addColorStop(0.6, "#070909");
-        baseGradient.addColorStop(1, "#111718");
-        ctx.fillStyle = baseGradient;
-        ctx.fillRect(0, 0, width, height);
-
-        const artGradient = ctx.createLinearGradient(768, 0, width, height);
-        artGradient.addColorStop(0, artBg);
-        artGradient.addColorStop(0.72, artBg);
-        artGradient.addColorStop(1, isPrestigeKill ? "#1a0904" : artBg);
-        ctx.fillStyle = artGradient;
-        ctx.fillRect(768, 0, width - 768, height);
+      function drawSamuraiHelmet(ctx, cx, cy, scale, style) {
+        const s = scale;
+        const accent = style.accent;
+        const gold = style.accent2;
 
         ctx.save();
-        ctx.beginPath();
-        ctx.rect(768, 0, width - 768, height);
-        ctx.clip();
+        ctx.translate(cx, cy);
 
-        if (style.textureBlocks !== false) {
-          ctx.globalAlpha = 0.1;
-          ctx.fillStyle = "#000";
-          for (let y = -80; y < height + 120; y += 92) {
-            ctx.fillRect(832, y, 148, 58);
-            ctx.fillRect(1060, y + 36, 110, 58);
-            ctx.fillRect(1260, y - 18, 86, 58);
-          }
+        const shadow = ctx.createRadialGradient(0, 40 * s, 20 * s, 0, 90 * s, 260 * s);
+        shadow.addColorStop(0, "rgba(0, 0, 0, 0.1)");
+        shadow.addColorStop(1, "rgba(0, 0, 0, 0.62)");
+        ctx.fillStyle = shadow;
+        ctx.beginPath();
+        ctx.ellipse(0, 128 * s, 210 * s, 58 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = alpha(gold, 0.88);
+        ctx.beginPath();
+        ctx.moveTo(-180 * s, -92 * s);
+        ctx.quadraticCurveTo(-282 * s, -178 * s, -318 * s, -34 * s);
+        ctx.quadraticCurveTo(-232 * s, -78 * s, -158 * s, -30 * s);
+        ctx.lineTo(-122 * s, -82 * s);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(180 * s, -92 * s);
+        ctx.quadraticCurveTo(282 * s, -178 * s, 318 * s, -34 * s);
+        ctx.quadraticCurveTo(232 * s, -78 * s, 158 * s, -30 * s);
+        ctx.lineTo(122 * s, -82 * s);
+        ctx.closePath();
+        ctx.fill();
+
+        const helmet = ctx.createLinearGradient(0, -170 * s, 0, 120 * s);
+        helmet.addColorStop(0, alpha(accent, 0.96));
+        helmet.addColorStop(0.58, "#170b08");
+        helmet.addColorStop(1, "#070707");
+        ctx.fillStyle = helmet;
+        ctx.beginPath();
+        ctx.moveTo(-178 * s, -76 * s);
+        ctx.quadraticCurveTo(-128 * s, -182 * s, 0, -194 * s);
+        ctx.quadraticCurveTo(128 * s, -182 * s, 178 * s, -76 * s);
+        ctx.lineTo(146 * s, 40 * s);
+        ctx.quadraticCurveTo(0, 104 * s, -146 * s, 40 * s);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = alpha(gold, 0.82);
+        ctx.lineWidth = 8 * s;
+        ctx.beginPath();
+        ctx.moveTo(-150 * s, -72 * s);
+        ctx.quadraticCurveTo(0, -158 * s, 150 * s, -72 * s);
+        ctx.stroke();
+
+        ctx.fillStyle = "#080707";
+        ctx.beginPath();
+        ctx.moveTo(-128 * s, 12 * s);
+        ctx.quadraticCurveTo(-94 * s, -38 * s, -38 * s, -28 * s);
+        ctx.lineTo(-22 * s, 8 * s);
+        ctx.quadraticCurveTo(-68 * s, 30 * s, -128 * s, 12 * s);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(128 * s, 12 * s);
+        ctx.quadraticCurveTo(94 * s, -38 * s, 38 * s, -28 * s);
+        ctx.lineTo(22 * s, 8 * s);
+        ctx.quadraticCurveTo(68 * s, 30 * s, 128 * s, 12 * s);
+        ctx.fill();
+
+        ctx.fillStyle = alpha(gold, 0.86);
+        ctx.beginPath();
+        ctx.moveTo(-36 * s, 8 * s);
+        ctx.lineTo(0, 70 * s);
+        ctx.lineTo(36 * s, 8 * s);
+        ctx.lineTo(16 * s, -60 * s);
+        ctx.lineTo(-16 * s, -60 * s);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "#0a0908";
+        ctx.beginPath();
+        ctx.moveTo(-118 * s, 46 * s);
+        ctx.lineTo(118 * s, 46 * s);
+        ctx.lineTo(88 * s, 150 * s);
+        ctx.lineTo(-88 * s, 150 * s);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = alpha(accent, 0.78);
+        ctx.lineWidth = 6 * s;
+        for (let index = -2; index <= 2; index += 1) {
+          ctx.beginPath();
+          ctx.moveTo(index * 38 * s, 58 * s);
+          ctx.lineTo(index * 24 * s, 138 * s);
+          ctx.stroke();
         }
 
-        ctx.globalAlpha = unlocked ? 0.94 : 0.44;
-        ctx.fillStyle = artInk;
-        ctx.font = `700 ${style.featureFontSize || 34}px 'Space Mono', monospace`;
-        const centerpiece = style.featureArt || style.art;
-        drawLines(ctx, centerpiece, style.featureX || 826, style.featureY || 140, style.featureLineHeight || 43);
+        ctx.fillStyle = alpha(gold, 0.92);
+        ctx.beginPath();
+        ctx.arc(0, -106 * s, 40 * s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#080707";
+        ctx.textAlign = "center";
+        ctx.font = `900 ${style.prestige ? 30 * s : 24 * s}px Inter, Arial, sans-serif`;
+        ctx.fillText(style.minValue >= 20 ? "20+" : style.minValue, 0, -96 * s);
 
-        if (style.textureBlocks !== false) {
-          ctx.globalAlpha = 0.08;
-          ctx.font = "700 18px 'Space Mono', monospace";
-          for (let y = 24; y < height; y += 58) {
-            drawLines(ctx, style.art.slice(0, 3), 810, y, 22);
-          }
+        ctx.restore();
+        ctx.textAlign = "left";
+      }
+
+      function drawSamuraiArt(ctx, style, x, y, width, height) {
+        const cx = x + width * 0.57;
+        const cy = y + height * 0.52;
+        const level = Math.min(style.minValue / 20, 1);
+
+        ctx.save();
+        roundedRect(ctx, x, y, width, height, 30);
+        ctx.clip();
+
+        const bg = ctx.createLinearGradient(x, y, x + width, y + height);
+        bg.addColorStop(0, style.deep);
+        bg.addColorStop(0.48, style.mid);
+        bg.addColorStop(1, "#050505");
+        ctx.fillStyle = bg;
+        ctx.fillRect(x, y, width, height);
+
+        const sun = ctx.createRadialGradient(cx - 10, cy - 48, 40, cx - 10, cy - 48, 360);
+        sun.addColorStop(0, alpha(style.accent2, 0.88));
+        sun.addColorStop(0.46, alpha(style.accent, 0.24 + level * 0.28));
+        sun.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = sun;
+        ctx.fillRect(x, y, width, height);
+
+        ctx.globalAlpha = 0.16 + level * 0.08;
+        ctx.strokeStyle = "#fff8df";
+        ctx.lineWidth = 2;
+        for (let index = 0; index < 16; index += 1) {
+          const yy = y + 70 + index * 42;
+          ctx.beginPath();
+          ctx.moveTo(x + 20, yy);
+          ctx.bezierCurveTo(x + width * 0.34, yy - 34, x + width * 0.68, yy + 34, x + width - 12, yy - 10);
+          ctx.stroke();
         }
 
         ctx.globalAlpha = 1;
-        ctx.strokeStyle = artInk;
-        ctx.lineWidth = 5;
-        ctx.setLineDash([]);
-        if (style.featureFrame !== false) {
-          strokeRoundedRect(ctx, 818, 112, 500, 540, 26, artInk, 5);
+        const swordCount = style.minValue >= 18 ? 4 : style.minValue >= 10 ? 3 : 2;
+        for (let index = 0; index < swordCount; index += 1) {
+          const angle = (-0.58 + index * 0.38) * (index % 2 === 0 ? 1 : -1);
+          drawKatana(ctx, cx - 44 + index * 28, cy + 10 - index * 22, angle, 670 - index * 42, style.accent, style.accent2);
+        }
+
+        ctx.save();
+        ctx.globalAlpha = 0.2 + level * 0.24;
+        ctx.strokeStyle = style.accent2;
+        ctx.lineWidth = 18;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 238, -0.3, Math.PI * 1.35);
+        ctx.stroke();
+        ctx.restore();
+
+        drawSamuraiHelmet(ctx, cx, cy + 32, style.prestige ? 1.18 : 1.02, style);
+
+        ctx.save();
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = alpha(style.accent2, 0.18);
+        for (let index = 0; index < style.minValue; index += 1) {
+          const row = Math.floor(index / 10);
+          const col = index % 10;
+          fillRoundedRect(ctx, x + 42 + col * 18, y + height - 74 + row * 22, 10, 22, 2, style.accent2);
         }
         ctx.restore();
 
+        ctx.fillStyle = "rgba(255, 255, 255, 0.84)";
+        ctx.font = "900 30px 'Space Mono', monospace";
+        ctx.fillText("SAMURAI PRESTIGE", x + 42, y + 56);
+        ctx.fillStyle = alpha(style.accent2, 0.82);
+        ctx.font = "700 18px 'Space Mono', monospace";
+        ctx.fillText(`${style.serial} // ${style.requirement.toUpperCase()}`, x + 42, y + 86);
+
+        ctx.restore();
+        strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.5), 2);
+      }
+
+      function drawMoneyBill(ctx, x, y, width, height, angle, style, label = "$") {
         ctx.save();
-        ctx.globalAlpha = 0.18;
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
-        ctx.lineWidth = 2;
-        for (let x = 0; x < 760; x += 56) {
+        ctx.translate(x + width / 2, y + height / 2);
+        ctx.rotate(angle);
+        fillRoundedRect(ctx, -width / 2, -height / 2, width, height, 12, alpha(style.accent, 0.92));
+        strokeRoundedRect(ctx, -width / 2 + 10, -height / 2 + 10, width - 20, height - 20, 8, alpha(style.accent2, 0.62), 3);
+        ctx.fillStyle = "#06120a";
+        ctx.textAlign = "center";
+        ctx.font = `900 ${height * 0.48}px Inter, Arial, sans-serif`;
+        ctx.fillText(label, 0, height * 0.17);
+        ctx.restore();
+        ctx.textAlign = "left";
+      }
+
+      function drawRedeployArt(ctx, style, x, y, width, height) {
+        const cx = x + width * 0.56;
+        const cy = y + height * 0.52;
+
+        ctx.save();
+        roundedRect(ctx, x, y, width, height, 30);
+        ctx.clip();
+
+        const bg = ctx.createLinearGradient(x, y, x + width, y + height);
+        bg.addColorStop(0, style.deep);
+        bg.addColorStop(0.48, style.mid);
+        bg.addColorStop(1, "#050806");
+        ctx.fillStyle = bg;
+        ctx.fillRect(x, y, width, height);
+
+        const glow = ctx.createRadialGradient(cx, cy, 40, cx, cy, 390);
+        glow.addColorStop(0, alpha(style.accent, 0.7));
+        glow.addColorStop(0.42, alpha(style.accent2, 0.22));
+        glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(x, y, width, height);
+
+        for (let index = 0; index < 13; index += 1) {
+          const billX = x + 44 + (index * 97) % (width - 100);
+          const billY = y + 60 + (index * 71) % (height - 130);
+          drawMoneyBill(ctx, billX, billY, 90, 46, (index % 5 - 2) * 0.12, style, index % 3 === 0 ? "$" : "WZ");
+        }
+
+        ctx.save();
+        ctx.globalAlpha = 0.92;
+        ctx.strokeStyle = alpha(style.accent2, 0.94);
+        ctx.lineWidth = 9;
+        ctx.beginPath();
+        ctx.moveTo(cx - 230, cy - 172);
+        ctx.quadraticCurveTo(cx, cy - 322, cx + 230, cy - 172);
+        ctx.quadraticCurveTo(cx + 124, cy - 226, cx, cy - 174);
+        ctx.quadraticCurveTo(cx - 124, cy - 226, cx - 230, cy - 172);
+        ctx.stroke();
+
+        ctx.lineWidth = 4;
+        ["-160", "-76", "0", "76", "160"].forEach((offset) => {
           ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x + 210, height);
+          ctx.moveTo(cx + Number(offset), cy - 180);
+          ctx.lineTo(cx, cy + 56);
+          ctx.stroke();
+        });
+        ctx.restore();
+
+        fillRoundedRect(ctx, cx - 176, cy + 8, 352, 216, 26, "rgba(2, 6, 4, 0.82)");
+        strokeRoundedRect(ctx, cx - 176, cy + 8, 352, 216, 26, alpha(style.accent2, 0.72), 4);
+        fillRoundedRect(ctx, cx - 132, cy + 48, 264, 70, 8, alpha(style.accent, 0.92));
+        ctx.fillStyle = "#031006";
+        ctx.textAlign = "center";
+        ctx.font = "900 42px Inter, Arial, sans-serif";
+        ctx.fillText("BUYBACK", cx, cy + 96);
+        ctx.fillStyle = alpha(style.accent2, 0.92);
+        ctx.font = "900 76px 'Teko', sans-serif";
+        ctx.fillText(`+${match.redeploys}`, cx - 22, cy + 188);
+        ctx.font = "700 20px 'Space Mono', monospace";
+        ctx.fillText("REDEPLOYS", cx + 70, cy + 178);
+        ctx.textAlign = "left";
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.84)";
+        ctx.font = "900 30px 'Space Mono', monospace";
+        ctx.fillText("CASH FLEX CARD", x + 42, y + 56);
+        ctx.fillStyle = alpha(style.accent2, 0.84);
+        ctx.font = "700 18px 'Space Mono', monospace";
+        ctx.fillText(`${style.serial} // ${style.requirement.toUpperCase()}`, x + 42, y + 86);
+
+        ctx.restore();
+        strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.5), 2);
+      }
+
+      function drawRune(ctx, cx, cy, radius, style, index) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(index * 0.72);
+        ctx.strokeStyle = index % 2 === 0 ? style.accent2 : style.accent;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(0, -radius);
+        ctx.lineTo(radius * 0.36, -radius * 0.18);
+        ctx.lineTo(radius, 0);
+        ctx.lineTo(radius * 0.36, radius * 0.18);
+        ctx.lineTo(0, radius);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawReviveArt(ctx, style, x, y, width, height) {
+        const cx = x + width * 0.58;
+        const cy = y + height * 0.52;
+
+        ctx.save();
+        roundedRect(ctx, x, y, width, height, 30);
+        ctx.clip();
+
+        const bg = ctx.createLinearGradient(x, y, x + width, y + height);
+        bg.addColorStop(0, style.deep);
+        bg.addColorStop(0.5, style.mid);
+        bg.addColorStop(1, "#050610");
+        ctx.fillStyle = bg;
+        ctx.fillRect(x, y, width, height);
+
+        const glow = ctx.createRadialGradient(cx, cy, 30, cx, cy, 370);
+        glow.addColorStop(0, alpha(style.accent2, 0.66));
+        glow.addColorStop(0.42, alpha(style.accent, 0.28));
+        glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(x, y, width, height);
+
+        ctx.save();
+        ctx.globalAlpha = 0.74;
+        for (let index = 0; index < 10; index += 1) {
+          drawRune(ctx, cx + Math.cos(index * 0.63) * 245, cy + Math.sin(index * 0.63) * 180, 28, style, index);
+        }
+        ctx.restore();
+
+        ctx.strokeStyle = alpha(style.accent2, 0.74);
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 225, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = alpha(style.accent, 0.78);
+        ctx.lineWidth = 18;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 156, -0.2, Math.PI * 1.3);
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(4, 6, 16, 0.86)";
+        ctx.beginPath();
+        ctx.moveTo(cx - 106, cy + 146);
+        ctx.quadraticCurveTo(cx - 124, cy + 58, cx - 78, cy + 8);
+        ctx.lineTo(cx - 52, cy - 118);
+        ctx.quadraticCurveTo(cx - 28, cy - 154, cx - 4, cy - 116);
+        ctx.lineTo(cx + 2, cy - 34);
+        ctx.lineTo(cx + 34, cy - 138);
+        ctx.quadraticCurveTo(cx + 60, cy - 168, cx + 78, cy - 124);
+        ctx.lineTo(cx + 62, cy - 18);
+        ctx.lineTo(cx + 104, cy - 88);
+        ctx.quadraticCurveTo(cx + 136, cy - 112, cx + 136, cy - 66);
+        ctx.lineTo(cx + 76, cy + 78);
+        ctx.quadraticCurveTo(cx + 42, cy + 156, cx - 106, cy + 146);
+        ctx.fill();
+
+        ctx.strokeStyle = alpha(style.accent2, 0.82);
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        fillRoundedRect(ctx, cx - 60, cy - 20, 120, 120, 20, alpha(style.accent, 0.9));
+        ctx.fillStyle = "#070810";
+        fillRoundedRect(ctx, cx - 16, cy + 0, 32, 78, 8, "#070810");
+        fillRoundedRect(ctx, cx - 39, cy + 23, 78, 32, 8, "#070810");
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.84)";
+        ctx.font = "900 30px 'Space Mono', monospace";
+        ctx.fillText("SAVE THE RUN", x + 42, y + 56);
+        ctx.fillStyle = alpha(style.accent2, 0.84);
+        ctx.font = "700 18px 'Space Mono', monospace";
+        ctx.fillText(`${style.serial} // ${style.requirement.toUpperCase()}`, x + 42, y + 86);
+
+        ctx.restore();
+        strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.5), 2);
+      }
+
+      function drawCardBase(ctx, style, width, height) {
+        const base = ctx.createLinearGradient(0, 0, width, height);
+        base.addColorStop(0, "#040404");
+        base.addColorStop(0.45, style.deep);
+        base.addColorStop(0.72, "#090909");
+        base.addColorStop(1, style.mid);
+        ctx.fillStyle = base;
+        ctx.fillRect(0, 0, width, height);
+
+        const glow = ctx.createRadialGradient(width * 0.8, height * 0.24, 40, width * 0.78, height * 0.24, 560);
+        glow.addColorStop(0, alpha(style.accent, 0.42));
+        glow.addColorStop(0.52, alpha(style.accent2, 0.12));
+        glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.globalAlpha = 0.14;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        for (let x = -360; x < width + 320; x += 70) {
+          ctx.beginPath();
+          ctx.moveTo(x, -60);
+          ctx.lineTo(x + 410, height + 60);
           ctx.stroke();
         }
         ctx.restore();
 
-        ctx.fillStyle = "#f7f1e7";
-        ctx.font = "900 42px Inter, Arial, sans-serif";
-        ctx.fillText("LAST DROP: RECALL", 54, 70);
-        ctx.font = "900 38px 'Space Mono', monospace";
-        ctx.fillText(match.player.toUpperCase(), 56, 124);
-        ctx.font = "700 18px 'Space Mono', monospace";
-        ctx.fillStyle = "rgba(247, 241, 231, 0.62)";
-        ctx.fillText("WARZONE // ALCATRAZ", 58, 158);
+        drawGrain(ctx, width, height, activeStyle * 311 + match.kills * 17, 0.085);
 
-        fillRoundedRect(ctx, 58, 188, 290, 42, 21, unlocked ? style.accent : "#4b4b4b");
-        ctx.fillStyle = "#fff";
+        strokeRoundedRect(ctx, 26, 26, width - 52, height - 52, 34, alpha(style.accent2, 0.48), 3);
+        strokeRoundedRect(ctx, 42, 42, width - 84, height - 84, 25, "rgba(255, 255, 255, 0.18)", 1.5);
+      }
+
+      function drawTopMeta(ctx, style, width) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+        ctx.font = "900 25px 'Space Mono', monospace";
+        ctx.fillText("LAST DROP: RECALL", 64, 78);
+        ctx.fillStyle = alpha(style.accent2, 0.9);
+        ctx.font = "700 17px 'Space Mono', monospace";
+        ctx.fillText("WARZONE REACTIVATION CARD", 64, 106);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
+        ctx.textAlign = "right";
+        ctx.font = "700 17px 'Space Mono', monospace";
+        ctx.fillText(`${match.map.toUpperCase()} // ${style.serial}`, width - 64, 84);
+        ctx.textAlign = "left";
+        drawBarcode(ctx, width - 255, 101, 190, 34, "rgba(255, 255, 255, 0.42)");
+      }
+
+      function drawPlayerBlock(ctx, style) {
+        ctx.fillStyle = "#fffaf0";
+        drawFittedText(ctx, match.player.toUpperCase(), 64, 172, 540, 58, 32, "Inter, Arial, sans-serif", 900);
+
+        fillRoundedRect(ctx, 64, 194, 172, 38, 19, alpha(style.accent, 0.94));
+        ctx.fillStyle = "#070707";
+        ctx.font = "900 19px 'Space Mono', monospace";
+        ctx.fillText(style.requirement.toUpperCase(), 84, 220);
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        ctx.font = "700 17px 'Space Mono', monospace";
+        ctx.fillText(match.moment.toUpperCase(), 64, 262);
+      }
+
+      function drawPrimaryStat(ctx, style) {
+        const primary = getPrimaryStat(style);
+        ctx.fillStyle = alpha(style.accent2, 0.92);
+        ctx.font = "900 184px Inter, Arial, sans-serif";
+        ctx.fillText(primary.value, 54, 458);
+        ctx.fillStyle = "#fffaf0";
+        drawFittedText(ctx, primary.label.toUpperCase(), 66, 548, 448, 88, 56, "Inter, Arial, sans-serif", 900);
+
+        ctx.fillStyle = alpha(style.accent, 0.96);
+        drawFittedText(ctx, style.title.toUpperCase(), 66, 614, 470, 56, 34, "'Teko', sans-serif", 900);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.62)";
         ctx.font = "700 20px 'Space Mono', monospace";
-        ctx.fillText(style.requirement.toUpperCase(), 82, 216);
+        ctx.fillText(style.subtitle.toUpperCase(), 68, 648);
+      }
 
-        ctx.fillStyle = style.accent;
-        ctx.font = "900 190px Inter, Arial, sans-serif";
-        ctx.fillText(primary.value, 54, 424);
-        ctx.fillStyle = "#f7f1e7";
-        ctx.font = "900 94px Inter, Arial, sans-serif";
-        ctx.fillText(primary.label, 64, 520);
-
-        ctx.fillStyle = "rgba(247, 241, 231, 0.58)";
-        ctx.font = "700 21px 'Space Mono', monospace";
-        ctx.fillStyle = style.accent;
-        ctx.fillText(style.tierName.toUpperCase(), 62, 566);
-
+      function drawStatTicker(ctx, style, width, height) {
         const stats = [
           ["FINISH", match.finish],
           ["DAMAGE", match.damage],
+          ["KILLS", match.kills],
           ["REDEPLOYS", match.redeploys],
           ["REVIVES", match.revives],
         ];
+        const x = 58;
+        const y = height - 142;
+        const tickerWidth = width - 116;
+        const cellWidth = tickerWidth / stats.length;
+
+        fillRoundedRect(ctx, x, y, tickerWidth, 82, 16, "rgba(0, 0, 0, 0.48)");
+        strokeRoundedRect(ctx, x, y, tickerWidth, 82, 16, "rgba(255, 255, 255, 0.16)", 1.5);
 
         stats.forEach(([label, value], index) => {
-          const x = 58 + (index % 2) * 318;
-          const y = 622 + Math.floor(index / 2) * 104;
-          fillRoundedRect(ctx, x, y, 276, 78, 12, "rgba(255, 255, 255, 0.075)");
-          ctx.fillStyle = "rgba(247, 241, 231, 0.54)";
-          ctx.font = "700 17px 'Space Mono', monospace";
-          ctx.fillText(label, x + 20, y + 30);
-          ctx.fillStyle = label === "DAMAGE" ? style.accent : "#f7f1e7";
-          ctx.font = "900 36px 'Teko', sans-serif";
-          ctx.fillText(String(value).toUpperCase(), x + 20, y + 64);
+          const cellX = x + index * cellWidth;
+          if (index > 0) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+            ctx.fillRect(cellX, y + 14, 1, 54);
+          }
+
+          ctx.fillStyle = "rgba(255, 255, 255, 0.56)";
+          ctx.font = "700 16px 'Space Mono', monospace";
+          ctx.fillText(label, cellX + 22, y + 31);
+          ctx.fillStyle = label === "KILLS" ? style.accent2 : "#fffaf0";
+          ctx.font = "900 34px 'Teko', sans-serif";
+          ctx.fillText(String(value).toUpperCase(), cellX + 22, y + 66);
         });
+      }
 
-        ctx.fillStyle = "rgba(247, 241, 231, 0.62)";
-        ctx.font = "700 20px 'Space Mono', monospace";
-        ctx.fillText(match.moment.toUpperCase(), 58, 850);
-
-        drawMiniQr(ctx, 676, 754, 104, "#080808");
-        ctx.fillStyle = "rgba(247, 241, 231, 0.48)";
+      function drawFooter(ctx, style, width, height) {
+        drawMiniQr(ctx, width - 164, height - 174, 96, "#080808");
+        ctx.fillStyle = "rgba(255, 255, 255, 0.52)";
         ctx.font = "700 14px 'Space Mono', monospace";
-        ctx.fillText("SCAN", 684, 880);
+        ctx.fillText("COPY CARD // TEXT SQUAD", 64, height - 31);
+        ctx.textAlign = "right";
+        ctx.fillText("RUN IT BACK", width - 64, height - 31);
+        ctx.textAlign = "left";
+      }
+
+      function drawLockOverlay(ctx, style, width, height) {
+        ctx.save();
+        ctx.fillStyle = "rgba(0, 0, 0, 0.68)";
+        ctx.fillRect(0, 0, width, height);
+        ctx.translate(width / 2, height / 2);
+        ctx.rotate(-0.08);
+        strokeRoundedRect(ctx, -320, -96, 640, 192, 26, style.accent, 8);
+        ctx.fillStyle = "#fffaf0";
+        ctx.textAlign = "center";
+        ctx.font = "900 72px Inter, Arial, sans-serif";
+        ctx.fillText(style.requirement.toUpperCase(), 0, -8);
+        ctx.fillStyle = alpha(style.accent2, 0.94);
+        ctx.font = "700 27px 'Space Mono', monospace";
+        ctx.fillText("LOCKED CARD STYLE", 0, 50);
+        ctx.restore();
+        ctx.textAlign = "left";
+      }
+
+      function renderShareCard() {
+        const style = cardStyles[activeStyle];
+        const ctx = shareCardContext;
+        const width = shareCardCanvas.width;
+        const height = shareCardCanvas.height;
+        const unlocked = isStyleUnlocked(style);
+
+        ctx.clearRect(0, 0, width, height);
+        drawCardBase(ctx, style, width, height);
+
+        const artX = 502;
+        const artY = 132;
+        const artWidth = 826;
+        const artHeight = 582;
+
+        if (style.family === "redeploy") {
+          drawRedeployArt(ctx, style, artX, artY, artWidth, artHeight);
+        } else if (style.family === "revive") {
+          drawReviveArt(ctx, style, artX, artY, artWidth, artHeight);
+        } else {
+          drawSamuraiArt(ctx, style, artX, artY, artWidth, artHeight);
+        }
+
+        drawTopMeta(ctx, style, width);
+        drawPlayerBlock(ctx, style);
+        drawPrimaryStat(ctx, style);
+        drawStatTicker(ctx, style, width, height);
+        drawFooter(ctx, style, width, height);
 
         if (!unlocked) {
-          ctx.save();
-          ctx.fillStyle = "rgba(0, 0, 0, 0.56)";
-          ctx.fillRect(0, 0, width, height);
-          ctx.translate(width / 2, height / 2);
-          ctx.rotate(-0.13);
-          ctx.strokeStyle = style.accent;
-          ctx.lineWidth = 8;
-          strokeRoundedRect(ctx, -310, -90, 620, 180, 28, style.accent, 8);
-          ctx.fillStyle = "#fff";
-          ctx.textAlign = "center";
-          ctx.font = "900 78px Inter, Arial, sans-serif";
-          ctx.fillText(style.requirement.toUpperCase(), 0, -10);
-          ctx.font = "700 28px 'Space Mono', monospace";
-          ctx.fillText("LOCKED PREVIEW", 0, 46);
-          ctx.restore();
+          drawLockOverlay(ctx, style, width, height);
         }
       }
 
       function setStyle(index) {
-        activeStyle = (index + asciiStyles.length) % asciiStyles.length;
-        const style = asciiStyles[activeStyle];
+        activeStyle = (index + cardStyles.length) % cardStyles.length;
+        const style = cardStyles[activeStyle];
         styleSelect.value = String(activeStyle);
         recallCard.style.setProperty("--accent", style.accent);
         recallCard.style.setProperty("--paper-tint", style.paper);
@@ -1410,8 +1533,10 @@ Need one more. Run it back:`;
         const blob = await canvasToBlob(shareCardCanvas);
 
         if (navigator.clipboard && window.ClipboardItem && window.isSecureContext) {
-          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-          return;
+          try {
+            await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+            return "copied";
+          } catch {}
         }
 
         const downloadUrl = URL.createObjectURL(blob);
@@ -1422,12 +1547,22 @@ Need one more. Run it back:`;
         link.click();
         link.remove();
         URL.revokeObjectURL(downloadUrl);
+        return "downloaded";
       }
 
       copyImageButton.addEventListener("click", async () => {
+        const idleLabel = "Copy Card Image";
+
         try {
-          await copyCardImage();
-        } catch {}
+          const result = await copyCardImage();
+          copyImageButton.textContent = result === "copied" ? "Image Copied" : "Image Downloaded";
+        } catch {
+          copyImageButton.textContent = "Copy Failed";
+        }
+
+        window.setTimeout(() => {
+          copyImageButton.textContent = idleLabel;
+        }, 1800);
       });
     </script>
   </body>
