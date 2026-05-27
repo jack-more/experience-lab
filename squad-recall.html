@@ -1178,6 +1178,7 @@ Need one more. Run it back?`;
         style.tierName = tierNames[index];
       });
 
+      const requestedStyle = new URLSearchParams(window.location.search).get("style");
       let activeStyle = asciiStyles.reduce((bestIndex, style, index) => {
         if (match.elims >= style.minElims && style.minElims >= asciiStyles[bestIndex].minElims) {
           return index;
@@ -1185,6 +1186,13 @@ Need one more. Run it back?`;
 
         return bestIndex;
       }, 5);
+
+      if (requestedStyle !== null) {
+        const requestedIndex = Number(requestedStyle);
+        if (Number.isInteger(requestedIndex) && requestedIndex >= 0 && requestedIndex < asciiStyles.length) {
+          activeStyle = requestedIndex;
+        }
+      }
 
       asciiStyles.forEach((style, index) => {
         const option = document.createElement("option");
