@@ -954,26 +954,32 @@ Need one more. Run it back:`;
           accent: "#ff2d00",
           paper: "#fff2e8",
           art: [
-            "   XX XX XX XX XX XX",
-            "   20+    20+    20+",
-            "   XX XX XX XX XX XX",
-            "   TWENTY BOMB RUN",
-            "   XX XX XX XX XX XX",
+            "## ## ## ## ## ##",
+            "20+ 20+ 20+ 20+",
+            "## ## ## ## ## ##",
+            "TWENTY BOMB",
+            "## ## ## ## ## ##",
           ],
           featureArt: [
-            "       .----------------.",
-            "    .-'   TWENTY BOMB    '-.",
-            "   /    .--------------.     \\",
-            "  |     |   20+ KILLS  |      |",
-            "  |     |  LOBBY WIPE  |      |",
-            "  |     '--------------'      |",
-            "   \\        RUN BACK         /",
-            "    '-.___________________.-'",
+            "  ____   ___        ",
+            " |___ \\ / _ \\   _   ",
+            "   __) | | | |_| |_ ",
+            "  / __/| |_| |_   _|",
+            " |_____|\\___/  |_|  ",
+            "",
+            " _  _____ _    _    ____ ",
+            "| |/ /_ _| |  | |  / ___|",
+            "| ' / | || |  | |  \\___ \\",
+            "| . \\ | || |__| |___ ___) |",
+            "|_|\\_\\___|_____|____|____/",
+            "",
+            "TWENTY BOMB // LOBBY WIPE",
           ],
-          featureX: 770,
-          featureY: 164,
-          featureFontSize: 29,
-          featureLineHeight: 43,
+          featureX: 792,
+          featureY: 132,
+          featureFontSize: 27,
+          featureLineHeight: 34,
+          featureFrame: false,
         },
         {
           name: "11 Buyback Run",
@@ -1262,7 +1268,9 @@ Need one more. Run it back:`;
         ctx.strokeStyle = artInk;
         ctx.lineWidth = 5;
         ctx.setLineDash([]);
-        strokeRoundedRect(ctx, 818, 112, 500, 540, 26, artInk, 5);
+        if (style.featureFrame !== false) {
+          strokeRoundedRect(ctx, 818, 112, 500, 540, 26, artInk, 5);
+        }
         ctx.restore();
 
         ctx.save();
