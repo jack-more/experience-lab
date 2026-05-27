@@ -952,6 +952,8 @@ Need one more. Run it back:`;
           name: "10 Twenty Bomb",
           label: "Twenty Bomb ASCII",
           accent: "#ff2d00",
+          artBg: "#080808",
+          artInk: "#f7f1e7",
           paper: "#fff2e8",
           art: [
             "## ## ## ## ## ##",
@@ -961,26 +963,30 @@ Need one more. Run it back:`;
             "## ## ## ## ## ##",
           ],
           featureArt: [
-            " _____  _____       ",
-            "/ __  \\|  _  |  _   ",
-            "`' / /'| |/' |_| |_ ",
-            "  / /  |  /| |_   _|",
-            "./ /___\\ |_/ / |_|  ",
-            "\\_____/ \\___/       ",
+            "        .-''''''''''''''''-.",
+            "     .-'    LAST DROP       '-.",
+            "   .'     .------------.       '.",
+            "  /      /   _      _   \\        \\",
+            " |      |   (x)    (x)   |        |",
+            " |      |       /\\       |        |",
+            " |      |    .------.    |        |",
+            " |      |    | 20+  |    |        |",
+            " |      |    |KILLS |    |        |",
+            " |       \\   '------'   /         |",
+            "  \\       '.          .'         /",
+            "   '.       '-.____.-'        .'",
+            "     '-.                  .-'",
+            "        '----._______.----'",
             "",
-            " _   _______ _      _      _____ ",
-            "| | / /_   _| |    | |    /  ___|",
-            "| |/ /  | | | |    | |    \\ `--. ",
-            "|    \\  | | | |    | |     `--. \\",
-            "| |\\  \\_| |_| |____| |____/\\__/ /",
-            "\\_| \\_/\\___/\\_____/\\_____/\\____/ ",
+            "      [ TWENTY BOMB CARD ]",
+            "      [ FINAL CIRCLE WIPE ]",
             "",
-            "[ TWENTY BOMB // LOBBY WIPE ]",
+            "          JACKGRINDS#7341",
           ],
           featureX: 790,
-          featureY: 122,
-          featureFontSize: 25,
-          featureLineHeight: 34,
+          featureY: 80,
+          featureFontSize: 21,
+          featureLineHeight: 30,
           featureFrame: false,
           textureBlocks: false,
         },
@@ -1227,8 +1233,8 @@ Need one more. Run it back:`;
         const unlocked = isStyleUnlocked(style);
         const primary = getPrimaryStat(style);
         const isPrestigeKill = style.metric === "kills" && style.minValue >= 20;
-        const artBg = isPrestigeKill ? style.accent : "#0d22f5";
-        const artInk = isPrestigeKill ? "#120603" : "#f7f1e7";
+        const artBg = style.artBg || (isPrestigeKill ? style.accent : "#0d22f5");
+        const artInk = style.artInk || (isPrestigeKill ? "#120603" : "#f7f1e7");
 
         ctx.clearRect(0, 0, width, height);
 
@@ -1239,7 +1245,11 @@ Need one more. Run it back:`;
         ctx.fillStyle = baseGradient;
         ctx.fillRect(0, 0, width, height);
 
-        ctx.fillStyle = artBg;
+        const artGradient = ctx.createLinearGradient(768, 0, width, height);
+        artGradient.addColorStop(0, artBg);
+        artGradient.addColorStop(0.72, artBg);
+        artGradient.addColorStop(1, isPrestigeKill ? "#1a0904" : artBg);
+        ctx.fillStyle = artGradient;
         ctx.fillRect(768, 0, width - 768, height);
 
         ctx.save();
@@ -1263,10 +1273,12 @@ Need one more. Run it back:`;
         const centerpiece = style.featureArt || style.art;
         drawLines(ctx, centerpiece, style.featureX || 826, style.featureY || 140, style.featureLineHeight || 43);
 
-        ctx.globalAlpha = 0.08;
-        ctx.font = "700 18px 'Space Mono', monospace";
-        for (let y = 24; y < height; y += 58) {
-          drawLines(ctx, style.art.slice(0, 3), 810, y, 22);
+        if (style.textureBlocks !== false) {
+          ctx.globalAlpha = 0.08;
+          ctx.font = "700 18px 'Space Mono', monospace";
+          for (let y = 24; y < height; y += 58) {
+            drawLines(ctx, style.art.slice(0, 3), 810, y, 22);
+          }
         }
 
         ctx.globalAlpha = 1;
