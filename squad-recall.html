@@ -269,8 +269,8 @@
         --paper-tint: #f5f1e8;
         position: relative;
         grid-row: span 2;
-        height: min(calc(100svh - 116px), 720px);
-        min-height: 560px;
+        aspect-ratio: 4 / 5;
+        min-height: 0;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 26px;
@@ -283,6 +283,14 @@
           background 220ms ease,
           box-shadow 220ms ease,
           transform 220ms ease;
+      }
+
+      .share-card-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--paper-tint);
       }
 
       .recall-card:hover {
@@ -523,6 +531,22 @@
         backdrop-filter: blur(16px);
       }
 
+      .sms-preview {
+        max-height: 9rem;
+        margin: 0;
+        overflow: hidden;
+        padding: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 14px;
+        color: rgba(255, 255, 255, 0.84);
+        background: rgba(255, 255, 255, 0.055);
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        line-height: 1.45;
+        white-space: pre-wrap;
+      }
+
       .action-kicker {
         color: var(--orange);
         font-family: var(--font-mono);
@@ -570,6 +594,11 @@
         border-color: color-mix(in srgb, var(--orange) 70%, transparent);
         background: linear-gradient(180deg, var(--orange), var(--orange-deep));
         box-shadow: 0 16px 32px rgba(255, 75, 24, 0.24);
+      }
+
+      .primary.is-image {
+        min-height: 3.75rem;
+        font-size: 1.32rem;
       }
 
       .secondary {
@@ -653,10 +682,6 @@
           grid-column: 1;
         }
 
-        .recall-card {
-          height: auto;
-        }
-
         .hand {
           top: 218px;
           right: -158px;
@@ -676,11 +701,6 @@
         .subline {
           max-width: 23rem;
           font-size: 0.98rem;
-        }
-
-        .recall-card,
-        .card-content {
-          min-height: 560px;
         }
 
         .card-title {
@@ -740,62 +760,13 @@
 
         <aside class="recall-stack" aria-label="Recall card composer">
           <article class="recall-card" id="recallCard">
-            <pre class="ascii-art" id="asciiArt" aria-hidden="true"></pre>
-            <div class="card-veil" aria-hidden="true"></div>
-
-            <div class="card-content">
-              <div class="card-meta">
-                <span>Operation<br />Last Drop</span>
-                <span>Target<br />Squad Recall</span>
-                <span>Status<br />Ready</span>
-              </div>
-
-              <div class="card-title">
-                <div class="alert-label" id="styleLabel">High Kill Frame</div>
-                <h2>Warzone<span>Last Drop</span></h2>
-              </div>
-
-              <div class="stat-strip" aria-label="Last match stats">
-                <div class="stat-pill"><span>Finish</span><strong>#3</strong></div>
-                <div class="stat-pill"><span>Elims</span><strong>17</strong></div>
-                <div class="stat-pill"><span>Damage</span><strong>5.8K</strong></div>
-              </div>
-
-              <div class="pnl-grid" aria-label="Performance ledger">
-                <div><span>K/D Delta</span><strong>+4.8</strong></div>
-                <div><span>Clutch Value</span><strong>+320%</strong></div>
-                <div><span>Redeploys</span><strong>2</strong></div>
-                <div><span>Revives</span><strong>3</strong></div>
-              </div>
-
-              <div class="text-card">
-                <pre id="recallText"></pre>
-              </div>
-
-              <p class="runback">Run it back?</p>
-
-              <div class="barcode" aria-hidden="true">
-                <span style="--w: 5px; --h: 44px"></span>
-                <span style="--w: 9px; --h: 44px"></span>
-                <span style="--w: 4px; --h: 44px"></span>
-                <span style="--w: 14px; --h: 44px"></span>
-                <span style="--w: 5px; --h: 44px"></span>
-                <span style="--w: 5px; --h: 44px"></span>
-                <span style="--w: 10px; --h: 44px"></span>
-                <span style="--w: 4px; --h: 44px"></span>
-                <span style="--w: 9px; --h: 44px"></span>
-                <span style="--w: 5px; --h: 44px"></span>
-                <span style="--w: 18px; --h: 44px"></span>
-                <span style="--w: 4px; --h: 44px"></span>
-                <span style="--w: 10px; --h: 44px"></span>
-                <span style="--w: 5px; --h: 44px"></span>
-              </div>
-
-              <div class="card-footer">
-                <span>JACKGRINDS#7341</span>
-                <span>Alcatraz / Resurgence</span>
-              </div>
-            </div>
+            <canvas
+              class="share-card-canvas"
+              id="shareCardCanvas"
+              width="1080"
+              height="1350"
+              aria-label="Generated Squad Recall share card"
+            ></canvas>
           </article>
 
           <div class="style-dock" aria-label="ASCII card background controls">
@@ -811,10 +782,12 @@
               The card is the flex. The text is the recall mechanic: fast, readable,
               and built to paste straight into the group chat.
             </p>
+            <button class="primary is-image" type="button" id="copyImageButton">Copy Card Image</button>
             <div class="button-row">
               <a class="primary" id="smsLink" href="#">Open SMS Draft</a>
               <button class="secondary" type="button" id="copyButton">Copy Emojified Text</button>
             </div>
+            <pre class="sms-preview" id="recallText"></pre>
             <div class="qr-row">
               <img id="qrCode" src="assets/squad-recall-sms-qr.png" alt="QR code for the SMS draft" />
               <p>Scan to open the same recall text on your phone.</p>
@@ -1152,43 +1125,296 @@ Need one more. Run it back?`;
       const smsBody = `${recallText}\n${shareUrl}`;
       const smsHref = `sms:&body=${encodeURIComponent(smsBody)}`;
       const recallCard = document.getElementById("recallCard");
-      const asciiArt = document.getElementById("asciiArt");
-      const styleLabel = document.getElementById("styleLabel");
+      const shareCardCanvas = document.getElementById("shareCardCanvas");
+      const shareCardContext = shareCardCanvas.getContext("2d");
       const styleSelect = document.getElementById("styleSelect");
       const previousStyle = document.getElementById("previousStyle");
       const nextStyle = document.getElementById("nextStyle");
       const recallTextElement = document.getElementById("recallText");
       const smsLink = document.getElementById("smsLink");
+      const copyImageButton = document.getElementById("copyImageButton");
       const copyButton = document.getElementById("copyButton");
       const copyStatus = document.getElementById("copyStatus");
 
-      let activeStyle = match.elims >= 15 ? 0 : 1;
+      const tierThresholds = [15, 7, 17, 3, 8, 0, 5, 10, 11, 12, 13, 14, 16, 18, 20, 21, 22, 23, 25, 30];
+      const tierNames = [
+        "High Kill Bloom",
+        "Final Circle",
+        "Squad Wipe",
+        "Resurgence Static",
+        "Buyback Run",
+        "First Drop",
+        "Harbor Grid",
+        "Roofline Route",
+        "Gulag Ghost",
+        "Cash Route",
+        "Plate Break",
+        "Contract Stack",
+        "Sniper Glint",
+        "Gas Edge",
+        "Twenty Bomb",
+        "Precision Path",
+        "Loadout Smoke",
+        "Last Stand",
+        "Victory Ping",
+        "Mythic Night Vision",
+      ];
+
+      asciiStyles.forEach((style, index) => {
+        style.minElims = tierThresholds[index];
+        style.tierName = tierNames[index];
+      });
+
+      let activeStyle = asciiStyles.reduce((bestIndex, style, index) => {
+        if (match.elims >= style.minElims && style.minElims >= asciiStyles[bestIndex].minElims) {
+          return index;
+        }
+
+        return bestIndex;
+      }, 5);
 
       asciiStyles.forEach((style, index) => {
         const option = document.createElement("option");
         option.value = String(index);
-        option.textContent = style.name;
+        const lockState = match.elims >= style.minElims ? "unlocked" : "locked";
+        option.textContent = `${style.minElims}+ kills · ${style.tierName} · ${lockState}`;
         styleSelect.append(option);
       });
+
+      function roundedRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+
+      function fillRoundedRect(ctx, x, y, width, height, radius, fillStyle) {
+        roundedRect(ctx, x, y, width, height, radius);
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+      }
+
+      function strokeRoundedRect(ctx, x, y, width, height, radius, strokeStyle, lineWidth = 2) {
+        roundedRect(ctx, x, y, width, height, radius);
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+      }
+
+      function drawLines(ctx, lines, x, y, lineHeight) {
+        lines.forEach((line, index) => {
+          ctx.fillText(line, x, y + index * lineHeight);
+        });
+      }
+
+      function drawStatBox(ctx, x, y, width, label, value, accent = "#0a0a0a") {
+        fillRoundedRect(ctx, x, y, width, 120, 0, "rgba(255, 255, 255, 0.58)");
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, width, 120);
+        ctx.fillStyle = "rgba(0, 0, 0, 0.54)";
+        ctx.font = "700 22px 'Space Mono', monospace";
+        ctx.fillText(label.toUpperCase(), x + 24, y + 38);
+        ctx.fillStyle = accent;
+        ctx.font = "900 58px 'Teko', sans-serif";
+        ctx.fillText(String(value).toUpperCase(), x + 24, y + 96);
+      }
+
+      function renderShareCard() {
+        const style = asciiStyles[activeStyle];
+        const ctx = shareCardContext;
+        const width = shareCardCanvas.width;
+        const height = shareCardCanvas.height;
+        const unlocked = match.elims >= style.minElims;
+        const tierNumber = activeStyle + 1;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const baseGradient = ctx.createLinearGradient(0, 0, width, height);
+        baseGradient.addColorStop(0, "#fffdf8");
+        baseGradient.addColorStop(0.55, style.paper);
+        baseGradient.addColorStop(1, "#d9d2c4");
+        ctx.fillStyle = baseGradient;
+        ctx.fillRect(0, 0, width, height);
+
+        const accentGradient = ctx.createRadialGradient(width * 0.86, height * 0.18, 20, width * 0.86, height * 0.18, 520);
+        accentGradient.addColorStop(0, `${style.accent}55`);
+        accentGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = accentGradient;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.translate(width * 0.49, height * 0.3);
+        ctx.rotate(-0.16);
+        ctx.globalAlpha = unlocked ? 0.24 : 0.13;
+        ctx.fillStyle = style.accent;
+        ctx.font = "700 28px 'Space Mono', monospace";
+        const artLines = style.art;
+        for (let block = -4; block < 13; block += 1) {
+          drawLines(ctx, artLines, -520, block * 120, 32);
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = 0.08;
+        ctx.fillStyle = "#000";
+        for (let x = -120; x < width + 160; x += 88) {
+          ctx.fillRect(x, 0, 3, height);
+        }
+        ctx.restore();
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
+        ctx.font = "700 20px 'Space Mono', monospace";
+        ctx.fillText("OPERATION", 58, 72);
+        ctx.fillText("TARGET", 432, 72);
+        ctx.fillText("STATUS", 820, 72);
+        ctx.fillText("LAST DROP", 58, 102);
+        ctx.fillText("SQUAD RECALL", 432, 102);
+        ctx.fillStyle = unlocked ? style.accent : "#777";
+        ctx.fillText(unlocked ? "UNLOCKED" : "LOCKED PREVIEW", 820, 102);
+
+        fillRoundedRect(ctx, 58, 150, 318, 48, 24, style.accent);
+        ctx.fillStyle = "#fff";
+        ctx.font = "700 24px 'Space Mono', monospace";
+        ctx.fillText(`${style.minElims}+ KILL CARD`, 86, 183);
+
+        ctx.fillStyle = "#0a0a0a";
+        ctx.font = "900 136px Inter, Arial, sans-serif";
+        ctx.fillText("WARZONE", 58, 342);
+        ctx.fillStyle = style.accent;
+        ctx.font = "900 126px Inter, Arial, sans-serif";
+        ctx.fillText("LAST", 58, 462);
+        ctx.fillText("DROP", 58, 572);
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
+        ctx.font = "700 22px 'Space Mono', monospace";
+        ctx.fillText(`LEVEL ${String(tierNumber).padStart(2, "0")} / 20`, 58, 636);
+        ctx.fillStyle = style.accent;
+        ctx.fillText(style.tierName.toUpperCase(), 255, 636);
+
+        const statWidth = 292;
+        drawStatBox(ctx, 58, 682, statWidth, "Finish", match.finish, "#0a0a0a");
+        drawStatBox(ctx, 394, 682, statWidth, "Elims", match.elims, style.accent);
+        drawStatBox(ctx, 730, 682, statWidth, "Damage", match.damage, "#0a0a0a");
+
+        fillRoundedRect(ctx, 58, 840, 964, 168, 0, "#0a0a0a");
+        ctx.fillStyle = "#fff";
+        ctx.font = "700 31px 'Space Mono', monospace";
+        drawLines(
+          ctx,
+          [
+            `${match.player}`,
+            `♻ ${match.redeploys} Redeploys   🛡 ${match.revives} Revives`,
+            `🪂 ${match.moment}`,
+          ],
+          92,
+          896,
+          43,
+        );
+
+        ctx.fillStyle = "#0a0a0a";
+        ctx.font = "900 58px Inter, Arial, sans-serif";
+        ctx.fillText("RUN IT BACK?", 58, 1090);
+
+        ctx.fillStyle = style.accent;
+        ctx.font = "700 24px 'Space Mono', monospace";
+        const nextLocked = asciiStyles
+          .filter((candidate) => candidate.minElims > match.elims)
+          .sort((a, b) => a.minElims - b.minElims)[0];
+        const nextText = nextLocked ? `NEXT UNLOCK: ${nextLocked.minElims}+ ${nextLocked.tierName}` : "MAX TIER UNLOCKED";
+        ctx.fillText(nextText.toUpperCase(), 58, 1144);
+
+        const barcodeX = 58;
+        const barcodeY = 1196;
+        [7, 13, 5, 20, 7, 7, 15, 5, 13, 7, 26, 5, 15, 7, 20, 5, 9, 13].forEach((barWidth, index) => {
+          ctx.fillStyle = "#0a0a0a";
+          ctx.fillRect(barcodeX + index * 30, barcodeY, barWidth, 82);
+        });
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.56)";
+        ctx.font = "700 19px 'Space Mono', monospace";
+        ctx.fillText(match.map.toUpperCase(), 58, 1310);
+        ctx.fillText("SQUAD RECALL / SHARE CARD", 676, 1310);
+
+        if (!unlocked) {
+          ctx.save();
+          ctx.fillStyle = "rgba(0, 0, 0, 0.56)";
+          ctx.fillRect(0, 0, width, height);
+          ctx.translate(width / 2, height / 2);
+          ctx.rotate(-0.13);
+          ctx.strokeStyle = style.accent;
+          ctx.lineWidth = 8;
+          strokeRoundedRect(ctx, -310, -90, 620, 180, 28, style.accent, 8);
+          ctx.fillStyle = "#fff";
+          ctx.textAlign = "center";
+          ctx.font = "900 78px Inter, Arial, sans-serif";
+          ctx.fillText(`${style.minElims}+ KILLS`, 0, -10);
+          ctx.font = "700 28px 'Space Mono', monospace";
+          ctx.fillText("LOCKED CARD PREVIEW", 0, 46);
+          ctx.restore();
+        }
+      }
 
       function setStyle(index) {
         activeStyle = (index + asciiStyles.length) % asciiStyles.length;
         const style = asciiStyles[activeStyle];
-        asciiArt.textContent = style.art.join("\n");
-        styleLabel.textContent = style.label;
         styleSelect.value = String(activeStyle);
         recallCard.style.setProperty("--accent", style.accent);
         recallCard.style.setProperty("--paper-tint", style.paper);
-        copyStatus.textContent = `${style.name} selected. Screenshot the card or send the recall text.`;
+        renderShareCard();
+        const lockLabel = match.elims >= style.minElims ? "unlocked" : "locked preview";
+        copyStatus.textContent = `${style.minElims}+ ${style.tierName} ${lockLabel}. Copy the card image or send the recall text.`;
       }
 
       recallTextElement.textContent = recallText;
       smsLink.href = smsHref;
       setStyle(activeStyle);
+      if (document.fonts) {
+        document.fonts.ready.then(renderShareCard);
+      }
 
       previousStyle.addEventListener("click", () => setStyle(activeStyle - 1));
       nextStyle.addEventListener("click", () => setStyle(activeStyle + 1));
       styleSelect.addEventListener("change", (event) => setStyle(Number(event.target.value)));
+
+      function canvasToBlob(canvas) {
+        return new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error("Unable to render card image"));
+            }
+          }, "image/png", 0.96);
+        });
+      }
+
+      async function copyCardImage() {
+        const blob = await canvasToBlob(shareCardCanvas);
+
+        if (navigator.clipboard && window.ClipboardItem && window.isSecureContext) {
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          copyStatus.textContent = "Card image copied. Paste it into the chat.";
+          return;
+        }
+
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = `squad-recall-${match.elims}-elims.png`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+        copyStatus.textContent = "Card image downloaded. Share the PNG with the squad.";
+      }
 
       async function copyRecallText() {
         if (navigator.clipboard && window.isSecureContext) {
@@ -1219,6 +1445,14 @@ Need one more. Run it back?`;
         selection.removeAllRanges();
         selection.addRange(range);
       }
+
+      copyImageButton.addEventListener("click", async () => {
+        try {
+          await copyCardImage();
+        } catch {
+          copyStatus.textContent = "Image copy blocked. Try the browser share/download option.";
+        }
+      });
 
       copyButton.addEventListener("click", async () => {
         try {
