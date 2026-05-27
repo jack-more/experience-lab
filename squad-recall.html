@@ -797,14 +797,14 @@
             <button class="primary is-image" type="button" id="copyImageButton">Copy Card Image</button>
             <div class="button-row">
               <a class="primary" id="smsLink" href="#">Open SMS Draft</a>
-              <button class="secondary" type="button" id="copyButton">Copy Emoji Text</button>
+              <button class="secondary" type="button" id="copyButton">Copy Invite Text</button>
             </div>
             <pre class="sms-preview" id="recallText"></pre>
             <div class="qr-row">
               <img id="qrCode" src="assets/squad-recall-sms-qr.png" alt="QR code for the SMS draft" />
               <p>Scan to open the same recall text on your phone.</p>
             </div>
-            <p class="status-copy" id="copyStatus">Choose a card tier, then share image or text.</p>
+            <p class="status-copy" id="copyStatus">The card is the flex. The text is just the squad invite.</p>
           </div>
         </aside>
       </div>
@@ -822,17 +822,10 @@
         moment: "Final Circle Squad Wipe",
       };
 
-      const recallText = `WARZONE LAST DROP
-${match.player}
+      const recallText = `SQUAD RECALL: LAST DROP
+${match.elims} elims. ${match.finish} finish. ${match.moment}.
 
-🏁 ${match.finish} Squad Finish
-💀 ${match.elims} Elims
-♻️ ${match.redeploys} Redeploys
-🛡️ ${match.revives} Revives
-⚡ ${match.damage} Damage
-🪂 ${match.moment}
-
-Need one more. Run it back?`;
+Need one more. Run it back:`;
 
       const asciiStyles = [
         {
