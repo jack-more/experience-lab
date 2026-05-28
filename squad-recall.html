@@ -524,16 +524,11 @@
         map: "Alcatraz / Resurgence",
         finish: "#1",
         kills: 21,
-        redeploys: 2,
+        redeploys: 3,
         revives: 3,
         damage: "7.9K",
         moment: "Final Circle Squad Wipe",
       };
-
-      const recallText = `LAST DROP: RECALL
-${match.kills} kills. ${match.finish} finish. ${match.moment}.
-
-Need one more. Run it back:`;
 
       const cardStyles = [
         {
@@ -549,7 +544,7 @@ Need one more. Run it back:`;
           mid: "#43130b",
           paper: "#f5f1e8",
           title: "Two-Piece",
-          subtitle: "Quick clean split",
+          subtitle: "Two kills and a reset",
         },
         {
           metric: "kills",
@@ -564,7 +559,7 @@ Need one more. Run it back:`;
           mid: "#22201d",
           paper: "#f6f2ea",
           title: "Triple Tap",
-          subtitle: "Three in the feed",
+          subtitle: "Left with dignity",
         },
         {
           metric: "kills",
@@ -579,7 +574,7 @@ Need one more. Run it back:`;
           mid: "#4a1019",
           paper: "#f8eee8",
           title: "Four Down",
-          subtitle: "Full squad cracked",
+          subtitle: "Held together somehow",
         },
         {
           metric: "kills",
@@ -765,8 +760,6 @@ Need one more. Run it back:`;
       ];
 
       const shareUrl = "https://jack-more.github.io/experience-lab/squad-recall.html";
-      const smsBody = `${recallText}\n${shareUrl}`;
-      const smsHref = `sms:&body=${encodeURIComponent(smsBody)}`;
       const recallCard = document.getElementById("recallCard");
       const shareCardCanvas = document.getElementById("shareCardCanvas");
       const shareCardContext = shareCardCanvas.getContext("2d");
@@ -817,13 +810,51 @@ Need one more. Run it back:`;
           label: "Twenty-Bomb Mythic",
         },
         redeploy: {
-          src: "assets/last-drop-art-redeploy.jpg",
-          label: "Cash Flex Card",
+          src: "assets/last-drop-redeploy-01.jpg",
+          label: "Coupon Buyback",
+        },
+        redeploy01: {
+          src: "assets/last-drop-redeploy-01.jpg",
+          label: "Coupon Buyback",
+        },
+        redeploy02: {
+          src: "assets/last-drop-redeploy-02.jpg",
+          label: "Cash Sprint",
+        },
+        redeploy03: {
+          src: "assets/last-drop-redeploy-03.jpg",
+          label: "Full Send Fund",
         },
         revive: {
-          src: "assets/last-drop-art-revive.jpg",
-          label: "Save The Run",
+          src: "assets/last-drop-revive-01.jpg",
+          label: "Panic Pickup",
         },
+        revive01: {
+          src: "assets/last-drop-revive-01.jpg",
+          label: "Panic Pickup",
+        },
+        revive03: {
+          src: "assets/last-drop-revive-03.jpg",
+          label: "Triple Save",
+        },
+      };
+
+      const styleStats = {
+        K02: { finish: "#12", kills: 2, redeploys: 0, revives: 0, damage: "820", moment: "Two kills and a hard reset" },
+        K03: { finish: "#9", kills: 3, redeploys: 0, revives: 0, damage: "1.1K", moment: "Three kills, left with dignity" },
+        K04: { finish: "#7", kills: 4, redeploys: 1, revives: 0, damage: "1.6K", moment: "Held the run together somehow" },
+        K05: { finish: "#5", kills: 5, redeploys: 1, revives: 1, damage: "2.1K", moment: "Five alive, squad breathing" },
+        K08: { finish: "#4", kills: 8, redeploys: 1, revives: 1, damage: "3.4K", moment: "Hot run marker" },
+        K10: { finish: "#3", kills: 10, redeploys: 1, revives: 1, damage: "4.2K", moment: "Lobby noticed" },
+        K12: { finish: "#2", kills: 12, redeploys: 1, revives: 2, damage: "5.1K", moment: "Damage on board" },
+        K15: { finish: "#1", kills: 15, redeploys: 2, revives: 2, damage: "6.3K", moment: "Lobby in orbit" },
+        K18: { finish: "#1", kills: 18, redeploys: 2, revives: 3, damage: "7.1K", moment: "One more fight from the bomb" },
+        K20: { finish: "#1", kills: 21, redeploys: 2, revives: 3, damage: "7.9K", moment: "Final circle squad wipe" },
+        R01: { finish: "#10", kills: 2, redeploys: 1, revives: 0, damage: "940", moment: "Bought one back and called it economy" },
+        R02: { finish: "#6", kills: 5, redeploys: 2, revives: 1, damage: "2.4K", moment: "Cash got the squad moving" },
+        R03: { finish: "#3", kills: 7, redeploys: 3, revives: 1, damage: "3.2K", moment: "Last cash, squad sent" },
+        V01: { finish: "#8", kills: 3, redeploys: 0, revives: 1, damage: "1.4K", moment: "Saved the run once" },
+        V03: { finish: "#2", kills: 6, redeploys: 1, revives: 3, damage: "3.5K", moment: "Everyone got a second life" },
       };
 
       function isStyleUnlocked(style) {
@@ -1003,16 +1034,54 @@ Need one more. Run it back:`;
         }
       }
 
-      function getPrimaryStat(style) {
-        if (style.metric === "redeploys") {
-          return { value: `+${match.redeploys}`, label: "redeploys" };
+      function getStyleStats(style) {
+        return {
+          ...match,
+          ...(styleStats[style.serial] || {}),
+        };
+      }
+
+      function getActiveStyle() {
+        return cardStyles[activeStyle];
+      }
+
+      function getMetricLabel(metric, value) {
+        if (metric === "redeploys") {
+          return value === 1 ? "redeploy" : "redeploys";
         }
 
-        if (style.metric === "revives") {
-          return { value: `+${match.revives}`, label: "revives" };
+        if (metric === "revives") {
+          return value === 1 ? "revive" : "revives";
         }
 
-        return { value: `+${match.kills}`, label: "kills" };
+        return "kills";
+      }
+
+      function getPrimaryStat(style, stats = getStyleStats(style)) {
+        const value = stats[style.metric];
+        return {
+          value: `+${value}`,
+          label: getMetricLabel(style.metric, value),
+          rawValue: value,
+        };
+      }
+
+      function getRecallText(style = getActiveStyle(), stats = getStyleStats(style)) {
+        const primary = getPrimaryStat(style, stats);
+        return `LAST DROP: RECALL
+${primary.rawValue} ${primary.label}. ${stats.finish} finish. ${stats.moment}.
+
+Need one more. Run it back:`;
+      }
+
+      function getSmsHref(style = getActiveStyle(), stats = getStyleStats(style)) {
+        return `sms:&body=${encodeURIComponent(`${getRecallText(style, stats)}\n${shareUrl}`)}`;
+      }
+
+      function getCardFilename(style = getActiveStyle(), stats = getStyleStats(style)) {
+        const primary = getPrimaryStat(style, stats);
+        const metric = primary.label.replace(/\s+/g, "-");
+        return `last-drop-recall-${primary.rawValue}-${metric}.png`;
       }
 
       function getStylePlate(style) {
@@ -1021,7 +1090,17 @@ Need one more. Run it back:`;
           return artPlates[key] || artPlates.kill20;
         }
 
-        return artPlates[style.family];
+        if (style.metric === "redeploys") {
+          const key = `redeploy${String(style.minValue).padStart(2, "0")}`;
+          return artPlates[key] || artPlates.redeploy;
+        }
+
+        if (style.metric === "revives") {
+          const key = `revive${String(style.minValue).padStart(2, "0")}`;
+          return artPlates[key] || artPlates.revive;
+        }
+
+        return artPlates[style.family] || artPlates.kill20;
       }
 
       function getStyleRarity(style) {
@@ -1581,7 +1660,7 @@ Need one more. Run it back:`;
         strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.5), 2);
       }
 
-      function drawCardBase(ctx, style, width, height) {
+      function drawCardBase(ctx, style, stats, width, height) {
         const base = ctx.createLinearGradient(0, 0, width, height);
         base.addColorStop(0, "#040404");
         base.addColorStop(0.45, style.deep);
@@ -1609,13 +1688,13 @@ Need one more. Run it back:`;
         }
         ctx.restore();
 
-        drawGrain(ctx, width, height, activeStyle * 311 + match.kills * 17, 0.085);
+        drawGrain(ctx, width, height, activeStyle * 311 + stats[style.metric] * 17, 0.085);
 
         strokeRoundedRect(ctx, 26, 26, width - 52, height - 52, 34, alpha(style.accent2, 0.48), 3);
         strokeRoundedRect(ctx, 42, 42, width - 84, height - 84, 25, "rgba(255, 255, 255, 0.18)", 1.5);
       }
 
-      function drawTopMeta(ctx, style, width) {
+      function drawTopMeta(ctx, style, stats, width) {
         ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
         ctx.font = "900 25px 'Space Mono', monospace";
         ctx.fillText("LAST DROP: RECALL", 64, 78);
@@ -1625,14 +1704,14 @@ Need one more. Run it back:`;
         ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
         ctx.textAlign = "right";
         ctx.font = "700 17px 'Space Mono', monospace";
-        ctx.fillText(`${match.map.toUpperCase()} // ${style.serial}`, width - 64, 84);
+        ctx.fillText(`${stats.map.toUpperCase()} // ${style.serial}`, width - 64, 84);
         ctx.textAlign = "left";
         drawBarcode(ctx, width - 255, 101, 190, 34, "rgba(255, 255, 255, 0.42)");
       }
 
-      function drawPlayerBlock(ctx, style) {
+      function drawPlayerBlock(ctx, style, stats) {
         ctx.fillStyle = "#fffaf0";
-        drawFittedText(ctx, match.player.toUpperCase(), 64, 172, 410, 58, 30, "Inter, Arial, sans-serif", 900);
+        drawFittedText(ctx, stats.player.toUpperCase(), 64, 172, 410, 58, 30, "Inter, Arial, sans-serif", 900);
 
         fillRoundedRect(ctx, 64, 194, 172, 38, 19, alpha(style.accent, 0.94));
         ctx.fillStyle = "#070707";
@@ -1640,11 +1719,11 @@ Need one more. Run it back:`;
         ctx.fillText(style.requirement.toUpperCase(), 84, 220);
 
         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        drawFittedText(ctx, match.moment.toUpperCase(), 64, 262, 390, 17, 12, "'Space Mono', monospace", 700);
+        drawFittedText(ctx, stats.moment.toUpperCase(), 64, 262, 390, 17, 12, "'Space Mono', monospace", 700);
       }
 
-      function drawPrimaryStat(ctx, style) {
-        const primary = getPrimaryStat(style);
+      function drawPrimaryStat(ctx, style, stats) {
+        const primary = getPrimaryStat(style, stats);
         ctx.fillStyle = alpha(style.accent2, 0.92);
         ctx.font = "900 184px Inter, Arial, sans-serif";
         ctx.fillText(primary.value, 54, 458);
@@ -1658,14 +1737,16 @@ Need one more. Run it back:`;
         ctx.fillText(style.subtitle.toUpperCase(), 68, 648);
       }
 
-      function drawStatTicker(ctx, style, width, height) {
-        const stats = [
-          ["FINISH", match.finish],
-          ["DAMAGE", match.damage],
-          ["KILLS", match.kills],
-          ["REDEPLOYS", match.redeploys],
-          ["REVIVES", match.revives],
+      function drawStatTicker(ctx, style, stats, width, height) {
+        const statRows = [
+          ["FINISH", stats.finish],
+          ["DAMAGE", stats.damage],
+          ["KILLS", stats.kills],
+          ["REDEPLOYS", stats.redeploys],
+          ["REVIVES", stats.revives],
         ];
+        const activeLabel =
+          style.metric === "redeploys" ? "REDEPLOYS" : style.metric === "revives" ? "REVIVES" : "KILLS";
         const x = 58;
         const y = height - 142;
         const tickerWidth = width - 116;
@@ -1674,7 +1755,7 @@ Need one more. Run it back:`;
         fillRoundedRect(ctx, x, y, tickerWidth, 82, 16, "rgba(0, 0, 0, 0.48)");
         strokeRoundedRect(ctx, x, y, tickerWidth, 82, 16, "rgba(255, 255, 255, 0.16)", 1.5);
 
-        stats.forEach(([label, value], index) => {
+        statRows.forEach(([label, value], index) => {
           const cellX = x + index * cellWidth;
           if (index > 0) {
             ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
@@ -1684,7 +1765,7 @@ Need one more. Run it back:`;
           ctx.fillStyle = "rgba(255, 255, 255, 0.56)";
           ctx.font = "700 16px 'Space Mono', monospace";
           ctx.fillText(label, cellX + 22, y + 31);
-          ctx.fillStyle = label === "KILLS" ? style.accent2 : "#fffaf0";
+          ctx.fillStyle = label === activeLabel ? style.accent2 : "#fffaf0";
           ctx.font = "900 34px 'Teko', sans-serif";
           ctx.fillText(String(value).toUpperCase(), cellX + 22, y + 66);
         });
@@ -1720,13 +1801,14 @@ Need one more. Run it back:`;
 
       function renderShareCard() {
         const style = cardStyles[activeStyle];
+        const stats = getStyleStats(style);
         const ctx = shareCardContext;
         const width = shareCardCanvas.width;
         const height = shareCardCanvas.height;
         const unlocked = isStyleUnlocked(style);
 
         ctx.clearRect(0, 0, width, height);
-        drawCardBase(ctx, style, width, height);
+        drawCardBase(ctx, style, stats, width, height);
 
         const artX = 502;
         const artY = 132;
@@ -1735,10 +1817,10 @@ Need one more. Run it back:`;
 
         drawGeneratedArt(ctx, style, artX, artY, artWidth, artHeight);
 
-        drawTopMeta(ctx, style, width);
-        drawPlayerBlock(ctx, style);
-        drawPrimaryStat(ctx, style);
-        drawStatTicker(ctx, style, width, height);
+        drawTopMeta(ctx, style, stats, width);
+        drawPlayerBlock(ctx, style, stats);
+        drawPrimaryStat(ctx, style, stats);
+        drawStatTicker(ctx, style, stats, width, height);
         drawFooter(ctx, style, width, height);
 
         if (!unlocked) {
@@ -1749,13 +1831,14 @@ Need one more. Run it back:`;
       function setStyle(index) {
         activeStyle = (index + cardStyles.length) % cardStyles.length;
         const style = cardStyles[activeStyle];
+        const stats = getStyleStats(style);
         styleSelect.value = String(activeStyle);
         recallCard.style.setProperty("--accent", style.accent);
         recallCard.style.setProperty("--paper-tint", style.paper);
+        smsLink.href = getSmsHref(style, stats);
         renderShareCard();
       }
 
-      smsLink.href = smsHref;
       setStyle(activeStyle);
       if (document.fonts) {
         document.fonts.ready.then(renderShareCard);
@@ -1778,6 +1861,8 @@ Need one more. Run it back:`;
       }
 
       async function copyCardImage() {
+        const style = getActiveStyle();
+        const stats = getStyleStats(style);
         const blob = await canvasToBlob(shareCardCanvas);
 
         if (navigator.clipboard && window.ClipboardItem && window.isSecureContext) {
@@ -1790,7 +1875,7 @@ Need one more. Run it back:`;
         const downloadUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.download = `last-drop-recall-${match.kills}-kills.png`;
+        link.download = getCardFilename(style, stats);
         document.body.append(link);
         link.click();
         link.remove();
@@ -1799,13 +1884,15 @@ Need one more. Run it back:`;
       }
 
       async function inviteSquadWithCard() {
+        const style = getActiveStyle();
+        const stats = getStyleStats(style);
         const blob = await canvasToBlob(shareCardCanvas);
-        const file = new File([blob], `last-drop-recall-${match.kills}-kills.png`, {
+        const file = new File([blob], getCardFilename(style, stats), {
           type: "image/png",
         });
         const shareData = {
           title: "Last Drop: Recall",
-          text: recallText,
+          text: getRecallText(style, stats),
           url: shareUrl,
         };
 
@@ -1822,7 +1909,7 @@ Need one more. Run it back:`;
           return "link";
         }
 
-        window.location.href = smsHref;
+        window.location.href = getSmsHref(style, stats);
         return "sms";
       }
 
@@ -1855,7 +1942,7 @@ Need one more. Run it back:`;
             return;
           }
 
-          window.location.href = smsHref;
+          window.location.href = getSmsHref();
           smsLink.textContent = "SMS Opened";
         }
 
