@@ -818,7 +818,7 @@ Need one more. Run it back:`;
         const option = document.createElement("option");
         option.value = String(index);
         const lockState = isStyleUnlocked(style) ? "unlocked" : "locked";
-        option.textContent = `${style.requirement} · ${style.tierName} · ${lockState}`;
+        option.textContent = `${style.requirement} · ${getStyleRarity(style).label} · ${style.tierName} · ${lockState}`;
         styleSelect.append(option);
       });
 
@@ -978,6 +978,62 @@ Need one more. Run it back:`;
         return { value: `+${match.kills}`, label: "kills" };
       }
 
+      function getStyleRarity(style) {
+        if (style.metric === "redeploys") {
+          if (style.minValue >= 3) {
+            return { label: "Legendary Foil", reveal: 1, color: 1, shine: 1, marks: 10 };
+          }
+
+          if (style.minValue >= 2) {
+            return { label: "Rare Gloss", reveal: 0.74, color: 0.82, shine: 0.52, marks: 6 };
+          }
+
+          return { label: "Common Print", reveal: 0.42, color: 0.36, shine: 0.1, marks: 3 };
+        }
+
+        if (style.metric === "revives") {
+          if (style.minValue >= 3) {
+            return { label: "Epic Foil", reveal: 0.88, color: 0.95, shine: 0.74, marks: 8 };
+          }
+
+          return { label: "Uncommon Print", reveal: 0.54, color: 0.52, shine: 0.22, marks: 4 };
+        }
+
+        if (style.minValue >= 20) {
+          return { label: "Mythic Foil", reveal: 1, color: 1, shine: 1, marks: 12 };
+        }
+
+        if (style.minValue >= 18) {
+          return { label: "Legendary", reveal: 0.92, color: 0.95, shine: 0.86, marks: 10 };
+        }
+
+        if (style.minValue >= 15) {
+          return { label: "Epic Foil", reveal: 0.82, color: 0.86, shine: 0.68, marks: 8 };
+        }
+
+        if (style.minValue >= 12) {
+          return { label: "Epic", reveal: 0.72, color: 0.78, shine: 0.52, marks: 7 };
+        }
+
+        if (style.minValue >= 10) {
+          return { label: "Rare Gloss", reveal: 0.62, color: 0.64, shine: 0.36, marks: 6 };
+        }
+
+        if (style.minValue >= 8) {
+          return { label: "Rare", reveal: 0.54, color: 0.54, shine: 0.26, marks: 5 };
+        }
+
+        if (style.minValue >= 5) {
+          return { label: "Uncommon", reveal: 0.44, color: 0.42, shine: 0.16, marks: 4 };
+        }
+
+        if (style.minValue >= 4) {
+          return { label: "Uncommon Proof", reveal: 0.36, color: 0.34, shine: 0.08, marks: 3 };
+        }
+
+        return { label: "Common Print", reveal: 0.26, color: 0.22, shine: 0, marks: 2 };
+      }
+
       function drawCoverImage(ctx, image, x, y, width, height) {
         const sourceRatio = image.naturalWidth / image.naturalHeight;
         const targetRatio = width / height;
@@ -999,6 +1055,7 @@ Need one more. Run it back:`;
 
       function drawGeneratedArt(ctx, style, x, y, width, height) {
         const plate = artPlates[style.family] || artPlates.kill;
+        const rarity = getStyleRarity(style);
 
         ctx.save();
         roundedRect(ctx, x, y, width, height, 30);
@@ -1012,14 +1069,24 @@ Need one more. Run it back:`;
         ctx.fillRect(x, y, width, height);
 
         if (plate.image && plate.image.complete && plate.image.naturalWidth > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.42 + rarity.reveal * 0.58;
+          ctx.filter = [
+            `grayscale(${Math.max(0, 1 - rarity.color)})`,
+            `saturate(${0.42 + rarity.color * 1.08})`,
+            `contrast(${0.84 + rarity.reveal * 0.24})`,
+            `brightness(${0.74 + rarity.reveal * 0.28})`,
+            `blur(${Math.max(0, (1 - rarity.reveal) * 1.45)}px)`,
+          ].join(" ");
           drawCoverImage(ctx, plate.image, x, y, width, height);
+          ctx.restore();
         }
 
         const edgeShade = ctx.createLinearGradient(x, y, x + width, y);
-        edgeShade.addColorStop(0, "rgba(0, 0, 0, 0.4)");
+        edgeShade.addColorStop(0, "rgba(0, 0, 0, 0.5)");
         edgeShade.addColorStop(0.16, "rgba(0, 0, 0, 0.06)");
         edgeShade.addColorStop(0.72, "rgba(0, 0, 0, 0)");
-        edgeShade.addColorStop(1, "rgba(0, 0, 0, 0.34)");
+        edgeShade.addColorStop(1, `rgba(0, 0, 0, ${0.56 - rarity.reveal * 0.18})`);
         ctx.fillStyle = edgeShade;
         ctx.fillRect(x, y, width, height);
 
@@ -1029,29 +1096,69 @@ Need one more. Run it back:`;
         ctx.fillStyle = bottomShade;
         ctx.fillRect(x, y, width, height);
 
+        if (rarity.reveal < 0.58) {
+          ctx.save();
+          ctx.globalAlpha = 0.42 - rarity.reveal * 0.32;
+          ctx.fillStyle = "#000";
+          ctx.fillRect(x, y, width, height);
+          ctx.globalAlpha = 0.24;
+          ctx.strokeStyle = "#fffaf0";
+          ctx.lineWidth = 2;
+          for (let stripe = -height; stripe < width; stripe += 34) {
+            ctx.beginPath();
+            ctx.moveTo(x + stripe, y + height);
+            ctx.lineTo(x + stripe + height, y);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
         ctx.globalCompositeOperation = "screen";
-        ctx.fillStyle = alpha(style.accent, 0.18);
+        ctx.fillStyle = alpha(style.accent, 0.08 + rarity.reveal * 0.13);
         ctx.fillRect(x, y, width, height);
         ctx.globalCompositeOperation = "source-over";
+
+        if (rarity.shine > 0.25) {
+          ctx.save();
+          ctx.globalCompositeOperation = "screen";
+          const foil = ctx.createLinearGradient(x + width * 0.22, y, x + width * 0.92, y + height);
+          foil.addColorStop(0, "rgba(255, 255, 255, 0)");
+          foil.addColorStop(0.46, alpha(style.accent2, 0.02 + rarity.shine * 0.18));
+          foil.addColorStop(0.52, "rgba(255, 255, 255, 0.22)");
+          foil.addColorStop(0.58, alpha(style.accent, 0.02 + rarity.shine * 0.14));
+          foil.addColorStop(1, "rgba(255, 255, 255, 0)");
+          ctx.fillStyle = foil;
+          ctx.fillRect(x, y, width, height);
+          ctx.globalAlpha = rarity.shine * 0.38;
+          ctx.strokeStyle = "#fffaf0";
+          ctx.lineWidth = 3;
+          for (let line = 0; line < rarity.marks; line += 1) {
+            const offset = line * 58;
+            ctx.beginPath();
+            ctx.moveTo(x + width - 180 - offset, y + 20);
+            ctx.lineTo(x + width + 50 - offset, y + height - 60);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
 
         ctx.fillStyle = "rgba(0, 0, 0, 0.54)";
         ctx.fillRect(x, y, width, 96);
         ctx.fillStyle = "#fffaf0";
         ctx.font = "900 30px 'Space Mono', monospace";
-        ctx.fillText(plate.label.toUpperCase(), x + 36, y + 50);
+        ctx.fillText(rarity.label.toUpperCase(), x + 36, y + 50);
         ctx.fillStyle = alpha(style.accent2, 0.9);
         ctx.font = "700 18px 'Space Mono', monospace";
-        ctx.fillText(`${style.serial} // ${style.requirement.toUpperCase()}`, x + 36, y + 79);
+        ctx.fillText(`${plate.label.toUpperCase()} // ${style.serial} // ${style.requirement.toUpperCase()}`, x + 36, y + 79);
 
-        ctx.fillStyle = alpha(style.accent2, 0.9);
-        for (let index = 0; index < Math.min(style.minValue, 20); index += 1) {
-          const col = index % 10;
-          const row = Math.floor(index / 10);
-          fillRoundedRect(ctx, x + 36 + col * 18, y + height - 58 + row * 22, 10, 20, 2, alpha(style.accent2, 0.72));
+        for (let index = 0; index < 12; index += 1) {
+          const filled = index < rarity.marks;
+          const fill = filled ? alpha(style.accent2, 0.88) : "rgba(255, 255, 255, 0.14)";
+          fillRoundedRect(ctx, x + 36 + index * 18, y + height - 50, 10, 20, 2, fill);
         }
 
         ctx.restore();
-        strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.54), 2);
+        strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.2 + rarity.reveal * 0.44), 2 + rarity.shine * 2);
       }
 
       function drawKatana(ctx, cx, cy, angle, length, accent, highlight) {
