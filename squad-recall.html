@@ -1798,6 +1798,34 @@ Need one more. Run it back:`;
         return "downloaded";
       }
 
+      async function inviteSquadWithCard() {
+        const blob = await canvasToBlob(shareCardCanvas);
+        const file = new File([blob], `last-drop-recall-${match.kills}-kills.png`, {
+          type: "image/png",
+        });
+        const shareData = {
+          title: "Last Drop: Recall",
+          text: recallText,
+          url: shareUrl,
+        };
+
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+          await navigator.share({
+            ...shareData,
+            files: [file],
+          });
+          return "image";
+        }
+
+        if (navigator.share) {
+          await navigator.share(shareData);
+          return "link";
+        }
+
+        window.location.href = smsHref;
+        return "sms";
+      }
+
       copyImageButton.addEventListener("click", async () => {
         const idleLabel = "Copy Card Image";
 
@@ -1810,6 +1838,29 @@ Need one more. Run it back:`;
 
         window.setTimeout(() => {
           copyImageButton.textContent = idleLabel;
+        }, 1800);
+      });
+
+      smsLink.addEventListener("click", async (event) => {
+        const idleLabel = "Invite Squad / SMS";
+        event.preventDefault();
+        smsLink.textContent = "Preparing Card";
+
+        try {
+          const result = await inviteSquadWithCard();
+          smsLink.textContent = result === "image" ? "Card Attached" : "Invite Opened";
+        } catch (error) {
+          if (error.name === "AbortError") {
+            smsLink.textContent = idleLabel;
+            return;
+          }
+
+          window.location.href = smsHref;
+          smsLink.textContent = "SMS Opened";
+        }
+
+        window.setTimeout(() => {
+          smsLink.textContent = idleLabel;
         }, 1800);
       });
     </script>
