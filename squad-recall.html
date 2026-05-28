@@ -776,9 +776,45 @@ Need one more. Run it back:`;
       const smsLink = document.getElementById("smsLink");
       const copyImageButton = document.getElementById("copyImageButton");
       const artPlates = {
-        kill: {
-          src: "assets/last-drop-art-kills.jpg",
-          label: "Samurai Prestige",
+        kill02: {
+          src: "assets/last-drop-kills-02.jpg",
+          label: "Starter Mask",
+        },
+        kill03: {
+          src: "assets/last-drop-kills-03.jpg",
+          label: "Triple Ghost",
+        },
+        kill04: {
+          src: "assets/last-drop-kills-04.jpg",
+          label: "Smoke Shinobi",
+        },
+        kill05: {
+          src: "assets/last-drop-kills-05.jpg",
+          label: "Rain Runner",
+        },
+        kill08: {
+          src: "assets/last-drop-kills-08.jpg",
+          label: "Rare Operator",
+        },
+        kill10: {
+          src: "assets/last-drop-kills-10.jpg",
+          label: "Double-Digit Blade",
+        },
+        kill12: {
+          src: "assets/last-drop-kills-12.jpg",
+          label: "Dozen Warlord",
+        },
+        kill15: {
+          src: "assets/last-drop-kills-15.jpg",
+          label: "High-Kill Ronin",
+        },
+        kill18: {
+          src: "assets/last-drop-kills-18.jpg",
+          label: "Almost-Bomb Lord",
+        },
+        kill20: {
+          src: "assets/last-drop-kills-20.jpg",
+          label: "Twenty-Bomb Mythic",
         },
         redeploy: {
           src: "assets/last-drop-art-redeploy.jpg",
@@ -818,7 +854,8 @@ Need one more. Run it back:`;
         const option = document.createElement("option");
         option.value = String(index);
         const lockState = isStyleUnlocked(style) ? "unlocked" : "locked";
-        option.textContent = `${style.requirement} · ${getStyleRarity(style).label} · ${style.tierName} · ${lockState}`;
+        const plate = getStylePlate(style);
+        option.textContent = `${style.requirement} · ${plate.label} · ${style.tierName} · ${lockState}`;
         styleSelect.append(option);
       });
 
@@ -978,6 +1015,15 @@ Need one more. Run it back:`;
         return { value: `+${match.kills}`, label: "kills" };
       }
 
+      function getStylePlate(style) {
+        if (style.metric === "kills") {
+          const key = `kill${String(style.minValue).padStart(2, "0")}`;
+          return artPlates[key] || artPlates.kill20;
+        }
+
+        return artPlates[style.family];
+      }
+
       function getStyleRarity(style) {
         if (style.metric === "redeploys") {
           if (style.minValue >= 3) {
@@ -1054,7 +1100,7 @@ Need one more. Run it back:`;
       }
 
       function drawGeneratedArt(ctx, style, x, y, width, height) {
-        const plate = artPlates[style.family] || artPlates.kill;
+        const plate = getStylePlate(style);
         const rarity = getStyleRarity(style);
 
         ctx.save();
@@ -1070,13 +1116,13 @@ Need one more. Run it back:`;
 
         if (plate.image && plate.image.complete && plate.image.naturalWidth > 0) {
           ctx.save();
-          ctx.globalAlpha = 0.42 + rarity.reveal * 0.58;
+          ctx.globalAlpha = 0.7 + rarity.reveal * 0.3;
           ctx.filter = [
-            `grayscale(${Math.max(0, 1 - rarity.color)})`,
-            `saturate(${0.42 + rarity.color * 1.08})`,
-            `contrast(${0.84 + rarity.reveal * 0.24})`,
-            `brightness(${0.74 + rarity.reveal * 0.28})`,
-            `blur(${Math.max(0, (1 - rarity.reveal) * 1.45)}px)`,
+            `grayscale(${Math.max(0, (1 - rarity.color) * 0.38)})`,
+            `saturate(${0.9 + rarity.color * 0.9})`,
+            `contrast(${0.98 + rarity.reveal * 0.14})`,
+            `brightness(${0.98 + rarity.reveal * 0.1})`,
+            `blur(${Math.max(0, (1 - rarity.reveal) * 0.35)}px)`,
           ].join(" ");
           drawCoverImage(ctx, plate.image, x, y, width, height);
           ctx.restore();
@@ -1098,13 +1144,13 @@ Need one more. Run it back:`;
 
         if (rarity.reveal < 0.58) {
           ctx.save();
-          ctx.globalAlpha = 0.42 - rarity.reveal * 0.32;
+          ctx.globalAlpha = 0.16 - rarity.reveal * 0.08;
           ctx.fillStyle = "#000";
           ctx.fillRect(x, y, width, height);
-          ctx.globalAlpha = 0.24;
+          ctx.globalAlpha = 0.09;
           ctx.strokeStyle = "#fffaf0";
           ctx.lineWidth = 2;
-          for (let stripe = -height; stripe < width; stripe += 34) {
+          for (let stripe = -height; stripe < width; stripe += 46) {
             ctx.beginPath();
             ctx.moveTo(x + stripe, y + height);
             ctx.lineTo(x + stripe + height, y);
@@ -1146,10 +1192,10 @@ Need one more. Run it back:`;
         ctx.fillRect(x, y, width, 96);
         ctx.fillStyle = "#fffaf0";
         ctx.font = "900 30px 'Space Mono', monospace";
-        ctx.fillText(rarity.label.toUpperCase(), x + 36, y + 50);
+        ctx.fillText(plate.label.toUpperCase(), x + 36, y + 50);
         ctx.fillStyle = alpha(style.accent2, 0.9);
         ctx.font = "700 18px 'Space Mono', monospace";
-        ctx.fillText(`${plate.label.toUpperCase()} // ${style.serial} // ${style.requirement.toUpperCase()}`, x + 36, y + 79);
+        ctx.fillText(`${style.serial} // ${style.requirement.toUpperCase()} // ${rarity.label.toUpperCase()}`, x + 36, y + 79);
 
         for (let index = 0; index < 12; index += 1) {
           const filled = index < rarity.marks;
