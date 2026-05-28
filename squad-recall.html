@@ -775,6 +775,20 @@ Need one more. Run it back:`;
       const nextStyle = document.getElementById("nextStyle");
       const smsLink = document.getElementById("smsLink");
       const copyImageButton = document.getElementById("copyImageButton");
+      const artPlates = {
+        kill: {
+          src: "assets/last-drop-art-kills.jpg",
+          label: "Samurai Prestige",
+        },
+        redeploy: {
+          src: "assets/last-drop-art-redeploy.jpg",
+          label: "Cash Flex Card",
+        },
+        revive: {
+          src: "assets/last-drop-art-revive.jpg",
+          label: "Save The Run",
+        },
+      };
 
       function isStyleUnlocked(style) {
         return match[style.metric] >= style.minValue;
@@ -806,6 +820,13 @@ Need one more. Run it back:`;
         const lockState = isStyleUnlocked(style) ? "unlocked" : "locked";
         option.textContent = `${style.requirement} · ${style.tierName} · ${lockState}`;
         styleSelect.append(option);
+      });
+
+      Object.values(artPlates).forEach((plate) => {
+        const image = new Image();
+        image.addEventListener("load", renderShareCard);
+        image.src = plate.src;
+        plate.image = image;
       });
 
       function roundedRect(ctx, x, y, width, height, radius) {
@@ -863,17 +884,22 @@ Need one more. Run it back:`;
 
       function drawFittedText(ctx, text, x, y, maxWidth, fontSize, minSize, fontFamily, weight = 900) {
         let size = fontSize;
+        let fittedText = text;
 
         do {
           ctx.font = `${weight} ${size}px ${fontFamily}`;
-          if (ctx.measureText(text).width <= maxWidth || size <= minSize) {
+          if (ctx.measureText(fittedText).width <= maxWidth || size <= minSize) {
             break;
           }
 
           size -= 2;
         } while (size > minSize);
 
-        ctx.fillText(text, x, y);
+        while (ctx.measureText(fittedText).width > maxWidth && fittedText.length > 4) {
+          fittedText = `${fittedText.slice(0, -4)}...`;
+        }
+
+        ctx.fillText(fittedText, x, y);
         return size;
       }
 
@@ -950,6 +976,82 @@ Need one more. Run it back:`;
         }
 
         return { value: `+${match.kills}`, label: "kills" };
+      }
+
+      function drawCoverImage(ctx, image, x, y, width, height) {
+        const sourceRatio = image.naturalWidth / image.naturalHeight;
+        const targetRatio = width / height;
+        let sourceWidth = image.naturalWidth;
+        let sourceHeight = image.naturalHeight;
+        let sourceX = 0;
+        let sourceY = 0;
+
+        if (sourceRatio > targetRatio) {
+          sourceWidth = image.naturalHeight * targetRatio;
+          sourceX = (image.naturalWidth - sourceWidth) / 2;
+        } else {
+          sourceHeight = image.naturalWidth / targetRatio;
+          sourceY = (image.naturalHeight - sourceHeight) / 2;
+        }
+
+        ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
+      }
+
+      function drawGeneratedArt(ctx, style, x, y, width, height) {
+        const plate = artPlates[style.family] || artPlates.kill;
+
+        ctx.save();
+        roundedRect(ctx, x, y, width, height, 30);
+        ctx.clip();
+
+        const fallback = ctx.createLinearGradient(x, y, x + width, y + height);
+        fallback.addColorStop(0, style.deep);
+        fallback.addColorStop(0.48, style.mid);
+        fallback.addColorStop(1, "#050505");
+        ctx.fillStyle = fallback;
+        ctx.fillRect(x, y, width, height);
+
+        if (plate.image && plate.image.complete && plate.image.naturalWidth > 0) {
+          drawCoverImage(ctx, plate.image, x, y, width, height);
+        }
+
+        const edgeShade = ctx.createLinearGradient(x, y, x + width, y);
+        edgeShade.addColorStop(0, "rgba(0, 0, 0, 0.4)");
+        edgeShade.addColorStop(0.16, "rgba(0, 0, 0, 0.06)");
+        edgeShade.addColorStop(0.72, "rgba(0, 0, 0, 0)");
+        edgeShade.addColorStop(1, "rgba(0, 0, 0, 0.34)");
+        ctx.fillStyle = edgeShade;
+        ctx.fillRect(x, y, width, height);
+
+        const bottomShade = ctx.createLinearGradient(x, y + height * 0.56, x, y + height);
+        bottomShade.addColorStop(0, "rgba(0, 0, 0, 0)");
+        bottomShade.addColorStop(1, "rgba(0, 0, 0, 0.64)");
+        ctx.fillStyle = bottomShade;
+        ctx.fillRect(x, y, width, height);
+
+        ctx.globalCompositeOperation = "screen";
+        ctx.fillStyle = alpha(style.accent, 0.18);
+        ctx.fillRect(x, y, width, height);
+        ctx.globalCompositeOperation = "source-over";
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.54)";
+        ctx.fillRect(x, y, width, 96);
+        ctx.fillStyle = "#fffaf0";
+        ctx.font = "900 30px 'Space Mono', monospace";
+        ctx.fillText(plate.label.toUpperCase(), x + 36, y + 50);
+        ctx.fillStyle = alpha(style.accent2, 0.9);
+        ctx.font = "700 18px 'Space Mono', monospace";
+        ctx.fillText(`${style.serial} // ${style.requirement.toUpperCase()}`, x + 36, y + 79);
+
+        ctx.fillStyle = alpha(style.accent2, 0.9);
+        for (let index = 0; index < Math.min(style.minValue, 20); index += 1) {
+          const col = index % 10;
+          const row = Math.floor(index / 10);
+          fillRoundedRect(ctx, x + 36 + col * 18, y + height - 58 + row * 22, 10, 20, 2, alpha(style.accent2, 0.72));
+        }
+
+        ctx.restore();
+        strokeRoundedRect(ctx, x, y, width, height, 30, alpha(style.accent2, 0.54), 2);
       }
 
       function drawKatana(ctx, cx, cy, angle, length, accent, highlight) {
@@ -1377,7 +1479,7 @@ Need one more. Run it back:`;
 
       function drawPlayerBlock(ctx, style) {
         ctx.fillStyle = "#fffaf0";
-        drawFittedText(ctx, match.player.toUpperCase(), 64, 172, 540, 58, 32, "Inter, Arial, sans-serif", 900);
+        drawFittedText(ctx, match.player.toUpperCase(), 64, 172, 410, 58, 30, "Inter, Arial, sans-serif", 900);
 
         fillRoundedRect(ctx, 64, 194, 172, 38, 19, alpha(style.accent, 0.94));
         ctx.fillStyle = "#070707";
@@ -1385,8 +1487,7 @@ Need one more. Run it back:`;
         ctx.fillText(style.requirement.toUpperCase(), 84, 220);
 
         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        ctx.font = "700 17px 'Space Mono', monospace";
-        ctx.fillText(match.moment.toUpperCase(), 64, 262);
+        drawFittedText(ctx, match.moment.toUpperCase(), 64, 262, 390, 17, 12, "'Space Mono', monospace", 700);
       }
 
       function drawPrimaryStat(ctx, style) {
@@ -1479,13 +1580,7 @@ Need one more. Run it back:`;
         const artWidth = 826;
         const artHeight = 582;
 
-        if (style.family === "redeploy") {
-          drawRedeployArt(ctx, style, artX, artY, artWidth, artHeight);
-        } else if (style.family === "revive") {
-          drawReviveArt(ctx, style, artX, artY, artWidth, artHeight);
-        } else {
-          drawSamuraiArt(ctx, style, artX, artY, artWidth, artHeight);
-        }
+        drawGeneratedArt(ctx, style, artX, artY, artWidth, artHeight);
 
         drawTopMeta(ctx, style, width);
         drawPlayerBlock(ctx, style);
